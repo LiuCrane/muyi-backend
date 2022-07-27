@@ -1,0 +1,48 @@
+# DataSource Config
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3308/mysl?useSSL=false&allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+    # &serverTimezone=GMT%2B8 org.apache.ibatis.session
+    username: root
+    password: root
+  mvc:
+    # 静态文件请求匹配方式
+    static-path-pattern: /**
+  web:
+    resources:
+      static-locations:
+        - classpath:/META-INF/resources/,
+        - classpath:/resources/,
+        - classpath:/static/,
+        - classpath:/public/,
+        - classpath:/os/
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**Mapper.xml
+  global-config:
+    banner: false
+  configuration:
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+server:
+  port: 3001
+logging:
+  level:
+    root: info
+    "[com.mysl]": trace
+  pattern:
+    # console: "%clr(%d{yyyy-MM-dd E HH:mm:ss}){blue} %clr([%-5p]) pid=%clr(${PID}){faint}%clr %clr([%15.15t]){cyan} %clr%logger:%line{blue} %n           %clr(%m){faint}%n"
+    console: "%d{yyyy-MM-dd E HH:mm:ss} [%-5p] pid=${PID} [%15.15t] %logger:%line %n           %m%n"
+    # console: "%p%m%n"
+    file: ${logging.pattern.console}
+  file:
+    path: ./logs
+mysl:
+  open:
+    wx:
+      xcx-id: wx08438e355af1ee0c
+      xcx-secret: bd9249c833db6d9364381a0fa6e4677a
