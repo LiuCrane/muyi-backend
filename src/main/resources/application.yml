@@ -42,7 +42,10 @@ logging:
   file:
     path: ./logs
 mysl:
+  jwt:
+    key: 1q2w3e4r5t6y7u8i9o0p
+    expiration: 86400
   open:
     wx:
-      xcx-id: wx08438e355af1ee0c
-      xcx-secret: bd9249c833db6d9364381a0fa6e4677a
+      xcx-id:
+      xcx-secret:
