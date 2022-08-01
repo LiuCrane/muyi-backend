@@ -62,12 +62,13 @@
       <artifactId>velocity-engine-core</artifactId>
       <version>2.3</version>
     </dependency>
+
     <!-- swagger2 swagger2 是一个规范和完整的框架，用于生成、描述、调用和可视化Restful风格的web服务-->
-    <dependency>
-      <groupId>io.springfox</groupId>
-      <artifactId>springfox-swagger2</artifactId>
-      <version>2.7.0</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>io.springfox</groupId>-->
+<!--      <artifactId>springfox-swagger2</artifactId>-->
+<!--      <version>2.7.0</version>-->
+<!--    </dependency>-->
     <!-- <dependency>
       <groupId>io.springfox</groupId>
       <artifactId>springfox-swagger-ui</artifactId>
@@ -119,16 +120,25 @@
       <artifactId>spring-boot-starter-log4j2</artifactId>
     </dependency>
 
+    <!-- hutool jwt -->
     <dependency>
       <groupId>cn.hutool</groupId>
       <artifactId>hutool-jwt</artifactId>
       <version>5.8.4</version>
     </dependency>
 
+    <!-- 参数规则校验 -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <!-- swagger3 -->
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-boot-starter</artifactId>
+      <version>3.0.0</version>
     </dependency>
 
   </dependencies>

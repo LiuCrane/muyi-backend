@@ -1,9 +1,9 @@
 package com.mysl.api.common.exception;
 
-import com.mysl.api.common.lang.Result;
+import com.mysl.api.common.lang.ResponseData;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,25 +19,28 @@ import java.util.Objects;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // @ExceptionHandler(value = RuntimeException.class)
-
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = Exception.class)
-    public Object handler(Exception e) {
+    public ResponseData handler(Exception e) {
         String msg = e.getMessage();
-        // e.printStackTrace();
-        log.info(e);
-        return Result.ret(HttpStatus.INTERNAL_SERVER_ERROR.value(), (msg != null && msg.length() > 31) ? msg.substring(0, 31) : msg);
+        log.info("GlobalExceptionHandler: ", e);
+//        return Result.ret(HttpStatus.INTERNAL_SERVER_ERROR.value(), (msg != null && msg.length() > 31) ? msg.substring(0, 31) : msg);
+        return ResponseData.generator(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务错误", null);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
-        return Result.badRequest(Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage());
+    public ResponseData methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
+        return ResponseData.generator(HttpStatus.BAD_REQUEST.value(), Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage(), null);
     }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, MissingServletRequestParameterException.class})
-    public ResponseEntity requestParameterExceptionHandler(MethodArgumentTypeMismatchException e) {
-        return Result.badRequest("参数格式错误");
+    public ResponseData requestParameterExceptionHandler(MethodArgumentTypeMismatchException e) {
+        return ResponseData.generator(HttpStatus.BAD_REQUEST.value(), "参数格式错误", null);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseData httpMessageNotReadableHandler(HttpMessageNotReadableException e) {
+        return ResponseData.generator(HttpStatus.BAD_REQUEST.value(), "请求内容为空", null);
     }
 
 }
