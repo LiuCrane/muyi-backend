@@ -34,6 +34,7 @@ import com.mysl.api.service.HaveMediaService;
 import com.mysl.api.service.MediaReadService;
 import com.mysl.api.service.UsersService;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +42,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Log4j2
 @RestController
 public class IndexController {
   @Resource
@@ -84,7 +86,7 @@ public class IndexController {
     readFile.crypto(request, response);
   }
 
-  @GetMapping("/**")
+  @GetMapping("/public/**")
   public void index(HttpServletRequest request, HttpServletResponse response) throws Exception {
     readFile.index(request, response);
   }

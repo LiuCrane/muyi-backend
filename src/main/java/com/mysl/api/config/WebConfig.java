@@ -30,6 +30,8 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import lombok.extern.log4j.Log4j2;
@@ -133,4 +135,18 @@ public class WebConfig extends WebMvcConfigurationSupport {
     protected void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(myInterceptor).addPathPatterns("/app/**").excludePathPatterns("/app/auth/login");
     }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        log.info("addResourceHandlers for swagger-ui");
+        registry.addResourceHandler("/swagger-ui/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
+        super.addResourceHandlers(registry);
+    }
+//
+//    @Override
+//    protected void addViewControllers(ViewControllerRegistry registry) {
+//        log.info("addViewControllers for swagger-ui");
+//        registry.addViewController("/swagger-ui").setViewName("forward:/swagger-ui/index.html");
+//    }
 }

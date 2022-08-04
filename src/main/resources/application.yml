@@ -1,5 +1,8 @@
-# DataSource Config
 spring:
+  profiles:
+    active: .
+  application:
+    name: shili-api
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3308/mysl?useSSL=false&allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
@@ -21,6 +24,10 @@ spring:
     multipart:
       max-file-size: 1024MB
       max-request-size: 1024MB
+springfox:
+  documentation:
+    swagger-ui:
+      enabled: false
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
   global-config:

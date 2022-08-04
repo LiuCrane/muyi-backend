@@ -18,9 +18,11 @@ import com.mysl.api.entity.Users;
 import com.mysl.api.mapper.HaveMediaMapper;
 import com.mysl.api.mapper.UsersMapper;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Log4j2
 @Service
 public class ReadFile {
 
@@ -153,7 +155,9 @@ public class ReadFile {
     String str = request.getRequestURI();
 
     str = AesFile.formatFilename("public" + str);
+    log.info("after format: {}", str);
     String mime = AesFile.formatFilename("public", true);
+    log.info("mime: {}", mime);
     if (str.indexOf(mime) != 0) {
       throw new RuntimeException("路径非法");
     }

@@ -1,8 +1,5 @@
 package com.mysl.api.common.lang;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 public class Result {
     private static Object main(int code, String msg, Object data) {
         return data == null ? (msg == null ? new NoMsg(code) : new NoData(code, msg)) : new ExitData(code, msg, data);
@@ -72,15 +69,4 @@ public class Result {
         return main(0, null, null);
     }
 
-    public static ResponseEntity badRequest(String msg) {
-        return ResponseEntity.badRequest().body(ret(HttpStatus.BAD_REQUEST.value(), msg));
-    }
-
-    public static ResponseEntity ok(Object data) {
-        return ResponseEntity.ok(ret(HttpStatus.OK.value(), data));
-    }
-
-//  public static ResponseEntity ret(HttpStatus status, String msg) {
-//    return ResponseEntity.status(status).body(ret(status.value(), msg));
-//  }
 }
