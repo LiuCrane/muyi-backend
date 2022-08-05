@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @RestController("appMediaController")
 @RequestMapping("/app/media")
-public class MediaController {
+public class    MediaController {
 
     /**
      * 查询媒体列表
