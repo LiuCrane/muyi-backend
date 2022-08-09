@@ -19,6 +19,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MediaReadServiceImpl extends ServiceImpl<MediaReadMapper, MediaRead> implements MediaReadService {
   @Autowired
+  @Lazy
   UsersService usersService;
 
   @Resource

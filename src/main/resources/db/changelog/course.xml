@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet id="course" author="Ivan Su">
+        <createTable tableName="course" remarks="课程">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="title" type="VARCHAR(128)" remarks="标题">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)" remarks="简介"/>
+            <column name="duration" type="VARCHAR(16)" remarks="时长"/>
+            <column defaultValueNumeric="1" name="active" type="TINYINT(3) UNSIGNED"/>
+            <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="updated_at" type="datetime"/>
+            <column name="updated_by" type="VARCHAR(255)"/>
+        </createTable>
+        <createIndex indexName="idx_title" tableName="course">
+            <column name="title"/>
+        </createIndex>
+        <createIndex indexName="idx_active" tableName="course">
+            <column name="active"/>
+        </createIndex>
+        <createIndex tableName="course" indexName="idx_created_at">
+            <column name="created_at"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="course_media" author="Ivan Su">
+        <createTable tableName="course_media" remarks="课程媒体">
+            <column name="course_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="media_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="course_media"
+                                 constraintName="fk_cm_course_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+                                 referencedTableName="course" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="media_id" baseTableName="course_media"
+                                 constraintName="fk_cm_media_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+                                 referencedTableName="media" validate="true"/>
+        <addUniqueConstraint columnNames="course_id, media_id" constraintName="uni_ci_mi" tableName="course_media"/>
+    </changeSet>
+</databaseChangeLog>

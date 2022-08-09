@@ -20,6 +20,10 @@ public class ResponseData<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
+    public static <T> ResponseData<T> ok() {
+        return generator(HttpStatus.OK.value(), "", null);
+    }
+
     public static <T> ResponseData<T> ok(T data) {
         return generator(HttpStatus.OK.value(), "", data);
     }

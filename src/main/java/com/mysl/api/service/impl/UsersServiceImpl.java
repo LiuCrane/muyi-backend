@@ -20,6 +20,7 @@ import com.mysl.api.service.MediaReadService;
 import com.mysl.api.service.UsersService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 /**
@@ -37,6 +38,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users> implements
   private UsersMapper usersMapper;
 
   @Autowired
+  @Lazy
   MediaReadService mediaReadService;
 
   public List<Long> updateCmr(Permission per) {

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.4.5</version>
+    <version>2.7.2</version>
     <relativePath /> <!-- lookup parent from repository -->
   </parent>
   <groupId>com.muyi</groupId>
@@ -120,6 +120,12 @@
       <artifactId>spring-boot-starter-log4j2</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- hutool jwt -->
     <dependency>
       <groupId>cn.hutool</groupId>
@@ -141,6 +147,21 @@
       <version>3.0.0</version>
     </dependency>
 
+    <!-- 跟踪、管理和应用数据库变化 -->
+    <dependency>
+      <groupId>org.liquibase</groupId>
+      <artifactId>liquibase-core</artifactId>
+    </dependency>
+
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.security</groupId>-->
+<!--      <artifactId>spring-security-web</artifactId>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.security</groupId>-->
+<!--      <artifactId>spring-security-config</artifactId>-->
+<!--    </dependency>-->
+
   </dependencies>
 
   <build>
@@ -148,6 +169,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>2.7.2</version>
         <configuration>
           <excludes>
             <exclude>

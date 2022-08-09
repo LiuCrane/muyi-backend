@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet id="user" author="Ivan Su">
+        <createTable tableName="user" remarks="用户">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="username" type="VARCHAR(128)" remarks="用户名">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="VARCHAR(128)" remarks="姓名"/>
+            <column name="phone" type="VARCHAR(11)" remarks="手机号码">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(64)" remarks="密码">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(16)" remarks="用户类型（BACKEND_USER:后台用户,STORE_MANAGER:店长）"/>
+            <column defaultValueNumeric="1" name="active" type="TINYINT(3) UNSIGNED"/>
+            <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="updated_at" type="datetime"/>
+            <column name="updated_by" type="VARCHAR(255)"/>
+        </createTable>
+        <createIndex indexName="idx_username" tableName="user">
+            <column name="username"/>
+        </createIndex>
+        <createIndex indexName="idx_phone" tableName="user">
+            <column name="phone"/>
+        </createIndex>
+        <createIndex indexName="idx_active" tableName="user">
+            <column name="active"/>
+        </createIndex>
+        <createIndex indexName="idx_type" tableName="user">
+            <column name="type"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="init admin user" author="Ivan Su">
+        <sql>
+            INSERT INTO user(id, username, name, phone, password, `type`)
+            VALUE (1, 'admin', '管理员', '18800000001', '$2a$12$j1xKAN48GpFgQIOZppKJM.e4T14ebeDN9SBQO.d2vSyOFGPHK1gRW',
+            'BACKEND_USER')
+        </sql>
+    </changeSet>
+
+    <changeSet id="role" author="Ivan Su">
+        <createTable tableName="role">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(16)" remarks="角色名称">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="code" type="VARcHAR(32)" remarks="角色标识码">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column defaultValueNumeric="1" name="active" type="TINYINT(3) UNSIGNED"/>
+            <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="updated_at" type="datetime"/>
+            <column name="updated_by" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="init admin role" author="Ivan Su">
+        <sql>
+            INSERT INTO role(id, name, code)
+            VALUES (1, '后台管理员', 'ROLE_ADMIN'), (2, '店长', 'ROLE_STORE_MANAGER')
+        </sql>
+    </changeSet>
+
+    <changeSet id="user_role" author="Ivan Su">
+        <createTable tableName="user_role">
+            <column name="user_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_role" constraintName="fk_ur_user_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+                                 referencedTableName="user" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="user_role" constraintName="fk_ur_role_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+                                 referencedTableName="role" validate="true"/>
+        <addUniqueConstraint tableName="user_role" constraintName="uni_ui_ri" columnNames="user_id, role_id"/>
+    </changeSet>
+    <changeSet id="init user_role" author="Ivan Su">
+        <sql>
+            INSERT INTO user_role(user_id, role_id) VALUE (1, 1)
+        </sql>
+    </changeSet>
+</databaseChangeLog>
