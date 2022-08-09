@@ -96,4 +96,11 @@
                                  onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="student" validate="true"/>
     </changeSet>
+
+    <changeSet id="remove study_ended column" author="Ivan Su">
+        <dropColumn tableName="student" columnName="study_ended" />
+        <addColumn tableName="student">
+            <column name="rehab_training" type="INT UNSIGNED" defaultValueNumeric="0" remarks="复训，默认否"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

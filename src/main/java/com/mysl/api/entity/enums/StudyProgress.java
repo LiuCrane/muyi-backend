@@ -8,5 +8,6 @@ package com.mysl.api.entity.enums;
 public enum StudyProgress {
     NOT_STARTED,
     IN_PROGRESS,
+    REHAB_TRAINING,
     ENDED
 }

@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @RestController("appMediaController")
 @RequestMapping("/app/media")
-public class    MediaController {
+public class MediaController {
 
     /**
      * 查询媒体列表
@@ -29,19 +29,17 @@ public class    MediaController {
      * @return
      */
     @ApiOperation("查询媒体列表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "offset", value = "默认 0"),
-            @ApiImplicitParam(name = "limit", value = "默认 20"),
-            @ApiImplicitParam(name = "type", value = "媒体类型(AUDIO:音频, VIDEO:视频)"),
-            @ApiImplicitParam(name = "course_id", value = "课程id"),
-            @ApiImplicitParam(name = "public", value = "是否公开(true:是, false:否)")
-    })
     @GetMapping
-    public ResponseData<List<MediaDTO>> list(@RequestParam(defaultValue = "0") int offset,
+    public ResponseData<List<MediaDTO>> list(@ApiParam(value = "默认 0")
+                                             @RequestParam(defaultValue = "0") int offset,
+                                             @ApiParam(value = "默认 20")
                                              @RequestParam(defaultValue = "20") int limit,
-                                             @RequestParam String type,
-                                             @RequestParam("course_id") Long classCourseId,
-                                             @RequestParam("public") String isPublic) {
+                                             @ApiParam(value = "媒体类型(AUDIO:音频, VIDEO:视频)")
+                                             @RequestParam(required = false) String type,
+                                             @ApiParam(value = "课程id")
+                                             @RequestParam(value = "course_id", required = false) Long classCourseId,
+                                             @ApiParam(value = "是否公开(true:是, false:否)")
+                                             @RequestParam(value = "public", required = false) String isPublic) {
         log.info("get media list, offset: {}, limit: {}, type: {}, classCourseId: {}, isPublic: {}", offset, limit, type, classCourseId, isPublic);
         List<MediaDTO> list = ListUtil.of(
                 MediaDTO.builder().id(1L).title("视力提高3行 就是这么神奇")
@@ -115,7 +113,6 @@ public class    MediaController {
 //        );
 //        return ResponseData.ok(list);
 //    }
-
 
 
 }

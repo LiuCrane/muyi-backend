@@ -23,12 +23,12 @@ public class StudentController {
 
     @ApiOperation("查询学员列表")
     @GetMapping("/students")
-    public ResponseData<List<StudentDTO>> list(@ApiParam(name = "offset", value = "默认 0", defaultValue = "0")
+    public ResponseData<List<StudentDTO>> list(@ApiParam(value = "默认 0", defaultValue = "0")
                                                @RequestParam(defaultValue = "0") int offset,
-                                               @ApiParam(name = "limit", value = "默认 20", defaultValue = "20")
+                                               @ApiParam(value = "默认 20", defaultValue = "20")
                                                @RequestParam(defaultValue = "20") int limit,
-                                               @ApiParam(value = "true:查询复健学员列表，false:查询学习中的学员列表，不传查全部学员")
-                                               @RequestParam(value = "study_ended", required = false) String ended) {
+                                               @ApiParam(value = "true:查询复训学员列表，false:查询学习中的学员列表，不传查全部学员")
+                                               @RequestParam(value = "rehab", required = false) String rehab) {
         List<StudentDTO> list = ListUtil.toList();
         return ResponseData.ok(list);
     }

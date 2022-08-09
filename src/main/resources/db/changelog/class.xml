@@ -39,6 +39,10 @@
                                  onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="store" validate="true"/>
     </changeSet>
+    <changeSet id="update study_progress column's remark" author="Ivan Su">
+        <setColumnRemarks tableName="class" columnName="study_progress" columnDataType="VARCHAR(16)"
+                          remarks="学习进度(NOT_STARTED:未开始,IN_PROGRESS:进行中,REHAB_TRAINING:复训中,ENDED:已结束)"/>
+    </changeSet>
 
     <changeSet id="class_course" author="Ivan Su">
         <createTable tableName="class_course" remarks="班级课程">
