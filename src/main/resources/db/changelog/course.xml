@@ -13,6 +13,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(255)" remarks="简介"/>
+            <column name="duration" type="VARCHAR(16)" remarks="时长"/>
             <column defaultValueNumeric="1" name="active" type="TINYINT(3) UNSIGNED"/>
             <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
             <column name="created_by" type="VARCHAR(255)"/>
@@ -49,6 +50,6 @@
                                  deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
                                  referencedTableName="media" validate="true"/>
-        <addUniqueConstraint columnNames="course_id, media_id" tableName="course_media"/>
+        <addUniqueConstraint columnNames="course_id, media_id" constraintName="uni_ci_mi" tableName="course_media"/>
     </changeSet>
 </databaseChangeLog>

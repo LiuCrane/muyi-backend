@@ -16,8 +16,13 @@
             <column name="store_id" type="INT UNSIGNED" remarks="门店id">
                 <constraints nullable="false"/>
             </column>
-            <column name="parent_name" type="VARCHAR(128)" remarks="家长姓名"/>
-            <column name="parent_phone" type="VARCHAR(16)" remarks="家长电话"/>
+            <column name="parent_name" type="VARCHAR(128)" remarks="家长姓名">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_phone" type="VARCHAR(16)" remarks="家长电话">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="study_ended" type="TINYINT(3) UNSIGNED" remarks="课程学习结束，默认否"/>
             <column defaultValueNumeric="1" name="active" type="TINYINT(3) UNSIGNED"/>
             <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
             <column name="created_by" type="VARCHAR(255)"/>
@@ -29,6 +34,9 @@
         </createIndex>
         <createIndex indexName="idx_active" tableName="student">
             <column name="active"/>
+        </createIndex>
+        <createIndex indexName="idx_study_ended" tableName="student">
+            <column name="study_ended"/>
         </createIndex>
         <createIndex tableName="student" indexName="idx_created_at">
             <column name="created_at"/>
@@ -77,7 +85,7 @@
             <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
             <column name="created_by" type="VARCHAR(255)"/>
         </createTable>
-        <addUniqueConstraint tableName="student_sign_in" columnNames="class_course_id,student_id"/>
+        <addUniqueConstraint tableName="student_sign_in" constraintName="uni_cci_si" columnNames="class_course_id,student_id"/>
         <addForeignKeyConstraint baseColumnNames="class_course_id" baseTableName="student_sign_in" constraintName="fk_csi_class_course_id"
                                  deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="CASCADE"

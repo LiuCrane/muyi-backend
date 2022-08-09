@@ -89,7 +89,7 @@
                                  deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
                                  referencedTableName="role" validate="true"/>
-        <addUniqueConstraint tableName="user_role" columnNames="user_id, role_id"/>
+        <addUniqueConstraint tableName="user_role" constraintName="uni_ui_ri" columnNames="user_id, role_id"/>
     </changeSet>
     <changeSet id="init user_role" author="Ivan Su">
         <sql>

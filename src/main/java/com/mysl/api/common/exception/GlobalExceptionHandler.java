@@ -4,6 +4,7 @@ import com.mysl.api.common.lang.ResponseData;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,8 +40,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseData httpMessageNotReadableHandler(HttpMessageNotReadableException e) {
+    public ResponseData httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException e) {
         return ResponseData.generator(HttpStatus.BAD_REQUEST.value(), "请求内容为空", null);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseData httpRequestMethodNotSupportedExceptionHandler(HttpRequestMethodNotSupportedException e) {
+        return ResponseData.generator(HttpStatus.METHOD_NOT_ALLOWED.value(), "请求方式错误", null);
     }
 
 }

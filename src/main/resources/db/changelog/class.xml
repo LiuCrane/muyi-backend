@@ -9,7 +9,12 @@
             <column autoIncrement="true" name="id" type="INT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="name" type="VARCHAR(128)" remarks="班级名称"/>
+            <column name="name" type="VARCHAR(128)" remarks="班级名称">
+                <constraints nullable="false"/>
+            </column>
+            <column name="teacher" type="VARCHAR(128)" remarks="老师">
+                <constraints nullable="false"/>
+            </column>
             <column name="store_id" type="INT UNSIGNED" remarks="门店id">
                 <constraints nullable="false"/>
             </column>
@@ -47,7 +52,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="status" type="VARCHAR(16)"
-                    remarks="状态(APPLICABLE:可申请的,UN_APPLICABLE:不可申请,UNDER_APPLICATION:申请中,ACCESSIBLE:可进入课程的,COMPLETED:已完成)">
+                    remarks="状态(APPLICABLE:可申请,UN_APPLICABLE:不可申请,UNDER_APPLICATION:申请中,ACCESSIBLE:可进入课程,COMPLETED:已完成)">
                 <constraints nullable="false"/>
             </column>
             <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
@@ -55,7 +60,7 @@
             <column defaultValueComputed="NULL" name="updated_at" type="datetime"/>
             <column name="updated_by" type="VARCHAR(255)"/>
         </createTable>
-        <addUniqueConstraint tableName="class_course" columnNames="class_id,course_id"/>
+        <addUniqueConstraint tableName="class_course" constraintName="uni_ci_ci" columnNames="class_id,course_id"/>
         <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="class_course" constraintName="fk_cc_class_id"
                                  deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="CASCADE"
@@ -65,5 +70,32 @@
                                  deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="course" validate="true"/>
+    </changeSet>
+
+    <changeSet id="class_course_media" author="Ivan Su">
+        <createTable tableName="class_course_media">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="class_course_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="media_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="player_event" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="class_course_id" baseTableName="class_course_media"
+                                 constraintName="fk_ccm_class_course_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="class_course" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="media_id" baseTableName="class_course_media"
+                                 constraintName="fk_ccm_media_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="media" validate="true"/>
     </changeSet>
 </databaseChangeLog>

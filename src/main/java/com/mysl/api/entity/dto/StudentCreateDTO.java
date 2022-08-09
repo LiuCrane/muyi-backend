@@ -1,5 +1,6 @@
 package com.mysl.api.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -21,25 +22,23 @@ public class StudentCreateDTO implements Serializable {
     @NotEmpty(message = "学员姓名不能为空")
     private String name;
 
-    @ApiModelProperty("学员年龄")
-    @NotEmpty(message = "学员年龄不能为空")
-    private Integer age;
+    @ApiModelProperty("家长姓名")
+    @NotEmpty(message = "家长姓名不能为空")
+    @JsonProperty("parent_name")
+    private String parentName;
 
-    @ApiModelProperty("监护人姓名")
-    @NotEmpty(message = "监护人姓名不能为空")
-    private String guardianName;
+    @ApiModelProperty("家长手机号")
+    @NotEmpty(message = "家长手机号不能为空")
+    @Pattern(regexp = "^(1[0-9])\\d{9}$", message = "家长手机号格式不正确")
+    @JsonProperty("parent_phone")
+    private String parentPhone;
 
-    @ApiModelProperty("监护人手机号")
-    @NotEmpty(message = "监护人手机号不能为空")
-    @Pattern(regexp = "^(1[0-9])\\d{9}$", message = "监护人手机号格式不正确")
-    private String guardianPhone;
+    @ApiModelProperty("视力度数")
+    @NotEmpty(message = "视力度数不能为空")
+    private String diopter;
 
-    @ApiModelProperty("左眼视力")
-    @NotEmpty(message = "左眼视力不能为空")
-    private String leftEyeVision;
-
-    @ApiModelProperty("右眼视力")
-    @NotEmpty(message = "右眼视力不能为空")
-    private String rightEyeVision;
+    @ApiModelProperty("班级id")
+    @NotEmpty(message = "班级不能为空")
+    private Long classId;
 
 }

@@ -1,9 +1,13 @@
 package com.mysl.api.entity.dto;
 
-import com.mysl.api.entity.enums.LearnStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mysl.api.entity.enums.StudyProgress;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Ivan Su
@@ -11,28 +15,34 @@ import lombok.Data;
  */
 @ApiModel("学员信息")
 @Data
-public class StudentDTO extends StudentCreateDTO {
+public class StudentDTO implements Serializable {
     private static final long serialVersionUID = 8604484928944979080L;
 
     @ApiModelProperty("学员id")
     private Long id;
 
-//    @ApiModelProperty("学习课程id")
-//    private Long learnCourseId;
+    @ApiModelProperty("所在班级")
+    @JsonProperty("class_name")
+    private String className;
 
-    @ApiModelProperty("学习课程")
-    private String learnCourse;
+    @ApiModelProperty("家长姓名")
+    @JsonProperty("parent_name")
+    private String parentName;
 
-    @ApiModelProperty("学习阶段id")
-    private Long learnStageId;
+    @ApiModelProperty("家长手机号")
+    @JsonProperty("parent_phone")
+    private String parentPhone;
 
-    @ApiModelProperty("学习阶段")
-    private String learnStage;
+    @ApiModelProperty("近3次视力")
+    private List<String> diopters;
 
-//    @ApiModelProperty("学习时长")
-//    private String learnTime;
+    @ApiModelProperty("视力是否提升")
+    private Boolean improved;
 
     @ApiModelProperty("学习阶段状态")
-    private LearnStatus stageStatus;
+    private StudyProgress stageStatus;
+
+    @ApiModelProperty("当前课程")
+    private String currentCourse;
 
 }

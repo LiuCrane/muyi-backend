@@ -1,12 +1,12 @@
 package com.mysl.api.entity.enums;
 
 /**
- * 学习状态
+ * 学习进度
  * @author Ivan Su
  * @date 2022/8/5
  */
-public enum LearnStatus {
+public enum StudyProgress {
     NOT_STARTED,
-    LEARNING,
-    FINISHED
+    IN_PROGRESS,
+    ENDED
 }
