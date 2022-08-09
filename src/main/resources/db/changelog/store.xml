@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet id="store" author="Ivan Su">
+        <createTable tableName="store" remarks="门店">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(128)" remarks="门店名称"/>
+            <column name="number" type="VARCHAR(16)" remarks="门店编号">
+                <constraints unique="true"/>
+            </column>
+            <column name="manager_user_id" type="INT UNSIGNED" remarks="店长用户id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="manager_id_card_num" type="VARCHAR(32)" remarks="店长身份证号码">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="address" type="VARCHAR(255)" remarks="门店地址"/>
+            <column name="lat" type="VARCHAR(16)" remarks="门店纬度">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lng" type="VARCHAR(16)" remarks="门店经度">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(16)" defaultValue="SUBMITTED" remarks="状态(SUBMITTED:已提交,REJECTED:审核拒绝,APPROVED:审核通过)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="1" name="active" type="TINYINT(3) UNSIGNED"/>
+            <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="updated_at" type="datetime"/>
+            <column name="updated_by" type="VARCHAR(255)"/>
+        </createTable>
+        <createIndex indexName="idx_name" tableName="store">
+            <column name="name"/>
+        </createIndex>
+        <createIndex indexName="idx_number" tableName="store">
+            <column name="number"/>
+        </createIndex>
+        <createIndex indexName="idx_active" tableName="store">
+            <column name="active"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="manager_user_id" baseTableName="store" constraintName="fk_store_manager_user_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="user" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
