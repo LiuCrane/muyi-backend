@@ -1,6 +1,7 @@
 package com.mysl.api.controller.app;
 
 import com.mysl.api.common.lang.ResponseData;
+import com.mysl.api.entity.dto.ClassCreateDTO;
 import com.mysl.api.entity.dto.ClassDTO;
 import com.mysl.api.entity.dto.CourseDTO;
 import com.mysl.api.entity.dto.StudentSimpleDTO;
@@ -24,6 +25,12 @@ public class ClassController {
     @ApiOperation("查询班级列表")
     @GetMapping
     public ResponseData<List<ClassDTO>> list() {
+        return ResponseData.ok();
+    }
+
+    @ApiOperation("创建班级")
+    @PostMapping
+    public ResponseData create(@RequestBody ClassCreateDTO dto) {
         return ResponseData.ok();
     }
 
