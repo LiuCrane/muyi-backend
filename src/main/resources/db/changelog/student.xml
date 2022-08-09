@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet id="student" author="Ivan Su">
+        <createTable tableName="student" remarks="学员">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(128)" remarks="学员名称"/>
+            <column name="class_id" type="INT UNSIGNED" remarks="班级id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="store_id" type="INT UNSIGNED" remarks="门店id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_name" type="VARCHAR(128)" remarks="家长姓名"/>
+            <column name="parent_phone" type="VARCHAR(16)" remarks="家长电话"/>
+            <column defaultValueNumeric="1" name="active" type="TINYINT(3) UNSIGNED"/>
+            <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="updated_at" type="datetime"/>
+            <column name="updated_by" type="VARCHAR(255)"/>
+        </createTable>
+        <createIndex indexName="idx_name" tableName="student">
+            <column name="name"/>
+        </createIndex>
+        <createIndex indexName="idx_active" tableName="student">
+            <column name="active"/>
+        </createIndex>
+        <createIndex tableName="student" indexName="idx_created_at">
+            <column name="created_at"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="student" constraintName="fk_student_class_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="class" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="store_id" baseTableName="class" constraintName="fk_student_store_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="store" validate="true"/>
+    </changeSet>
+
+    <changeSet id="student_eyesight" author="Ivan Su">
+        <createTable tableName="student_eyesight" remarks="学员视力">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="student_id" type="INT UNSIGNED" remarks="学员id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="diopter" type="VARCHAR(32)" remarks="视力度数"/>
+            <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="updated_at" type="datetime"/>
+            <column name="updated_by" type="VARCHAR(255)"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_eyesight" constraintName="fk_student_eyesight_student_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="student" validate="true"/>
+    </changeSet>
+
+    <changeSet id="student_sign_in" author="Ivan Su">
+        <createTable tableName="student_sign_in">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="student_id" type="INT UNSIGNED" remarks="学员id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="class_course_id" type="INT UNSIGNED" remarks="班级课程id">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+        </createTable>
+        <addUniqueConstraint tableName="student_sign_in" columnNames="class_course_id,student_id"/>
+        <addForeignKeyConstraint baseColumnNames="class_course_id" baseTableName="student_sign_in" constraintName="fk_csi_class_course_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="class_course" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_sign_in"
+                                 constraintName="fk_csi_student_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="student" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

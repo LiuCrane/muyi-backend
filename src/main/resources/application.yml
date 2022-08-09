@@ -24,6 +24,9 @@ spring:
     multipart:
       max-file-size: 1024MB
       max-request-size: 1024MB
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/master.xml
 springfox:
   documentation:
     swagger-ui:
