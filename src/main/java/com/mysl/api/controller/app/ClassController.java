@@ -8,6 +8,7 @@ import com.mysl.api.entity.dto.StudentSimpleDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,11 +21,13 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/app/classes")
+@Secured("ROLE_STORE_MANAGER")
 public class ClassController {
 
     @ApiOperation("查询班级列表")
     @GetMapping
     public ResponseData<List<ClassDTO>> list() {
+
         return ResponseData.ok();
     }
 
