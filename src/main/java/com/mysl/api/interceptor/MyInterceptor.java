@@ -1,13 +1,5 @@
 package com.mysl.api.interceptor;
 
-import cn.hutool.core.exceptions.ValidateException;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONException;
-import cn.hutool.json.JSONUtil;
-import cn.hutool.jwt.JWTException;
-import cn.hutool.jwt.JWTUtil;
-import cn.hutool.jwt.JWTValidator;
-import com.mysl.api.common.lang.Result;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -44,26 +36,6 @@ public class MyInterceptor implements HandlerInterceptor {
         response.setContentType("application/json;charset=UTF-8");
 //        String requestUri = request.getRequestURI();
 //        log.info("准备访问接口:" + requestUri);
-        // token 校验
-        String token = request.getHeader("Authorization");
-        if (StrUtil.isBlank(token)) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().print(JSONUtil.toJsonStr(Result.ret(HttpServletResponse.SC_BAD_REQUEST, "token不能为空")));
-            return false;
-        }
-
-        try {
-            if (!JWTUtil.verify(token, key.getBytes())) {
-                throw new ValidateException();
-            }
-            JWTValidator.of(token).validateDate();
-        } catch (JWTException | JSONException | ValidateException e) {
-            log.error("jwt verify error: ", e);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().print(JSONUtil.toJsonStr(Result.ret(HttpServletResponse.SC_UNAUTHORIZED, "token无效")));
-            return false;
-        }
-
         return true; // 放行所有接口
     }
 

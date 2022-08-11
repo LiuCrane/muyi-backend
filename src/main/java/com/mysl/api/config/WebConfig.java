@@ -131,11 +131,11 @@ public class WebConfig extends WebMvcConfigurationSupport {
         return v;
     };
 
-    @Override
-    protected void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(myInterceptor).addPathPatterns("/app/**")
-                .excludePathPatterns("/app/auth/login", "/app/user/register");
-    }
+//    @Override
+//    protected void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(myInterceptor).addPathPatterns("/app/**")
+//                .excludePathPatterns("/app/auth/login", "/app/user/register");
+//    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -144,10 +144,4 @@ public class WebConfig extends WebMvcConfigurationSupport {
                 .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
         super.addResourceHandlers(registry);
     }
-//
-//    @Override
-//    protected void addViewControllers(ViewControllerRegistry registry) {
-//        log.info("addViewControllers for swagger-ui");
-//        registry.addViewController("/swagger-ui").setViewName("forward:/swagger-ui/index.html");
-//    }
 }
