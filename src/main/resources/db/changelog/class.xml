@@ -6,7 +6,7 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
     <changeSet id="class" author="Ivan Su">
         <createTable tableName="class" remarks="班级">
-            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="name" type="VARCHAR(128)" remarks="班级名称">
@@ -15,7 +15,7 @@
             <column name="teacher" type="VARCHAR(128)" remarks="老师">
                 <constraints nullable="false"/>
             </column>
-            <column name="store_id" type="INT UNSIGNED" remarks="门店id">
+            <column name="store_id" type="BIGINT UNSIGNED" remarks="门店id">
                 <constraints nullable="false"/>
             </column>
             <column name="study_progress" type="VARCHAR(16)" defaultValue="NOT_STARTED"
@@ -46,13 +46,13 @@
 
     <changeSet id="class_course" author="Ivan Su">
         <createTable tableName="class_course" remarks="班级课程">
-            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="class_id" type="INT UNSIGNED" remarks="班级id">
+            <column name="class_id" type="BIGINT UNSIGNED" remarks="班级id">
                 <constraints nullable="false"/>
             </column>
-            <column name="course_id" type="INT UNSIGNED" remarks="课程id">
+            <column name="course_id" type="BIGINT UNSIGNED" remarks="课程id">
                 <constraints nullable="false"/>
             </column>
             <column name="status" type="VARCHAR(16)"
@@ -78,13 +78,13 @@
 
     <changeSet id="class_course_media" author="Ivan Su">
         <createTable tableName="class_course_media">
-            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="class_course_id" type="INT UNSIGNED">
+            <column name="class_course_id" type="BIGINT UNSIGNED">
                 <constraints nullable="false"/>
             </column>
-            <column name="media_id" type="INT UNSIGNED">
+            <column name="media_id" type="BIGINT UNSIGNED">
                 <constraints nullable="false"/>
             </column>
             <column name="player_event" type="VARCHAR(8)">

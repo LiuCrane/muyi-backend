@@ -6,14 +6,14 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
     <changeSet id="student" author="Ivan Su">
         <createTable tableName="student" remarks="学员">
-            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="name" type="VARCHAR(128)" remarks="学员名称"/>
-            <column name="class_id" type="INT UNSIGNED" remarks="班级id">
+            <column name="class_id" type="BIGINT UNSIGNED" remarks="班级id">
                 <constraints nullable="false"/>
             </column>
-            <column name="store_id" type="INT UNSIGNED" remarks="门店id">
+            <column name="store_id" type="BIGINT UNSIGNED" remarks="门店id">
                 <constraints nullable="false"/>
             </column>
             <column name="parent_name" type="VARCHAR(128)" remarks="家长姓名">
@@ -22,7 +22,7 @@
             <column name="parent_phone" type="VARCHAR(16)" remarks="家长电话">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValueNumeric="0" name="study_ended" type="TINYINT(3) UNSIGNED" remarks="课程学习结束，默认否"/>
+            <column defaultValueNumeric="0" name="rehab_training" type="TINYINT(3) UNSIGNED" remarks="复训，默认否"/>
             <column defaultValueNumeric="1" name="active" type="TINYINT(3) UNSIGNED"/>
             <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
             <column name="created_by" type="VARCHAR(255)"/>
@@ -34,9 +34,6 @@
         </createIndex>
         <createIndex indexName="idx_active" tableName="student">
             <column name="active"/>
-        </createIndex>
-        <createIndex indexName="idx_study_ended" tableName="student">
-            <column name="study_ended"/>
         </createIndex>
         <createIndex tableName="student" indexName="idx_created_at">
             <column name="created_at"/>
@@ -53,10 +50,10 @@
 
     <changeSet id="student_eyesight" author="Ivan Su">
         <createTable tableName="student_eyesight" remarks="学员视力">
-            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="student_id" type="INT UNSIGNED" remarks="学员id">
+            <column name="student_id" type="BIGINT UNSIGNED" remarks="学员id">
                 <constraints nullable="false"/>
             </column>
             <column name="diopter" type="VARCHAR(32)" remarks="视力度数"/>
@@ -73,13 +70,13 @@
 
     <changeSet id="student_sign_in" author="Ivan Su">
         <createTable tableName="student_sign_in">
-            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="student_id" type="INT UNSIGNED" remarks="学员id">
+            <column name="student_id" type="BIGINT UNSIGNED" remarks="学员id">
                 <constraints nullable="false"/>
             </column>
-            <column name="class_course_id" type="INT UNSIGNED" remarks="班级课程id">
+            <column name="class_course_id" type="BIGINT UNSIGNED" remarks="班级课程id">
                 <constraints nullable="false"/>
             </column>
             <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
@@ -97,10 +94,4 @@
                                  referencedColumnNames="id" referencedTableName="student" validate="true"/>
     </changeSet>
 
-    <changeSet id="remove study_ended column" author="Ivan Su">
-        <dropColumn tableName="student" columnName="study_ended" />
-        <addColumn tableName="student">
-            <column name="rehab_training" type="INT UNSIGNED" defaultValueNumeric="0" remarks="复训，默认否"/>
-        </addColumn>
-    </changeSet>
 </databaseChangeLog>

@@ -6,7 +6,7 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
     <changeSet id="user" author="Ivan Su">
         <createTable tableName="user" remarks="用户">
-            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="username" type="VARCHAR(128)" remarks="用户名">
@@ -49,7 +49,7 @@
 
     <changeSet id="role" author="Ivan Su">
         <createTable tableName="role">
-            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="name" type="VARCHAR(16)" remarks="角色名称">
@@ -74,10 +74,10 @@
 
     <changeSet id="user_role" author="Ivan Su">
         <createTable tableName="user_role">
-            <column name="user_id" type="INT UNSIGNED">
+            <column name="user_id" type="BIGINT UNSIGNED">
                 <constraints nullable="false"/>
             </column>
-            <column name="role_id" type="INT UNSIGNED">
+            <column name="role_id" type="BIGINT UNSIGNED">
                 <constraints nullable="false"/>
             </column>
         </createTable>

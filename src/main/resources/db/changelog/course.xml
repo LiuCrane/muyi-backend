@@ -6,7 +6,7 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
     <changeSet id="course" author="Ivan Su">
         <createTable tableName="course" remarks="课程">
-            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="title" type="VARCHAR(128)" remarks="标题">
@@ -33,10 +33,10 @@
 
     <changeSet id="course_media" author="Ivan Su">
         <createTable tableName="course_media" remarks="课程媒体">
-            <column name="course_id" type="INT UNSIGNED">
+            <column name="course_id" type="BIGINT UNSIGNED">
                 <constraints nullable="false"/>
             </column>
-            <column name="media_id" type="INT UNSIGNED">
+            <column name="media_id" type="BIGINT UNSIGNED">
                 <constraints nullable="false"/>
             </column>
         </createTable>
