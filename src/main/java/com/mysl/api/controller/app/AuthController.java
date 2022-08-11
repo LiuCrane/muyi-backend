@@ -1,14 +1,18 @@
 package com.mysl.api.controller.app;
 
-import cn.hutool.core.date.DateField;
-import cn.hutool.core.date.DateTime;
-import cn.hutool.jwt.JWT;
 import com.mysl.api.common.lang.ResponseData;
+import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.entity.dto.LoginReqDTO;
 import com.mysl.api.entity.dto.LoginResDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +32,11 @@ public class AuthController {
     @Value("${mysl.jwt.expiration}")
     private int expiration;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
     /**
      * 登录
      * @param req
@@ -38,12 +47,22 @@ public class AuthController {
     public ResponseData<LoginResDTO> login(@Validated @RequestBody LoginReqDTO req) {
         // find user
         // ...
-        String token = JWT.create()
-                .setPayload("id", 1L)
-                .setPayload("username", req.getUsername())
-                .setExpiresAt(DateTime.now().offsetNew(DateField.SECOND, expiration))
-                .setKey(key.getBytes()).sign();
-
+//        String token = JWT.create()
+//                .setPayload("id", 1L)
+//                .setPayload("username", req.getUsername())
+//                .setExpiresAt(DateTime.now().offsetNew(DateField.SECOND, expiration))
+//                .setKey(key.getBytes()).sign();
+//
+//        return ResponseData.ok(new LoginResDTO(token));
+        // 执行安全认证
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        req.getUsername(),
+                        req.getPassword()
+                ));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        final String token = jwtTokenUtil.generateToken(userDetails);
         return ResponseData.ok(new LoginResDTO(token));
     }
 
