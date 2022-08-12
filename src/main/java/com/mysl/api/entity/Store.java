@@ -40,6 +40,7 @@ public class Store extends Model<Store> {
     private Date createdAt;
     @TableField(fill = FieldFill.UPDATE)
     private String updatedBy;
+    @TableField(fill = FieldFill.UPDATE)
     private Date updatedAt;
 
 }

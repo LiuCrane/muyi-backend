@@ -1,7 +1,7 @@
 package com.mysl.api.common.exception;
 
 /**
- * service异常
+ * 业务异常
  */
 public class ServiceException extends RuntimeException {
 

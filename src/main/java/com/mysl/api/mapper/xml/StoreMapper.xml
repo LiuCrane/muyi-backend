@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mysl.api.mapper.StoreMapper">
+    <resultMap id="store" type="com.mysl.api.entity.Store">
+        <id column="id" property="id"/>
+        <id column="name" property="name"/>
+        <id column="number" property="number"/>
+        <id column="manager_user_id" property="managerUserId"/>
+        <id column="manager_id_card_num" property="managerIdCardNum"/>
+        <id column="address" property="address"/>
+        <id column="lat" property="lat"/>
+        <id column="lng" property="lng"/>
+        <id column="status" property="status"/>
+        <id column="active" property="active"/>
+        <id column="created_at" property="createdAt"/>
+        <id column="created_by" property="createdBy"/>
+        <id column="updated_at" property="updatedAt"/>
+        <id column="updated_by" property="updatedBy"/>
+    </resultMap>
+    <select id="findAll" resultType="com.mysl.api.entity.dto.StoreFullDTO">
+        SELECT
+        s.id, s.status, s.name, s.number, s.address, s.lat, s.lng,
+        u.name AS manager_name, u.phone AS manager_phone, s.manager_id_card_num, s.created_at,
+        s.created_by, s.updated_at, s.updated_by
+        FROM store s
+        LEFT JOIN user u ON s.manager_user_id = u.id
+        <where>
+            1 = 1
+            <if test="id != null">
+                AND s.id = #{id}
+            </if>
+            <if test="status != null">
+                AND s.status = #{status}
+            </if>
+        </where>
+        ORDER BY s.created_at DESC
+        <if test="offset != null and limit!= null">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </select>
+</mapper>

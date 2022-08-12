@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, MissingServletRequestParameterException.class})
-    public ResponseData requestParameterExceptionHandler(MethodArgumentTypeMismatchException e) {
+    public ResponseData requestParameterExceptionHandler(Exception e) {
         return ResponseData.generator(HttpStatus.BAD_REQUEST.value(), "参数格式错误", null);
     }
 
@@ -73,6 +73,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseData accessDeniedExceptionHandler(AccessDeniedException e) {
         return ResponseData.generator(HttpStatus.FORBIDDEN.value(), "无权限访问", null);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseData resourceNotFoundExceptionHandler(ResourceNotFoundException e) {
+        return ResponseData.generator(HttpStatus.NOT_FOUND.value(), e.getMessage(), null);
     }
 
 }

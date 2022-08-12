@@ -2,8 +2,10 @@ package com.mysl.api.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mysl.api.common.GlobalConstant;
 import com.mysl.api.common.exception.ServiceException;
 import com.mysl.api.entity.User;
+import com.mysl.api.entity.UserRole;
 import com.mysl.api.entity.dto.RegisterDTO;
 import com.mysl.api.entity.dto.StoreCreateDTO;
 import com.mysl.api.entity.enums.StoreStatus;
@@ -47,9 +49,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .username(dto.getPhone()).phone(dto.getPhone())
                 .password(password).name(dto.getName()).type(UserType.APP_USER).build();
         if (super.save(user)) {
-            // TODO 管理员审核通过后再授予店长权限
-//            UserRole userRole = UserRole.builder().userId(user.getId()).roleId(GlobalConstant.ROLE_STORE_MANAGER_ID).build();
-//            userRoleService.save(userRole);
+            // 管理员未审核前只有ROLE_APP_USER
+            UserRole userRole = UserRole.builder().userId(user.getId()).roleId(GlobalConstant.ROLE_APP_USER).build();
+            userRoleService.save(userRole);
 
             StoreCreateDTO storeCreateDTO = StoreCreateDTO.builder()
                     .name(dto.getStoreName()).address(dto.getStoreAddress())
