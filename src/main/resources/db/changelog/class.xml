@@ -102,4 +102,13 @@
                                  onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="media" validate="true"/>
     </changeSet>
+
+    <changeSet id="change fk for class_course_media" author="Banmiao Su">
+        <dropForeignKeyConstraint baseTableName="class_course_media" constraintName="fk_ccm_media_id"/>
+        <addForeignKeyConstraint baseColumnNames="media_id" baseTableName="class_course_media"
+                                 constraintName="fk_ccm_media_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="RESTRICT" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="media" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

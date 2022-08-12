@@ -52,4 +52,13 @@
                                  referencedTableName="media" validate="true"/>
         <addUniqueConstraint columnNames="course_id, media_id" constraintName="uni_ci_mi" tableName="course_media"/>
     </changeSet>
+
+    <changeSet id="change fk for course_media" author="Ivan Su">
+        <dropForeignKeyConstraint baseTableName="course_media" constraintName="fk_cm_media_id"/>
+        <addForeignKeyConstraint baseColumnNames="media_id" baseTableName="course_media"
+                                 constraintName="fk_cm_media_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+                                 referencedTableName="media" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

@@ -71,6 +71,11 @@
             VALUES (1, '后台管理员', 'ROLE_ADMIN'), (2, '店长', 'ROLE_STORE_MANAGER')
         </sql>
     </changeSet>
+    <changeSet id="add app user role" author="Ivan Su">
+        <sql>
+            INSERT INTO role(id, name, code) VALUES (3, 'App用户', 'ROLE_APP_USER')
+        </sql>
+    </changeSet>
 
     <changeSet id="user_role" author="Ivan Su">
         <createTable tableName="user_role">
