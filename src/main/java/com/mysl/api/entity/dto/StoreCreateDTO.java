@@ -26,4 +26,5 @@ public class StoreCreateDTO implements Serializable {
     private String lat;
     private String lng;
     private StoreStatus status;
+    private String createdBy;
 }

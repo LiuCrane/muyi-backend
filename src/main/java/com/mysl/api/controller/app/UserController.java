@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +44,7 @@ public class UserController {
      * @return
      */
     @ApiOperation("查询用户信息")
+    @Secured("ROLE_APP_USER")
     @GetMapping
     public ResponseData<UserDTO> getUserDetail(@ApiParam("用户token") @RequestHeader("Authorization") final String token) {
         UserDTO dto = JwtTokenUtil.getCurrentUser();
@@ -51,6 +53,7 @@ public class UserController {
     }
 
     @ApiOperation("更新用户信息")
+    @Secured("ROLE_APP_USER")
     @PutMapping
     public ResponseData updateUserInfo(@RequestBody UserUpdateDTO dto) {
         log.info("updateUserInfo dto: {}", dto);
@@ -58,6 +61,7 @@ public class UserController {
     }
 
     @ApiOperation("修改密码")
+    @Secured("ROLE_APP_USER")
     @PatchMapping
     public ResponseData updateUserPwd(@RequestBody UserPwdUpdateDTO dto) {
         return ResponseData.ok();

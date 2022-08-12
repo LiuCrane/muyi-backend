@@ -45,7 +45,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String password = passwordEncoder.encode(dto.getPassword());
         User user = User.builder()
                 .username(dto.getPhone()).phone(dto.getPhone())
-                .password(password).name(dto.getName()).type(UserType.STORE_MANAGER).build();
+                .password(password).name(dto.getName()).type(UserType.APP_USER).build();
         if (super.save(user)) {
             // TODO 管理员审核通过后再授予店长权限
 //            UserRole userRole = UserRole.builder().userId(user.getId()).roleId(GlobalConstant.ROLE_STORE_MANAGER_ID).build();
@@ -55,7 +55,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                     .name(dto.getStoreName()).address(dto.getStoreAddress())
                     .lat(dto.getStoreLat()).lng(dto.getStoreLng())
                     .managerUserId(user.getId()).managerIdCardNum(dto.getIdCardNum())
-                    .status(StoreStatus.SUBMITTED).build();
+                    .status(StoreStatus.SUBMITTED).createdBy(user.getUsername()).build();
             if (!storeService.save(storeCreateDTO)) {
                 throw new ServiceException("注册失败");
             }

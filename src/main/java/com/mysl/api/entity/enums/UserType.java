@@ -5,5 +5,5 @@ package com.mysl.api.entity.enums;
  * @date 2022/8/9
  */
 public enum UserType {
-    BACKEND_USER, STORE_MANAGER
+    BACKEND_USER, APP_USER
 }
