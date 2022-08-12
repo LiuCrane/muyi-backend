@@ -32,7 +32,7 @@ springfox:
     swagger-ui:
       enabled: false
 mybatis-plus:
-  mapper-locations: classpath*:/mapper/**Mapper.xml
+  mapper-locations: com/mysl/api/mapper/xml/*.xml
   global-config:
     banner: false
   configuration:
