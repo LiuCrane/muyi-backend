@@ -3,11 +3,13 @@ package com.mysl.api.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mysl.api.common.GlobalConstant;
+import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.exception.ServiceException;
 import com.mysl.api.entity.User;
 import com.mysl.api.entity.UserRole;
 import com.mysl.api.entity.dto.RegisterDTO;
 import com.mysl.api.entity.dto.StoreCreateDTO;
+import com.mysl.api.entity.dto.UserPwdUpdateDTO;
 import com.mysl.api.entity.enums.StoreStatus;
 import com.mysl.api.entity.enums.UserType;
 import com.mysl.api.mapper.UserMapper;
@@ -63,5 +65,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean updatePassword(Long id, UserPwdUpdateDTO dto) {
+        User user = super.getById(id);
+        if (user == null) {
+            throw new ResourceNotFoundException("用户不存在");
+        }
+        if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
+            throw new ServiceException("旧密码错误");
+        }
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        return super.updateById(user);
     }
 }

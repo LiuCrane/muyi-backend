@@ -3,6 +3,7 @@ package com.mysl.api.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mysl.api.entity.User;
 import com.mysl.api.entity.dto.RegisterDTO;
+import com.mysl.api.entity.dto.UserPwdUpdateDTO;
 
 /**
  * @author Ivan Su
@@ -13,5 +14,7 @@ public interface UserService extends IService<User> {
     User findByUsername(String username);
 
     boolean register(RegisterDTO dto);
+
+    boolean updatePassword(Long id, UserPwdUpdateDTO dto);
 
 }
