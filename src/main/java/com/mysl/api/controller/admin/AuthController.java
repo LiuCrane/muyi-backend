@@ -1,4 +1,4 @@
-package com.mysl.api.controller.app;
+package com.mysl.api.controller.admin;
 
 import com.mysl.api.common.GlobalConstant;
 import com.mysl.api.common.lang.ResponseData;
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.*;
  * @date 2022/7/27
  */
 @Api(tags = "用户认证接口")
-@RestController
-@RequestMapping("/app/auth")
+@RestController("adminAuthController")
+@RequestMapping("/admin/auth")
 public class AuthController extends AbstractAuthController {
 
     /**
@@ -29,12 +29,12 @@ public class AuthController extends AbstractAuthController {
     @ApiOperation(value = "登录")
     @PostMapping("/login")
     public ResponseData<LoginResDTO> login(@Validated @RequestBody LoginReqDTO req) {
-        final String token = super.authenticate(GlobalConstant.CLIENT_APP, req.getUsername(), req.getPassword());
+        final String token = super.authenticate(GlobalConstant.CLIENT_ADMIN, req.getUsername(), req.getPassword());
         return ResponseData.ok(new LoginResDTO(token));
     }
 
     @ApiOperation("退出登录")
-    @Secured("ROLE_APP_USER")
+    @Secured("ROLE_ADMIN")
     @PostMapping("/logout")
     public ResponseData logout(@RequestHeader("Authorization") final String token) {
         super.signOut(token);

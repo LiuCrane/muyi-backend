@@ -10,4 +10,7 @@ public abstract class GlobalConstant {
     public static final Long ROLE_ADMIN_ID = 1L;
     /** 店长角色id */
     public static final Long ROLE_STORE_MANAGER_ID = 2L;
+
+    public static final String CLIENT_ADMIN = "admin";
+    public static final String CLIENT_APP = "app";
 }
