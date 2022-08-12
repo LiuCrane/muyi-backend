@@ -1,10 +1,10 @@
 package com.mysl.api.config.security;
 
+import com.mysl.api.service.JwtBlacklistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -26,13 +26,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@Order(1)
-public class AppSecurityConfiguration {
+public class SpringSecurityConfiguration {
 
     @Autowired
     private UserDetailsService userDetailsService;
     @Value("${mysl.jwt.header:Authorization}")
     private String tokenHeader;
+    @Autowired
+    private JwtBlacklistService jwtBlacklistService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -66,13 +67,14 @@ public class AppSecurityConfiguration {
                 // 异常处理
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint()).and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/app/auth/login", "/app/user/register").permitAll()
+                .antMatchers(HttpMethod.POST, "/app/auth/login", "/app/user/register", "/admin/auth/login").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
         JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter = new JwtAuthenticationTokenFilter(
                 userDetailsService,
                 jwtTokenUtil(),
-                tokenHeader
+                tokenHeader,
+                jwtBlacklistService
         );
         // 基于定制JWT安全过滤器
         httpSecurity.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);

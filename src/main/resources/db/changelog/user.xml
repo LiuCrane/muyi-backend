@@ -101,4 +101,24 @@
             INSERT INTO user_role(user_id, role_id) VALUE (1, 1)
         </sql>
     </changeSet>
+    
+    <changeSet id="jwt_blacklist" author="Banmiao Su">
+        <createTable tableName="jwt_blacklist">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="token" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiration_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="jwt_blacklist" indexName="idx_token">
+            <column name="token"/>
+        </createIndex>
+        <createIndex tableName="jwt_blacklist" indexName="idx_et">
+            <column name="expiration_time"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

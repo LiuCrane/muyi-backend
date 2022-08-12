@@ -18,6 +18,8 @@ import java.nio.charset.StandardCharsets;
  */
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
 
+    private static final long serialVersionUID = 6118133956943931491L;
+
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,

@@ -40,7 +40,7 @@ public class JwtTokenUtil implements Serializable {
     /**
      * header key
      **/
-    @Value("${jwt.header:Authorization}")
+    @Value("${mysl.jwt.header:Authorization}")
     private String tokenHeaderKey;
 
     public String getUsernameFromToken(String token) {

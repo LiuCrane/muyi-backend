@@ -1,18 +1,11 @@
 package com.mysl.api.controller.app;
 
 import com.mysl.api.common.lang.ResponseData;
-import com.mysl.api.config.security.JwtTokenUtil;
+import com.mysl.api.controller.AbstractAuthController;
 import com.mysl.api.entity.dto.LoginReqDTO;
 import com.mysl.api.entity.dto.LoginResDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,18 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = "用户认证接口")
 @RestController
 @RequestMapping("/app/auth")
-public class AuthController {
-
-    @Value("${mysl.jwt.key}")
-    private String key;
-
-    @Value("${mysl.jwt.expiration}")
-    private int expiration;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+public class AuthController extends AbstractAuthController {
 
     /**
      * 登录
@@ -45,31 +27,14 @@ public class AuthController {
     @ApiOperation(value = "登录")
     @PostMapping("/login")
     public ResponseData<LoginResDTO> login(@Validated @RequestBody LoginReqDTO req) {
-        // find user
-        // ...
-//        String token = JWT.create()
-//                .setPayload("id", 1L)
-//                .setPayload("username", req.getUsername())
-//                .setExpiresAt(DateTime.now().offsetNew(DateField.SECOND, expiration))
-//                .setKey(key.getBytes()).sign();
-//
-//        return ResponseData.ok(new LoginResDTO(token));
-        // 执行安全认证
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        req.getUsername(),
-                        req.getPassword()
-                ));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        final String token = jwtTokenUtil.generateToken(userDetails);
+        final String token = super.authenticate(req.getUsername(), req.getPassword());
         return ResponseData.ok(new LoginResDTO(token));
     }
 
     @ApiOperation("退出登录")
     @PostMapping("/logout")
     public ResponseData logout(@RequestHeader("Authorization") final String token) {
-        // remove jwt token
+        super.signOut(token);
         return ResponseData.ok();
     }
 }
