@@ -22,6 +22,9 @@ public class ClassDTO implements Serializable {
     @ApiModelProperty("班级名称")
     private String name;
 
+    @ApiModelProperty("老师")
+    private String teacher;
+
     @ApiModelProperty("门店名称")
     @JsonProperty("store_name")
     private String storeName;

@@ -43,6 +43,9 @@
         <setColumnRemarks tableName="class" columnName="study_progress" columnDataType="VARCHAR(16)"
                           remarks="学习进度(NOT_STARTED:未开始,IN_PROGRESS:进行中,REHAB_TRAINING:复训中,ENDED:已结束)"/>
     </changeSet>
+    <changeSet id="set default value for study_progress" author="Ivan Su">
+        <addDefaultValue tableName="class" columnName="study_progress" defaultValue="NOT_STARTED"/>
+    </changeSet>
 
     <changeSet id="class_course" author="Ivan Su">
         <createTable tableName="class_course" remarks="班级课程">
@@ -103,7 +106,7 @@
                                  referencedColumnNames="id" referencedTableName="media" validate="true"/>
     </changeSet>
 
-    <changeSet id="change fk for class_course_media" author="Banmiao Su">
+    <changeSet id="change fk for class_course_media" author="Ivan Su">
         <dropForeignKeyConstraint baseTableName="class_course_media" constraintName="fk_ccm_media_id"/>
         <addForeignKeyConstraint baseColumnNames="media_id" baseTableName="class_course_media"
                                  constraintName="fk_ccm_media_id"

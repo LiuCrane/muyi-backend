@@ -46,7 +46,7 @@
             'BACKEND_USER')
         </sql>
     </changeSet>
-    <changeSet id="change type field's remark" author="Banmiao Su">
+    <changeSet id="change type field's remark" author="Ivan Su">
         <setColumnRemarks tableName="user" columnName="type" columnDataType="VARCHAR(16)"
                           remarks="用户类型(BACKEND_USER:后台用户,APP_USER:App用户)"/>
     </changeSet>
@@ -106,7 +106,7 @@
         </sql>
     </changeSet>
     
-    <changeSet id="jwt_blacklist" author="Banmiao Su">
+    <changeSet id="jwt_blacklist" author="Ivan Su">
         <createTable tableName="jwt_blacklist">
             <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>

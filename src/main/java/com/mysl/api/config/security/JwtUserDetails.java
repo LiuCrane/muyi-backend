@@ -21,9 +21,11 @@ public class JwtUserDetails implements UserDetails {
 
     private static final long serialVersionUID = -5377593669019016119L;
     private User user;
+    private Long storeId;
 
-    public JwtUserDetails(User user) {
+    public JwtUserDetails(User user, Long storeId) {
         this.user = user;
+        this.storeId = storeId;
     }
 
     @Override

@@ -160,4 +160,12 @@ public class JwtTokenUtil implements Serializable {
         return getCurrentUser().getUsername();
     }
 
+    public static Long getCurrentStoreId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (Objects.nonNull(authentication)) {
+            return ((JwtUserDetails) authentication.getPrincipal()).getStoreId();
+        }
+        return null;
+    }
+
 }

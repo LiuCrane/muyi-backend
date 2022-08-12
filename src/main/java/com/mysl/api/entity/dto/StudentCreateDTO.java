@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
@@ -38,7 +39,7 @@ public class StudentCreateDTO implements Serializable {
     private String diopter;
 
     @ApiModelProperty("班级id")
-    @NotEmpty(message = "班级不能为空")
+    @NotNull(message = "班级不能为空")
     private Long classId;
 
 }

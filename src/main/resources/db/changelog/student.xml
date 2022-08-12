@@ -47,6 +47,9 @@
                                  onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="store" validate="true"/>
     </changeSet>
+    <changeSet id="set default value for rehab" author="Ivan Su">
+        <addDefaultValue tableName="student" columnName="rehab_training" defaultValue="0"/>
+    </changeSet>
 
     <changeSet id="student_eyesight" author="Ivan Su">
         <createTable tableName="student_eyesight" remarks="学员视力">

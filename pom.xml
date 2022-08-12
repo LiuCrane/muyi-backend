@@ -133,6 +133,13 @@
       <version>5.8.5</version>
     </dependency>
 
+    <!-- hutool core -->
+    <dependency>
+      <groupId>cn.hutool</groupId>
+      <artifactId>hutool-extra</artifactId>
+      <version>5.8.5</version>
+    </dependency>
+
     <!-- 参数规则校验 -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -170,6 +177,14 @@
       <version>0.9.1</version>
     </dependency>
 
+    <!-- 引入 Cglib -->
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>3.3.0</version>
+      <scope>compile</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -191,6 +206,18 @@
         </configuration>
       </plugin>
     </plugins>
+
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.xml</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
   </build>
 
 </project>

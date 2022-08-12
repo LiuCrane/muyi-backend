@@ -22,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User extends Model<User> {
+public class User extends BaseModel<User> {
 
     private static final long serialVersionUID = 3907908947846019384L;
     @TableId(type = IdType.AUTO)
