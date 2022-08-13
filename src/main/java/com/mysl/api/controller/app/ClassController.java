@@ -96,4 +96,11 @@ public class ClassController {
     public ResponseData apply(@PathVariable("class_id") Long classId, @PathVariable Long id) {
         return ResponseData.ok();
     }
+
+    @ApiOperation("查询课程内媒体列表")
+    @GetMapping("/{class_id}/courses/{course_id}/media")
+    public ResponseData<List<MediaDTO>> getMedia(@PathVariable("class_id") Long classId, @PathVariable Long courseId) {
+        return ResponseData.ok();
+    }
+
 }

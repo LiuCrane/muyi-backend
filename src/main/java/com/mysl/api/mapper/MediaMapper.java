@@ -1,34 +1,22 @@
 package com.mysl.api.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mysl.api.entity.Media;
-
-import org.apache.ibatis.annotations.Select;
+import com.mysl.api.entity.dto.MediaDTO;
+import com.mysl.api.entity.enums.MediaType;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-
 /**
- * <p>
- * 媒体库 Mapper 接口
- * </p>
- *
- * @author mac-xiang
- * @since 2021-05-16
+ * @author Ivan Su
+ * @date 2022/8/13
  */
 public interface MediaMapper extends BaseMapper<Media> {
-  @Select("SELECT `media`.* FROM `have_media` RIGHT JOIN `media` ON `have_media`.`media`=`media`.`id` WHERE `have_media`.`user`=#{userId} ORDER BY `media`.`sort` DESC , `media`.`change_time` DESC LIMIT #{start},10")
-  List<Media> getByUser(long userId, int start);
 
-  @Select("SELECT `media`.* FROM `have_media` RIGHT JOIN `media` ON `have_media`.`media`=`media`.`id` WHERE `have_media`.`user`=#{userId} AND `media`.`type`='#{type}' ORDER BY `media`.`sort` DESC , `media`.`change_time` DESC LIMIT #{start},10")
-  List<Media> getByUserType(long userId, String type, int start);
-
-  @Select("SELECT * FROM `media` WHERE `type`='${type}' ORDER BY `media`.`sort` DESC , `media`.`change_time` DESC LIMIT #{start},10")
-  List<Media> getByType(String type, int start);
-
-  @Select("SELECT * FROM `media` ORDER BY `media`.`sort` DESC , `media`.`change_time` DESC LIMIT #{start},10")
-  List<Media> getAll(int start);
-
-  @Select("SELECT DISTINCT `type` FROM `media`")
-  List<Media> getTypes();
+    List<MediaDTO> findAll(@Param("offset") Integer offset,
+                           @Param("limit") Integer limit,
+                           @Param("id") Long id,
+                           @Param("type") MediaType type,
+                           @Param("publicly") Boolean publicly);
 }

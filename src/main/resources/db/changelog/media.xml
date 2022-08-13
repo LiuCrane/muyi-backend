@@ -41,4 +41,9 @@
             <column name="created_at"/>
         </createIndex>
     </changeSet>
+    <changeSet id="change public to publicly" author="Ivan Su">
+        <renameColumn tableName="media" oldColumnName="public" newColumnName="publicly"
+        columnDataType="TINYINT(3) UNSIGNED"  remarks="是否公开的，默认否"/>
+        <addDefaultValue tableName="media" columnName="publicly" defaultValue="0"/>
+    </changeSet>
 </databaseChangeLog>

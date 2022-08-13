@@ -1,14 +1,17 @@
 package com.mysl.api.controller.app;
 
-import cn.hutool.core.collection.ListUtil;
 import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.entity.dto.MediaDTO;
+import com.mysl.api.entity.dto.PlayerEventDTO;
+import com.mysl.api.entity.enums.MediaType;
+import com.mysl.api.service.MediaService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 /**
@@ -22,68 +25,53 @@ import java.util.List;
 @Secured("ROLE_STORE_MANAGER")
 public class MediaController {
 
-    /**
-     * 查询媒体列表
-     *
-     * @param offset
-     * @param limit
-     * @param type
-     * @return
-     */
-    @ApiOperation("查询媒体列表")
+    @Autowired
+    MediaService mediaService;
+
+    @ApiOperation("查询媒体列表（App首页导学媒体）")
     @GetMapping
     public ResponseData<List<MediaDTO>> list(@ApiParam(value = "默认 0")
-                                             @RequestParam(defaultValue = "0") int offset,
-                                             @ApiParam(value = "默认 20")
-                                             @RequestParam(defaultValue = "20") int limit,
+                                             @RequestParam(defaultValue = "0", required = false) Integer offset,
+                                             @ApiParam(value = "默认 5")
+                                             @RequestParam(defaultValue = "5", required = false) Integer limit,
                                              @ApiParam(value = "媒体类型(AUDIO:音频, VIDEO:视频)")
-                                             @RequestParam(required = false) String type,
-                                             @ApiParam(value = "课程id")
-                                             @RequestParam(value = "course_id", required = false) Long classCourseId,
-                                             @ApiParam(value = "是否公开(true:是, false:否)")
-                                             @RequestParam(value = "public", required = false) String isPublic) {
-        log.info("get media list, offset: {}, limit: {}, type: {}, classCourseId: {}, isPublic: {}", offset, limit, type, classCourseId, isPublic);
-        List<MediaDTO> list = ListUtil.of(
-                MediaDTO.builder().id(1L).title("视力提高3行 就是这么神奇")
-                        .type("AUDIO")
-                        .img("https://mysl.tianyuekeji.ltd/upload/img/1447033719652114433.png")
-                        .description("视力提高")
-                        .url("http://npcjvxut.test.com/sxpa")
-                        .createdAt("2022-06-18 05:55:14").build(),
-                MediaDTO.builder().title("告别近视必须看这一段")
-                        .type("VIDEO")
-                        .img("https://mysl.tianyuekeji.ltd/upload/img/1435853275845902337.jpg")
-                        .description("必看")
-                        .url("http://rsvdq.mq/sdmcqwed")
-                        .createdAt("2022-03-18 14:16:10").build()
-        );
-        return ResponseData.ok(list);
+                                             @RequestParam(required = false) MediaType type) {
+        log.info("get app media list, offset: {}, limit: {}, type: {}", offset, limit, type);
+//        List<MediaDTO> list = ListUtil.of(
+//                MediaDTO.builder().id(1L).title("视力提高3行 就是这么神奇")
+//                        .type("AUDIO")
+//                        .img("https://mysl.tianyuekeji.ltd/upload/img/1447033719652114433.png")
+//                        .description("视力提高")
+//                        .url("http://npcjvxut.test.com/sxpa")
+//                        .createdAt("2022-06-18 05:55:14").build(),
+//                MediaDTO.builder().title("告别近视必须看这一段")
+//                        .type("VIDEO")
+//                        .img("https://mysl.tianyuekeji.ltd/upload/img/1435853275845902337.jpg")
+//                        .description("必看")
+//                        .url("http://rsvdq.mq/sdmcqwed")
+//                        .createdAt("2022-03-18 14:16:10").build()
+//        );
+        return ResponseData.ok(mediaService.getMediaList(offset, limit, null, type, Boolean.TRUE));
     }
 
-    /**
-     * 查询媒体详情
-     *
-     * @param id
-     * @return
-     */
-    @ApiOperation("根据id查询媒体详情")
-    @GetMapping("/{id}")
-    public ResponseData<MediaDTO> get(@PathParam("id") Long id) {
-        log.info("get media by id: {}", id);
-        MediaDTO dto = MediaDTO.builder().id(2L).title("视力提高3行 就是这么神奇")
-                .type("AUDIO")
-                .img("https://mysl.tianyuekeji.ltd/upload/img/1447033719652114433.png")
-                .description("视力提高")
-                .url("http://npcjvxut.test.com/sxpa")
-                .createdAt("2022-06-18 05:55:14").build();
-        return ResponseData.ok(dto);
-    }
+//    @ApiOperation("根据id查询媒体详情")
+//    @GetMapping("/{id}")
+//    public ResponseData<MediaDTO> get(@PathParam("id") Long id) {
+//        log.info("get media by id: {}", id);
+//        MediaDTO dto = MediaDTO.builder().id(2L).title("视力提高3行 就是这么神奇")
+//                .type("AUDIO")
+//                .img("https://mysl.tianyuekeji.ltd/upload/img/1447033719652114433.png")
+//                .description("视力提高")
+//                .url("http://npcjvxut.test.com/sxpa")
+//                .createdAt("2022-06-18 05:55:14").build();
+//        return ResponseData.ok(dto);
+//    }
 
     @ApiOperation(value = "记录媒体播放操作", notes = "后台仅做记录，用于判断课程是否结束")
     @PostMapping("/{id}/player/{event}")
     public ResponseData savePlayerEvent(@ApiParam("媒体id") @PathVariable Long id,
-                                        @ApiParam("播放事件(START:开始, PAUSE:暂停, END:结束)") @PathVariable String event) {
-        log.info("media {} player event: {}", id, event);
+                                        @Validated @RequestBody PlayerEventDTO dto) {
+        log.info("media {} player event: {}", id, dto);
         return ResponseData.ok();
     }
 
