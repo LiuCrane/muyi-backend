@@ -11,10 +11,10 @@ import com.mysl.api.lib.AesFile;
 import com.mysl.api.lib.Permission;
 import com.mysl.api.service.Upload;
 import com.mysl.api.entity.HaveMedia;
-import com.mysl.api.entity.Media;
+import com.mysl.api.entity.MediaV1;
 import com.mysl.api.mapper.HaveMediaMapper;
-import com.mysl.api.mapper.MediaMapper;
-import com.mysl.api.service.MediaService;
+import com.mysl.api.mapper.MediaV1Mapper;
+import com.mysl.api.service.MediaV1Service;
 import com.mysl.api.service.UsersService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +29,10 @@ public class MediaController {
   UsersService usersService;
 
   @Autowired
-  MediaService mediaService;
+  MediaV1Service mediaV1Service;
 
   @Resource
-  MediaMapper mediaMapper;
+  MediaV1Mapper mediaV1Mapper;
 
   @Resource
   HaveMediaMapper haveMediaMapper;
@@ -51,14 +51,14 @@ public class MediaController {
     Permission per = usersService.getPerByJson(p);
     Long id = p.getLong("id");
     if (id != null && per.group == 0) {
-      Media data = new Media();
+      MediaV1 data = new MediaV1();
       data.setId(id);
       data.setState(p.getInteger("state"));
       data.setSort(p.getInteger("sort"));
       data.setTitle(p.getString("title"));
       data.setImg(p.getString("img"));
       data.setSimple(p.getString("simple"));
-      return mediaService.updateById(data) ? Result.ret(data) : Result.ret(501, "服务器错误,请重试");
+      return mediaV1Service.updateById(data) ? Result.ret(data) : Result.ret(501, "服务器错误,请重试");
     }
     return Result.ret(101, "没有权限");
   }
@@ -84,7 +84,7 @@ public class MediaController {
       if (page < 0) {
         page = 0;
       }
-      QueryWrapper<Media> q = new QueryWrapper<>();
+      QueryWrapper<MediaV1> q = new QueryWrapper<>();
       if (id != 0) {
         q.eq("id", id);
       }
@@ -100,7 +100,7 @@ public class MediaController {
       if (simple != null) {
         q.like("simple", simple);
       }
-      return Result.ret(page == 0 ? mediaMapper.selectList(q) : mediaMapper.selectPage(new Page<Media>(page, size), q));
+      return Result.ret(page == 0 ? mediaV1Mapper.selectList(q) : mediaV1Mapper.selectPage(new Page<MediaV1>(page, size), q));
     }
     return Result.ret(101, "没有权限");
   }
@@ -111,9 +111,9 @@ public class MediaController {
     Permission per = usersService.getPerByJson(p);
     Long id = p.getLong("id");
     if (id != null && per.node(0, 1 << (4 + 3))) {
-      QueryWrapper<Media> q = new QueryWrapper<>();
+      QueryWrapper<MediaV1> q = new QueryWrapper<>();
       q.eq("id", id);
-      int r = mediaMapper.delete(q);
+      int r = mediaV1Mapper.delete(q);
       if (r > 0) {
         String path = "crypto/" + id;
         if (!AesFile.DeleteFolder(path)) {

@@ -1,8 +1,8 @@
 package com.mysl.api.service.impl;
 
-import com.mysl.api.entity.Media;
-import com.mysl.api.mapper.MediaMapper;
-import com.mysl.api.service.MediaService;
+import com.mysl.api.entity.MediaV1;
+import com.mysl.api.mapper.MediaV1Mapper;
+import com.mysl.api.service.MediaV1Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2021-05-16
  */
 @Service
-public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements MediaService {
+public class MediaV1ServiceImpl extends ServiceImpl<MediaV1Mapper, MediaV1> implements MediaV1Service {
 
 }

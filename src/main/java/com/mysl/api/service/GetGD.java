@@ -14,7 +14,7 @@ import com.mysl.api.entity.Users2;
 import com.mysl.api.mapper.AddressMapper;
 import com.mysl.api.mapper.GroupMapper;
 import com.mysl.api.mapper.HaveMediaMapper;
-import com.mysl.api.mapper.MediaMapper;
+import com.mysl.api.mapper.MediaV1Mapper;
 import com.mysl.api.mapper.Users2Mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class GetGD {
   GroupMapper groupMapper;
 
   @Autowired
-  MediaMapper mediaMapper;
+  MediaV1Mapper mediaV1Mapper;
 
   @Autowired
   Users2Mapper users2Mapper;
@@ -56,7 +56,7 @@ public class GetGD {
       }
     }
     if (per.node(0, 1 << 4)) { // 媒体读取
-      gd.setMedia(mediaMapper.selectList(null));
+      gd.setMedia(mediaV1Mapper.selectList(null));
     }
     QueryWrapper<Users2> uq = new QueryWrapper<>();
     if (per.node(0, 0)) {

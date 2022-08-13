@@ -15,7 +15,7 @@ import com.mysl.api.common.lang.Result;
 import com.mysl.api.lib.AesFile;
 import com.mysl.api.lib.Permission;
 import com.mysl.api.lib.UrlId;
-import com.mysl.api.entity.Media;
+import com.mysl.api.entity.MediaV1;
 import com.mysl.api.mapper.HaveMediaMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +83,7 @@ public class Upload {
   UsersService usersService;
 
   @Autowired
-  MediaService mediaService;
+  MediaV1Service mediaV1Service;
 
   @Resource
   private HaveMediaMapper mapper;
@@ -111,7 +111,7 @@ public class Upload {
 
       UrlId ui = saveMedia(request.getPart("media"), pub);
       String media = ui.getUrl();
-      Media d = new Media();
+      MediaV1 d = new MediaV1();
       d.setId(ui.id);
       d.setCreateTime(AesFile.time());
       d.setType(media.substring(media.lastIndexOf(".") + 1));
@@ -121,7 +121,7 @@ public class Upload {
       String simple = request.getParameter("simple");
       d.setSimple(simple == null ? "" : simple);
       d.setUrl("");
-      mediaService.saveOrUpdate(d);
+      mediaV1Service.saveOrUpdate(d);
 
       // MediaChange mc = new MediaChange();
       // mc.setCreateTime(d.getCreateTime());
