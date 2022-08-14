@@ -8,6 +8,7 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * @author Ivan Su
@@ -18,10 +19,11 @@ import java.io.Serializable;
 public class MediaEditDTO implements Serializable {
     private static final long serialVersionUID = 5770936545191887385L;
 
-    @ApiModelProperty("标题")
+    @ApiModelProperty(value = "标题", required = true)
     @NotEmpty(message = "标题不能为空")
     private String title;
 
+    @ApiModelProperty(value = "类型", required = true)
     @NotNull(message = "类型不能为空")
     private MediaType type;
 
@@ -34,4 +36,10 @@ public class MediaEditDTO implements Serializable {
     @ApiModelProperty("媒体路径")
     @NotEmpty(message = "媒体路径不能为空")
     private String url;
+
+    @ApiModelProperty("媒体时长，单位：秒")
+    private BigDecimal duration;
+
+    @ApiModelProperty(value = "是否公开，默认否", required = true)
+    private Boolean publicly;
 }

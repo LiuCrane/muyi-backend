@@ -5,6 +5,7 @@ import com.mysl.api.entity.Media;
 import com.mysl.api.entity.dto.MediaDTO;
 import com.mysl.api.entity.enums.MediaType;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface MediaMapper extends BaseMapper<Media> {
                            @Param("id") Long id,
                            @Param("type") MediaType type,
                            @Param("publicly") Boolean publicly);
+
+    int sumMediaDuration(@Param("media_ids") List<Long> mediaIds);
 }

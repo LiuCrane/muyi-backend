@@ -21,4 +21,18 @@
             LIMIT #{offset}, #{limit}
         </if>
     </select>
+
+    <select id="sumMediaDuration" resultType="java.lang.Integer">
+        SELECT SUM(duration) FROM media
+        <where>
+            1 = 1
+            <if test="media_ids != null">
+                AND id IN
+                <foreach item="id" index="index" collection="media_ids"
+                         open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
 </mapper>

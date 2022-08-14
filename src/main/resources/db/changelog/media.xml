@@ -46,4 +46,9 @@
         columnDataType="TINYINT(3) UNSIGNED"  remarks="是否公开的，默认否"/>
         <addDefaultValue tableName="media" columnName="publicly" defaultValue="0"/>
     </changeSet>
+    <changeSet id="add duration field to media" author="Ivan Su">
+        <addColumn tableName="media">
+            <column name="duration" type="DECIMAL(8,3)" defaultValue="0" remarks="时长"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

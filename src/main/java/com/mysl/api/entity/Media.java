@@ -3,6 +3,8 @@ package com.mysl.api.entity;
 import com.mysl.api.entity.enums.MediaType;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author Ivan Su
  * @date 2022/8/13
@@ -17,4 +19,5 @@ public class Media extends BaseModel<Media> {
     private String img;
     private String url;
     private Boolean publicly;
+    private BigDecimal duration;
 }

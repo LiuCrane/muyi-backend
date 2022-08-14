@@ -1,11 +1,15 @@
 package com.mysl.api.controller.admin;
 
 import com.mysl.api.common.lang.ResponseData;
+import com.mysl.api.entity.Media;
 import com.mysl.api.entity.dto.MediaDTO;
 import com.mysl.api.entity.dto.MediaEditDTO;
 import com.mysl.api.entity.enums.MediaType;
+import com.mysl.api.service.MediaService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +24,9 @@ import java.util.List;
 @RequestMapping("/admin/media")
 public class MediaController {
 
+    @Autowired
+    MediaService mediaService;
+
     @ApiOperation("查询媒体列表")
     @GetMapping
     public ResponseData<List<MediaDTO>> list(Integer offset, Integer limit, MediaType type) {
@@ -29,6 +36,9 @@ public class MediaController {
     @ApiOperation("添加媒体")
     @PostMapping
     public ResponseData create(@Validated @RequestBody MediaEditDTO dto) {
+        Media media = new Media();
+        BeanUtils.copyProperties(dto, media);
+        mediaService.save(media);
         return ResponseData.ok();
     }
 

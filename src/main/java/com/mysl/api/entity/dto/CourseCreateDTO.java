@@ -27,9 +27,6 @@ public class CourseCreateDTO implements Serializable {
     @ApiModelProperty("简介")
     private String description;
 
-    @ApiModelProperty("时长")
-    private String duration;
-
     @ApiModelProperty("媒体id集合")
     @JsonProperty("media_ids")
     private List<Long> mediaIds;

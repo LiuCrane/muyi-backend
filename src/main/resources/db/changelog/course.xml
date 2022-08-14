@@ -30,6 +30,12 @@
             <column name="created_at"/>
         </createIndex>
     </changeSet>
+    <changeSet id="change duration type of course" author="Ivan Su">
+        <dropColumn tableName="course" columnName="duration" />
+        <addColumn tableName="course">
+            <column name="duration" type="DECIMAL(8,3)" defaultValue="0" remarks="时长"/>
+        </addColumn>
+    </changeSet>
 
     <changeSet id="course_media" author="Ivan Su">
         <createTable tableName="course_media" remarks="课程媒体">
