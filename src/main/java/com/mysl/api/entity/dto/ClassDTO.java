@@ -40,4 +40,8 @@ public class ClassDTO implements Serializable {
     @ApiModelProperty("当前课程")
     @JsonProperty("current_course")
     private String currentCourse;
+
+    @ApiModelProperty("学员人数")
+    @JsonProperty("student_num")
+    private Integer studentNum;
 }

@@ -16,5 +16,6 @@ public class Student extends BaseModel<Student> {
     private String parentName;
     private String parentPhone;
     private Boolean rehabTraining;
+    private String avatarUrl;
 
 }

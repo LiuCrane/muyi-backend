@@ -50,6 +50,15 @@
     <changeSet id="set default value for rehab" author="Ivan Su">
         <addDefaultValue tableName="student" columnName="rehab_training" defaultValue="0"/>
     </changeSet>
+    <changeSet id="add some fields" author="Ivan Su">
+        <addColumn tableName="student">
+            <column name="avatar_url" type="VARCHAR(255)" remarks="学员头像"/>
+            <column name="left_diopter" type="VARCHAR(8)" remarks="左眼度数"/>
+            <column name="right_diopter" type="VARCHAR(8)" remarks="右眼度数"/>
+            <column name="left_vision" type="VARCHAR(8)" remarks="左眼视力"/>
+            <column name="right_vision" type="VARCHAR(8)" remarks="右眼视力"/>
+        </addColumn>
+    </changeSet>
 
     <changeSet id="student_eyesight" author="Ivan Su">
         <createTable tableName="student_eyesight" remarks="学员视力">
@@ -69,6 +78,15 @@
                                  deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="student" validate="true"/>
+    </changeSet>
+    <changeSet id="change diopter field" author="Ivan Su">
+        <dropColumn tableName="student_eyesight" columnName="diopter"/>
+        <addColumn tableName="student_eyesight">
+            <column name="left_diopter" type="VARCHAR(8)" remarks="左眼度数"/>
+            <column name="right_diopter" type="VARCHAR(8)" remarks="右眼度数"/>
+            <column name="left_vision" type="VARCHAR(8)" remarks="左眼视力"/>
+            <column name="right_vision" type="VARCHAR(8)" remarks="右眼视力"/>
+        </addColumn>
     </changeSet>
 
     <changeSet id="student_sign_in" author="Ivan Su">

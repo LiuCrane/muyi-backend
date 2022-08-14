@@ -23,22 +23,38 @@ public class StudentCreateDTO implements Serializable {
     @NotEmpty(message = "学员姓名不能为空")
     private String name;
 
-    @ApiModelProperty("家长姓名")
+    @ApiModelProperty(value = "家长姓名", required = true)
     @NotEmpty(message = "家长姓名不能为空")
     @JsonProperty("parent_name")
     private String parentName;
 
-    @ApiModelProperty("家长手机号")
+    @ApiModelProperty(value = "家长手机号", required = true)
     @NotEmpty(message = "家长手机号不能为空")
     @Pattern(regexp = "^(1[0-9])\\d{9}$", message = "家长手机号格式不正确")
     @JsonProperty("parent_phone")
     private String parentPhone;
 
-    @ApiModelProperty("视力度数")
-    @NotEmpty(message = "视力度数不能为空")
-    private String diopter;
+    @ApiModelProperty(value = "左眼度数", required = true)
+    @NotEmpty(message = "左眼度数不能为空")
+    @JsonProperty("left_diopter")
+    private String leftDiopter;
 
-    @ApiModelProperty("班级id")
+    @ApiModelProperty(value = "右眼度数", required = true)
+    @NotEmpty(message = "右眼度数不能为空")
+    @JsonProperty("left_diopter")
+    private String rightDiopter;
+
+    @ApiModelProperty(value = "左眼视力", required = true)
+    @NotEmpty(message = "左眼视力不能为空")
+    @JsonProperty("left_vision")
+    private String leftVision;
+
+    @ApiModelProperty(value = "右眼视力", required = true)
+    @NotEmpty(message = "右眼视力不能为空")
+    @JsonProperty("right_vision")
+    private String rightVision;
+
+    @ApiModelProperty(value = "班级id", required = true)
     @NotNull(message = "班级不能为空")
     private Long classId;
 
