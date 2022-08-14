@@ -2,7 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mysl.api.mapper.MediaMapper">
     <select id="findAll" resultType="com.mysl.api.entity.dto.MediaDTO">
-        SELECT *
+        SELECT
+        m.id, m.title, m.type, m.description, m.img, m.url, m.created_at,
+        date_format(sec_to_time(m.duration), '%H:%i:%s') AS duration
         FROM media m
         <where>
             1 = 1

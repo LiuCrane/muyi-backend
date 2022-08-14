@@ -43,4 +43,7 @@ public class MediaDTO implements Serializable {
     @JsonProperty("created_at")
     private String createdAt;
 
+    @ApiModelProperty("媒体时长")
+    private String duration;
+
 }

@@ -37,20 +37,6 @@ public class MediaController {
                                              @ApiParam(value = "媒体类型(AUDIO:音频, VIDEO:视频)")
                                              @RequestParam(required = false) MediaType type) {
         log.info("get app media list, offset: {}, limit: {}, type: {}", offset, limit, type);
-//        List<MediaDTO> list = ListUtil.of(
-//                MediaDTO.builder().id(1L).title("视力提高3行 就是这么神奇")
-//                        .type("AUDIO")
-//                        .img("https://mysl.tianyuekeji.ltd/upload/img/1447033719652114433.png")
-//                        .description("视力提高")
-//                        .url("http://npcjvxut.test.com/sxpa")
-//                        .createdAt("2022-06-18 05:55:14").build(),
-//                MediaDTO.builder().title("告别近视必须看这一段")
-//                        .type("VIDEO")
-//                        .img("https://mysl.tianyuekeji.ltd/upload/img/1435853275845902337.jpg")
-//                        .description("必看")
-//                        .url("http://rsvdq.mq/sdmcqwed")
-//                        .createdAt("2022-03-18 14:16:10").build()
-//        );
         return ResponseData.ok(mediaService.getMediaList(offset, limit, null, type, Boolean.TRUE));
     }
 
