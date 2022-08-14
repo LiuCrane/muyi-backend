@@ -55,6 +55,8 @@ mysl:
   jwt:
     key: 1q2w3e4r5t6y7u8i9o0p
     expiration: 86400
+  login:
+    distance-limit: 100
   open:
     wx:
       xcx-id:

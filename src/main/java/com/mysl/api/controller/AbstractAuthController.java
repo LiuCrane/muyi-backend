@@ -13,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * @author Ivan Su
@@ -34,6 +33,7 @@ public abstract class AbstractAuthController {
                 new UsernamePasswordAuthenticationToken(
                         username, password
                 ));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         final JwtUserDetails userDetails = (JwtUserDetails) authentication.getPrincipal();
         UserType userType = userDetails.getUser().getType();
         if ((GlobalConstant.CLIENT_ADMIN.equals(client) && UserType.APP_USER.equals(userType))
