@@ -46,7 +46,7 @@ public class UserController {
     @ApiOperation("查询用户信息")
     @Secured("ROLE_APP_USER")
     @GetMapping
-    public ResponseData<UserDTO> getUserDetail(@ApiParam("用户token") @RequestHeader("Authorization") final String token) {
+        public ResponseData<UserDTO> getUserDetail(@ApiParam("用户token") @RequestHeader("Authorization") final String token) {
         UserDTO dto = JwtTokenUtil.getCurrentUser();
         return ResponseData.ok(dto);
     }

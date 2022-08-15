@@ -1,6 +1,7 @@
 package com.mysl.api.entity.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mysl.api.entity.enums.StudyProgress;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -33,9 +34,9 @@ public class ClassDTO implements Serializable {
     @JsonProperty("store_number")
     private String storeNumber;
 
-    @ApiModelProperty("学习进度(NOT_STARTED:未开始, IN_PROGRESS:进行中, ENDED:已结束)")
+    @ApiModelProperty("学习进度(NOT_STARTED:未开始, IN_PROGRESS:进行中, REHAB_TRAINING:复训中, ENDED:已结束)")
     @JsonProperty("study_progress")
-    private String studyProgress;
+    private StudyProgress studyProgress;
 
     @ApiModelProperty("当前课程")
     @JsonProperty("current_course")
