@@ -2,15 +2,20 @@ package com.mysl.api.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mysl.api.common.GlobalConstant;
 import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.entity.Store;
+import com.mysl.api.entity.UserRole;
 import com.mysl.api.entity.dto.StoreCreateDTO;
 import com.mysl.api.entity.dto.StoreFullDTO;
 import com.mysl.api.entity.enums.StoreStatus;
 import com.mysl.api.mapper.StoreMapper;
 import com.mysl.api.service.StoreService;
+import com.mysl.api.service.UserRoleService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +25,9 @@ import java.util.List;
  */
 @Service
 public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements StoreService {
+
+    @Autowired
+    UserRoleService userRoleService;
 
     @Override
     public List<StoreFullDTO> getStores(Long id, Integer offset, Integer limit, StoreStatus status) {
@@ -39,6 +47,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
     }
 
     @Override
+    @Transactional
     public boolean updateStatus(Long id, Boolean auditResult) {
         Store store = super.getById(id);
         if (store == null) {
@@ -52,8 +61,12 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
                 status = StoreStatus.REJECTED;
             }
             store.setStatus(status);
-//            super.update(store, new UpdateWrapper<Store>().eq("id", id).set("status", status));
-            return super.saveOrUpdate(store);
+            super.saveOrUpdate(store);
+
+            // 更新用户权限（加 ROLE_STORE_MANAGER）
+            UserRole userRole = UserRole.builder().userId(store.getManagerUserId()).roleId(GlobalConstant.ROLE_APP_USER).build();
+            return userRoleService.save(userRole);
+
         }
         return false;
     }
