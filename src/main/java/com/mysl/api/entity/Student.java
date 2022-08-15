@@ -17,5 +17,10 @@ public class Student extends BaseModel<Student> {
     private String parentPhone;
     private Boolean rehabTraining;
     private String avatarUrl;
+    private String leftVision;
+    private String rightVision;
+    private String leftDiopter;
+    private String rightDiopter;
+    private Boolean improved;
 
 }

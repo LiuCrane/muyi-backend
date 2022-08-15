@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @author Ivan Su
  * @date 2022/8/5
  */
-@ApiModel("提交学员信息")
+@ApiModel("学员提交信息")
 @Data
 public class StudentCreateDTO implements Serializable {
     private static final long serialVersionUID = -3977630350367443042L;
@@ -41,7 +41,7 @@ public class StudentCreateDTO implements Serializable {
 
     @ApiModelProperty(value = "右眼度数", required = true)
     @NotEmpty(message = "右眼度数不能为空")
-    @JsonProperty("left_diopter")
+    @JsonProperty("right_diopter")
     private String rightDiopter;
 
     @ApiModelProperty(value = "左眼视力", required = true)
@@ -56,6 +56,7 @@ public class StudentCreateDTO implements Serializable {
 
     @ApiModelProperty(value = "班级id", required = true)
     @NotNull(message = "班级不能为空")
+    @JsonProperty("class_id")
     private Long classId;
 
 }

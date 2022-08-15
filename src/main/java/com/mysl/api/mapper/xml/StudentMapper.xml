@@ -2,4 +2,42 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mysl.api.mapper.StudentMapper">
 
+    <select id="findAll" resultType="com.mysl.api.entity.dto.StudentFullDTO">
+        SELECT
+        s.id, c.name AS class_name, s.parent_name, s.parent_phone, s.improved, c.study_progress,
+        cr.title AS currentCourse, s.avatar_url, s.created_at, s.created_by, s.updated_at, s.updated_by
+        FROM student s
+        LEFT JOIN class c ON s.class_id = c.id
+        LEFT JOIN
+        (SELECT * FROM class_course where id IN (SELECT max(id) FROM class_course GROUP BY class_id)) cc
+        ON s.class_id = cc.class_id
+        LEFT JOIN course cr ON cc.course_id = cr.id
+        <where>
+            1 = 1
+            <if test="id != null">
+                AND s.id = #{id}
+            </if>
+            <if test="name != null">
+                <bind name="name" value="'%' + name + '%'"/>
+                AND s.name LIKE #{name}
+            </if>
+            <if test="store_id != null">
+                AND s.store_id = #{store_id}
+            </if>
+            <if test="class_id != null">
+                AND s.class_id = #{class_id}
+            </if>
+            <if test="rehab != null and rehab">
+                AND s.rehab
+            </if>
+            <if test="rehab != null and !rehab">
+                AND !s.rehab
+            </if>
+        </where>
+        ORDER BY s.created_at desc
+        <if test="offset != null and limit!= null">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </select>
+
 </mapper>

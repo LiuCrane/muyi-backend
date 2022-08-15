@@ -59,6 +59,11 @@
             <column name="right_vision" type="VARCHAR(8)" remarks="右眼视力"/>
         </addColumn>
     </changeSet>
+    <changeSet id="add improved field to student" author="Ivan Su">
+        <addColumn tableName="student">
+            <column name="improved" type="TINYINT(3) UNSIGNED" remarks="视力是否提升"/>
+        </addColumn>
+    </changeSet>
 
     <changeSet id="student_eyesight" author="Ivan Su">
         <createTable tableName="student_eyesight" remarks="学员视力">
@@ -86,6 +91,16 @@
             <column name="right_diopter" type="VARCHAR(8)" remarks="右眼度数"/>
             <column name="left_vision" type="VARCHAR(8)" remarks="左眼视力"/>
             <column name="right_vision" type="VARCHAR(8)" remarks="右眼视力"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="add improved field to student_eyesight" author="Ivan Su">
+        <addColumn tableName="student_eyesight">
+            <column name="improved" type="TINYINT(3) UNSIGNED" remarks="视力是否提升"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="add active field to student_eyesight" author="Ivan Su">
+        <addColumn tableName="student_eyesight">
+            <column name="active" type="TINYINT(3) UNSIGNED" defaultValue="1"/>
         </addColumn>
     </changeSet>
 
