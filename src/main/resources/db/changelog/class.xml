@@ -140,9 +140,6 @@
                                  onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="media" validate="true"/>
     </changeSet>
-    <changeSet id="rename table class_course_media to class_course_event" author="Ivan Su">
-        <renameTable oldTableName="class_course_media" newTableName="class_course_event" />
-    </changeSet>
 
     <changeSet id="change fk for class_course_media" author="Ivan Su">
         <dropForeignKeyConstraint baseTableName="class_course_media" constraintName="fk_ccm_media_id"/>
@@ -151,5 +148,22 @@
                                  deferrable="false" initiallyDeferred="false"
                                  onDelete="RESTRICT" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="media" validate="true"/>
+    </changeSet>
+
+    <changeSet id="rename table class_course_media to class_course_media_event" author="Ivan Su">
+        <renameTable oldTableName="class_course_media" newTableName="class_course_media_event" />
+    </changeSet>
+    
+    <changeSet id="add some fields to class_course_media_event" author="Ivan Su">
+        <addColumn tableName="class_course_media_event">
+            <column name="store_id" type="BIGINT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="class_course_media_event" baseColumnNames="store_id"
+                                 constraintName="fk_cce_store_id" referencedTableName="store"
+                                 referencedColumnNames="id" validate="true"/>
     </changeSet>
 </databaseChangeLog>

@@ -2,6 +2,7 @@ package com.mysl.api.controller.app;
 
 import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.lang.ResponseData;
+import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.entity.dto.MediaDTO;
 import com.mysl.api.entity.dto.PlayerEventDTO;
 import com.mysl.api.entity.enums.MediaType;
@@ -52,11 +53,12 @@ public class MediaController {
 //        return ResponseData.ok(dto);
 //    }
 
-    @ApiOperation(value = "记录媒体播放操作", notes = "后台仅做记录，用于判断课程是否结束")
-    @PostMapping("/{id}/player/{event}")
+    @ApiOperation(value = "记录媒体播放操作", notes = "后台记录播放事件，用于判断课程是否结束")
+    @PostMapping("/{id}/player")
     public ResponseData savePlayerEvent(@ApiParam("媒体id") @PathVariable Long id,
                                         @Validated @RequestBody PlayerEventDTO dto) {
         log.info("media {} player event: {}", id, dto);
+        mediaService.savePlayerEvent(id, dto, JwtTokenUtil.getCurrentStoreId());
         return ResponseData.ok();
     }
 

@@ -20,4 +20,6 @@ public interface MediaMapper extends BaseMapper<Media> {
                            @Param("publicly") Boolean publicly);
 
     int sumMediaDuration(@Param("media_ids") List<Long> mediaIds);
+
+    int countUnfinishedMedia(@Param("class_id") Long classId, @Param("course_id") Long courseId);
 }

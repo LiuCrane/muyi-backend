@@ -34,4 +34,14 @@
             </if>
         </where>
     </select>
+
+    <select id="countUnfinishedMedia" resultType="java.lang.Integer">
+        SELECT count(id) FROM (
+        SELECT cc.id, cm.media_id, e.player_event FROM class_course cc
+        LEFT JOIN course_media cm ON cc.course_id = cm.course_id
+        LEFT JOIN class_course_media_event e ON e.class_course_id = cc.id
+        AND e.player_event = 'END' AND e.media_id = cm.media_id
+        WHERE cc.class_id = #{class_id} AND cc.course_id = #{course_id}
+        ) a WHERE a.player_event IS NULL
+    </select>
 </mapper>

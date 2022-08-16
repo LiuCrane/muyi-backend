@@ -100,7 +100,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         ClassCourse classCourse = classCourseMapper.selectOne(
                 new QueryWrapper<ClassCourse>().eq("course_id", courseId).eq("class_id", classId));
         if (classCourse != null && ClassCourseStatus.ACCESSIBLE.equals(classCourse.getStatus())) {
-            return classCourseMapper.findMediaByCourseId(courseId);
+            return classCourseMapper.findMediaByClassIdAndCourseId(classId, courseId);
         }
         return new ArrayList<>();
     }

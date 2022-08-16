@@ -1,6 +1,5 @@
 package com.mysl.api.entity.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mysl.api.entity.enums.PlayerEvent;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,12 +15,10 @@ import javax.validation.constraints.NotNull;
 @Data
 public class PlayerEventDTO {
 
-    @ApiModelProperty("班级id")
-    @JsonProperty("class_id")
+    @ApiModelProperty("班级id，若属于课程内的媒体，该字段必传")
     private Long classId;
 
-    @ApiModelProperty("课程id")
-    @JsonProperty("course_id")
+    @ApiModelProperty("课程id，若属于课程内的媒体，该字段必传")
     private Long courseId;
 
     @ApiModelProperty("播放事件(START:开始, PAUSE:暂停, END:结束)")

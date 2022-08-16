@@ -8,7 +8,7 @@
         LEFT JOIN class_course cc ON c.id = cc.course_id AND cc.class_id = #{class_id} WHERE c.active = 1
     </select>
 
-    <select id="findMediaByCourseId" resultType="com.mysl.api.entity.dto.MediaDTO">
+    <select id="findMediaByClassIdAndCourseId" resultType="com.mysl.api.entity.dto.MediaDTO">
         SELECT
         m.id, m.title, m.type, m.description, m.img, m.url, m.created_at,
         date_format(sec_to_time(m.duration), '%H:%i:%s') AS duration
@@ -16,6 +16,15 @@
         LEFT JOIN course c ON cc.course_id = c.id
         LEFT JOIN course_media cm ON c.id = cm.course_id
         LEFT JOIN media m ON cm.media_id = m.id AND m.active
-        WHERE cc.course_id = #{course_id} ORDER BY m.created_at ASC
+        WHERE
+        cc.course_id = #{course_id} AND cc.class_id = #{class_id}
+        ORDER BY m.created_at ASC
     </select>
+
+    <update id="updateClassCourseStatus">
+        UPDATE class_course SET
+        status = #{status},
+        updated_by = #{updated_by}
+        WHERE class_id = #{class_id} AND course_id = #{course_id}
+    </update>
 </mapper>
