@@ -29,10 +29,10 @@
                 AND s.class_id = #{class_id}
             </if>
             <if test="rehab != null and rehab">
-                AND s.rehab
+                AND s.rehab_training
             </if>
             <if test="rehab != null and !rehab">
-                AND !s.rehab
+                AND !s.rehab_training
             </if>
         </where>
         ORDER BY s.created_at desc
@@ -44,5 +44,13 @@
     <select id="findSimpleList" resultType="com.mysl.api.entity.dto.StudentSimpleDTO">
         SELECT s.id, s.name FROM student s WHERE s.class_id = #{class_id} AND s.store_id = #{store_id}
     </select>
+
+    <update id="updateRehabByClassId">
+        UPDATE student SET
+        rehab_training = 1,
+        updated_by = #{updated_by},
+        updated_at = NOW()
+        WHERE class_id = #{class_id}
+    </update>
 
 </mapper>

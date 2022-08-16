@@ -1,7 +1,7 @@
 package com.mysl.api.controller.app;
 
-import cn.hutool.core.collection.ListUtil;
 import cn.hutool.extra.cglib.CglibUtil;
+import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.entity.dto.*;
@@ -33,7 +33,7 @@ public class StudentController {
 
     @ApiOperation("查询学员列表")
     @GetMapping("/students")
-    public ResponseData<List<StudentDTO>> list(@ApiParam(value = "页数，默认 1")
+    public ResponseData<PageInfo<StudentDTO>> list(@ApiParam(value = "页数，默认 1")
                                                @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
                                                @ApiParam(value = "每页记录，默认 20")
                                                @RequestParam(name = "page_size", defaultValue = "20", required = false) Integer pageSize,
@@ -47,7 +47,7 @@ public class StudentController {
         }
         List<StudentFullDTO> dtoList = studentService.getStudents(pageNum, pageSize, null, null, JwtTokenUtil.getCurrentStoreId(), classId, rehabVal);
         List<StudentDTO> list = CglibUtil.copyList(dtoList, StudentDTO::new);
-        return ResponseData.ok(list);
+        return ResponseData.ok(new PageInfo<>(list));
     }
 
     @ApiOperation("查询学员信息详情")
@@ -67,7 +67,7 @@ public class StudentController {
         return ResponseData.ok();
     }
 
-    @ApiOperation("更新学员信息")
+    @ApiOperation("更新学员视力信息")
     @PutMapping("/students/{id}/vision")
     public ResponseData update(@PathVariable Long id, @RequestBody StudentVisionDTO dto) {
         log.info("update student vision dto: {}", dto);

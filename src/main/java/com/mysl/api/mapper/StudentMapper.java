@@ -21,4 +21,6 @@ public interface StudentMapper extends BaseMapper<Student> {
                                  @Param("rehab") Boolean rehab);
 
     List<StudentSimpleDTO> findSimpleList(@Param("store_id") Long storeId, @Param("class_id") Long classId);
+
+    int updateRehabByClassId(@Param("class_id") Long classId, @Param("updated_by") String updatedBy);
 }
