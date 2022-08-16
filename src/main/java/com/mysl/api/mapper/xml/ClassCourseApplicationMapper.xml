@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mysl.api.mapper.ClassCourseApplicationMapper">
+
+    <select id="findAll" resultType="com.mysl.api.entity.dto.ClassCourseApplicationDTO">
+        SELECT
+        cca.id, s.name AS store_name, u.name AS store_manager_name,
+        c.name AS class_name, cr.title AS course, cca.result,
+        cca.created_at, cca.created_by, cca.updated_at, cca.updated_by
+        FROM class_course_application cca
+        LEFT JOIN class_course cc ON cc.id = cca.class_course_id
+        LEFT JOIN class c ON c.id = cc.class_id
+        LEFT JOIN course cr ON cr.id = cc.course_id
+        LEFT JOIN store s ON s.id = c.store_id
+        LEFT JOIN user u ON s.manager_user_id = u.id
+        ORDER BY cca.result, cca.created_by DESC
+    </select>
+</mapper>

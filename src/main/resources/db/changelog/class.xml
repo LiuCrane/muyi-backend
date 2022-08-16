@@ -108,6 +108,11 @@
                                  onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="class_course" validate="true"/>
     </changeSet>
+    <changeSet id="add active field to class_course_application" author="Ivan Su">
+        <addColumn tableName="class_course_application">
+            <column name="active" type="TINYINT(3) UNSIGNED" defaultValue="1"/>
+        </addColumn>
+    </changeSet>
 
     <changeSet id="class_course_media" author="Ivan Su">
         <createTable tableName="class_course_media">
