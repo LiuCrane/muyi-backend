@@ -33,10 +33,10 @@ public class StudentController {
 
     @ApiOperation("查询学员列表")
     @GetMapping("/students")
-    public ResponseData<List<StudentDTO>> list(@ApiParam(value = "默认 0", defaultValue = "0")
-                                               @RequestParam(defaultValue = "0", required = false) Integer offset,
-                                               @ApiParam(value = "默认 20", defaultValue = "20")
-                                               @RequestParam(defaultValue = "20", required = false) Integer limit,
+    public ResponseData<List<StudentDTO>> list(@ApiParam(value = "页数，默认 1")
+                                               @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
+                                               @ApiParam(value = "每页记录，默认 20")
+                                               @RequestParam(name = "page_size", defaultValue = "20", required = false) Integer pageSize,
                                                @ApiParam(value = "班级id")
                                                @RequestParam(name = "class_id", required = false) Long classId,
                                                @ApiParam(value = "true:查询复训学员列表，false:查询学习中的学员列表，不传查全部学员")
@@ -45,7 +45,7 @@ public class StudentController {
         if ("true".equals(rehab) || "false".equals(rehab)) {
             rehabVal = Boolean.valueOf(rehab);
         }
-        List<StudentFullDTO> dtoList = studentService.getStudents(offset, limit, null, null, JwtTokenUtil.getCurrentStoreId(), classId, rehabVal);
+        List<StudentFullDTO> dtoList = studentService.getStudents(pageNum, pageSize, null, null, JwtTokenUtil.getCurrentStoreId(), classId, rehabVal);
         List<StudentDTO> list = CglibUtil.copyList(dtoList, StudentDTO::new);
         return ResponseData.ok(list);
     }

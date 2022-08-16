@@ -5,7 +5,8 @@
     <select id="findAll" resultType="com.mysl.api.entity.dto.StudentFullDTO">
         SELECT
         s.id, c.name AS class_name, s.parent_name, s.parent_phone, s.improved, c.study_progress,
-        cr.title AS currentCourse, s.avatar_url, s.created_at, s.created_by, s.updated_at, s.updated_by
+        cr.title AS currentCourse, s.avatar_url, s.created_at, s.created_by, s.updated_at, s.updated_by,
+        s.left_vision, s.right_vision
         FROM student s
         LEFT JOIN class c ON s.class_id = c.id
         LEFT JOIN
@@ -35,9 +36,13 @@
             </if>
         </where>
         ORDER BY s.created_at desc
-        <if test="offset != null and limit!= null">
-            LIMIT #{offset}, #{limit}
-        </if>
+<!--        <if test="offset != null and limit!= null">-->
+<!--            LIMIT #{offset}, #{limit}-->
+<!--        </if>-->
+    </select>
+
+    <select id="findSimpleList" resultType="com.mysl.api.entity.dto.StudentSimpleDTO">
+        SELECT s.id, s.name FROM student s WHERE s.class_id = #{class_id} AND s.store_id = #{store_id}
     </select>
 
 </mapper>

@@ -13,8 +13,6 @@ import java.util.List;
  */
 public interface ClassMapper extends BaseMapper<Class>  {
 
-    List<ClassFullDTO> findAll(@Param("offset") Integer offset,
-                               @Param("limit") Integer limit,
-                               @Param("id") Long id,
+    List<ClassFullDTO> findAll(@Param("id") Long id,
                                @Param("store_id") Long storeId);
 }

@@ -53,4 +53,10 @@ public class StudentDTO implements Serializable {
 
     @ApiModelProperty("视力数据列表")
     private List<StudentEyesightDTO> eyesightList;
+
+    @ApiModelProperty("左眼视力")
+    private String leftVision;
+
+    @ApiModelProperty("右眼视力")
+    private String rightVision;
 }

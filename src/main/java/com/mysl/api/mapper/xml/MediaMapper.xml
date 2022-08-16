@@ -19,9 +19,9 @@
             </if>
         </where>
         ORDER BY m.created_at desc
-        <if test="offset != null and limit!= null">
-            LIMIT #{offset}, #{limit}
-        </if>
+<!--        <if test="offset != null and limit!= null">-->
+<!--            LIMIT #{offset}, #{limit}-->
+<!--        </if>-->
     </select>
 
     <select id="sumMediaDuration" resultType="java.lang.Integer">

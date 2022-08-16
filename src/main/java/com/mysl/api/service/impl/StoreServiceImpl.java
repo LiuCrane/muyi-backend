@@ -2,6 +2,7 @@ package com.mysl.api.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
 import com.mysl.api.common.GlobalConstant;
 import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.entity.Store;
@@ -30,8 +31,9 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
     UserRoleService userRoleService;
 
     @Override
-    public List<StoreFullDTO> getStores(Long id, Integer offset, Integer limit, StoreStatus status) {
-        return super.baseMapper.findAll(id, offset, limit, status);
+    public List<StoreFullDTO> getStores(Integer pageNum, Integer pageSize, Long id, StoreStatus status) {
+        PageHelper.startPage(pageNum, pageSize);
+        return super.baseMapper.findAll(id, status);
     }
 
     @Override

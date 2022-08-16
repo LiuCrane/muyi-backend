@@ -1,6 +1,7 @@
 package com.mysl.api.controller.app;
 
 import cn.hutool.extra.cglib.CglibUtil;
+import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.config.security.JwtTokenUtil;
@@ -8,6 +9,7 @@ import com.mysl.api.entity.Class;
 import com.mysl.api.entity.dto.*;
 import com.mysl.api.service.ClassService;
 import com.mysl.api.service.StoreService;
+import com.mysl.api.service.StudentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -16,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -36,27 +39,30 @@ public class ClassController {
     ClassService classService;
     @Autowired
     StoreService storeService;
+    @Autowired
+    StudentService studentService;
 
     @ApiOperation("查询班级列表")
     @GetMapping
-    public ResponseData<List<ClassDTO>> list(@ApiParam(value = "默认 0")
-                                             @RequestParam(defaultValue = "0", required = false) Integer offset,
-                                             @ApiParam(value = "默认 20")
-                                             @RequestParam(defaultValue = "20", required = false) Integer limit) {
+    public ResponseData<PageInfo<ClassDTO>> list(@ApiParam(value = "页数，默认 1")
+                                                 @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
+                                                 @ApiParam(value = "每页记录，默认 20")
+                                                 @RequestParam(name = "page_size", defaultValue = "20", required = false) Integer pageSize) {
+        log.info("pageNum: {}, pageSize: {}", pageNum, pageSize);
         List<ClassDTO> list = new ArrayList<>();
         Long storeId = JwtTokenUtil.getCurrentStoreId();
         if (storeId != null) {
-            List<ClassFullDTO> classFullDTOList = classService.getClasses(offset, limit, null, storeId);
+            List<ClassFullDTO> classFullDTOList = classService.getClasses(pageNum, pageSize, null, storeId);
             if (!CollectionUtils.isEmpty(classFullDTOList)) {
                 list = CglibUtil.copyList(classFullDTOList, ClassDTO::new);
             }
         }
-        return ResponseData.ok(list);
+        return ResponseData.ok(new PageInfo<>(list));
     }
 
     @ApiOperation("创建班级")
     @PostMapping
-    public ResponseData create(@RequestBody ClassCreateDTO dto) {
+    public ResponseData create(@Validated @RequestBody ClassCreateDTO dto) {
         Class entity = Class.builder().name(dto.getName()).teacher(dto.getTeacher())
                 .storeId(JwtTokenUtil.getCurrentStoreId()).build();
         classService.save(entity);
@@ -82,13 +88,14 @@ public class ClassController {
     @ApiOperation("查询班级学员列表")
     @GetMapping("/{class_id}/students")
     public ResponseData<List<StudentSimpleDTO>> getStudents(@PathVariable("class_id") Long classId) {
-        return ResponseData.ok();
+        List<StudentSimpleDTO> list = studentService.getSimpleStudents(JwtTokenUtil.getCurrentStoreId(), classId);
+        return ResponseData.ok(list);
     }
 
     @ApiOperation("查询班级课程列表")
     @GetMapping("/{class_id}/courses")
     public ResponseData<List<CourseDTO>> getCourses(@PathVariable("class_id") Long classId) {
-        return ResponseData.ok();
+        return ResponseData.ok(classService.getClassCourse(JwtTokenUtil.getCurrentStoreId(), classId));
     }
 
     @ApiOperation("申请课程")

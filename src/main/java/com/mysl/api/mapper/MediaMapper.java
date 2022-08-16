@@ -15,9 +15,7 @@ import java.util.List;
  */
 public interface MediaMapper extends BaseMapper<Media> {
 
-    List<MediaDTO> findAll(@Param("offset") Integer offset,
-                           @Param("limit") Integer limit,
-                           @Param("id") Long id,
+    List<MediaDTO> findAll(@Param("id") Long id,
                            @Param("type") MediaType type,
                            @Param("publicly") Boolean publicly);
 

@@ -3,6 +3,7 @@ package com.mysl.api.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mysl.api.entity.Student;
 import com.mysl.api.entity.dto.StudentFullDTO;
+import com.mysl.api.entity.dto.StudentSimpleDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -13,11 +14,11 @@ import java.util.List;
  */
 public interface StudentMapper extends BaseMapper<Student> {
 
-    List<StudentFullDTO> findAll(@Param("offset") Integer offset,
-                                 @Param("limit") Integer limit,
-                                 @Param("id") Long id,
+    List<StudentFullDTO> findAll(@Param("id") Long id,
                                  @Param("name") String name,
                                  @Param("store_id") Long storeId,
                                  @Param("class_id") Long classId,
                                  @Param("rehab") Boolean rehab);
+
+    List<StudentSimpleDTO> findSimpleList(@Param("store_id") Long storeId, @Param("class_id") Long classId);
 }

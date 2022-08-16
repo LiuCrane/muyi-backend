@@ -34,8 +34,5 @@
             </if>
         </where>
         ORDER BY s.created_at DESC
-        <if test="offset != null and limit!= null">
-            LIMIT #{offset}, #{limit}
-        </if>
     </select>
 </mapper>

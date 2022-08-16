@@ -4,14 +4,12 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.extra.cglib.CglibUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
 import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.entity.Student;
 import com.mysl.api.entity.StudentEyesight;
-import com.mysl.api.entity.dto.StudentCreateDTO;
-import com.mysl.api.entity.dto.StudentEyesightDTO;
-import com.mysl.api.entity.dto.StudentFullDTO;
-import com.mysl.api.entity.dto.StudentVisionDTO;
+import com.mysl.api.entity.dto.*;
 import com.mysl.api.mapper.StudentEyesightMapper;
 import com.mysl.api.mapper.StudentMapper;
 import com.mysl.api.service.StudentService;
@@ -35,14 +33,20 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     StudentEyesightMapper studentEyesightMapper;
 
     @Override
-    public List<StudentFullDTO> getStudents(Integer offset, Integer limit, Long id, String name,
+    public List<StudentFullDTO> getStudents(Integer pageNum, Integer pageSize, Long id, String name,
                                             Long storeId, Long classId, Boolean rehab) {
-        return super.baseMapper.findAll(offset, limit, id, name, storeId, classId, rehab);
+        PageHelper.startPage(pageNum, pageSize);
+        return super.baseMapper.findAll(id, name, storeId, classId, rehab);
+    }
+
+    @Override
+    public List<StudentSimpleDTO> getSimpleStudents(Long storeId, Long classId) {
+        return super.baseMapper.findSimpleList(storeId, classId);
     }
 
     @Override
     public StudentFullDTO getStudentById(Long id) {
-        List<StudentFullDTO> list = super.baseMapper.findAll(0, 1, id, null, null, null, null);
+        List<StudentFullDTO> list = super.baseMapper.findAll(id, null, null, null, null);
         if (CollectionUtils.isEmpty(list)) {
             throw new ResourceNotFoundException("找不到学员信息");
         }
@@ -53,7 +57,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     @Override
     public StudentFullDTO getStudentByStoreIdAndId(Long storeId, Long id) {
-        List<StudentFullDTO> list = super.baseMapper.findAll(0, 1, id, null, storeId, null, null);
+        List<StudentFullDTO> list = super.baseMapper.findAll(id, null, storeId, null, null);
         if (CollectionUtils.isEmpty(list)) {
             throw new ResourceNotFoundException("找不到学员信息");
         }
@@ -104,6 +108,8 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
                 .compareTo(NumberUtil.add(last.getLeftVision(), last.getRightVision())) > 0) {
             improved = Boolean.TRUE;
         }
+        student.setLeftVision(dto.getLeftVision());
+        student.setRightVision(dto.getRightVision());
         student.setImproved(improved);
         if (super.updateById(student)) {
             StudentEyesight eyesight = StudentEyesight.builder().studentId(id)

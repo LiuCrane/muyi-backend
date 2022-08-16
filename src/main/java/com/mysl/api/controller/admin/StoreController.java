@@ -1,10 +1,9 @@
 package com.mysl.api.controller.admin;
 
+import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.exception.ResourceNotFoundException;
-import com.mysl.api.common.exception.ServiceException;
 import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.entity.dto.StoreAuditDTO;
-import com.mysl.api.entity.dto.StoreDTO;
 import com.mysl.api.entity.dto.StoreFullDTO;
 import com.mysl.api.entity.enums.StoreStatus;
 import com.mysl.api.service.StoreService;
@@ -36,17 +35,19 @@ public class StoreController {
 
     @ApiOperation("查询门店列表")
     @GetMapping
-    public ResponseData<List<StoreFullDTO>> list(@RequestParam(defaultValue = "0", required = false) Integer offset,
-                                                 @RequestParam(defaultValue = "20", required = false) Integer limit,
-                                                 @ApiParam(value = "门店状态(SUBMITTED:待审核, APPROVED: 审核通过, REJECTED: 拒绝)")
+    public ResponseData<PageInfo<StoreFullDTO>> list(@ApiParam(value = "页数，默认 1")
+                                                 @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
+                                                     @ApiParam(value = "每页记录，默认 20")
+                                                 @RequestParam(name = "page_size", defaultValue = "20", required = false) Integer pageSize,
+                                                     @ApiParam(value = "门店状态(SUBMITTED:待审核, APPROVED: 审核通过, REJECTED: 拒绝)")
                                                  @RequestParam(required = false) StoreStatus status) {
-        return ResponseData.ok(storeService.getStores(null, offset, limit, status));
+        return ResponseData.ok(new PageInfo<>(storeService.getStores(pageNum, pageSize, null, status)));
     }
 
     @ApiOperation("查询门店详情")
     @GetMapping("/{id}")
     public ResponseData<StoreFullDTO> get(@PathVariable Long id) {
-        List<StoreFullDTO> list = storeService.getStores(id, 0, 1, null);
+        List<StoreFullDTO> list = storeService.getStores(1, 1, id, null);
         if (CollectionUtils.isEmpty(list)) {
             throw new ResourceNotFoundException("找不到门店信息");
         }

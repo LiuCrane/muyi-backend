@@ -15,7 +15,5 @@ import java.util.List;
 public interface StoreMapper extends BaseMapper<Store> {
 
     List<StoreFullDTO> findAll(@Param("id") Long id,
-                               @Param("offset") Integer offset,
-                               @Param("limit") Integer limit,
                                @Param("status") StoreStatus status);
 }

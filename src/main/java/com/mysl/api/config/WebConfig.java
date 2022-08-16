@@ -14,6 +14,7 @@ import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.mysl.api.interceptor.MyInterceptor;
@@ -29,9 +30,7 @@ import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import lombok.extern.log4j.Log4j2;
@@ -143,5 +142,23 @@ public class WebConfig extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/swagger-ui/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
         super.addResourceHandlers(registry);
+    }
+
+    /**
+     * 实现json参数解析/返回时，传入的下划线转驼峰；输出的驼峰转下划线
+     * @param converters
+     */
+    @Override
+    protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        ObjectMapper objectMapper = converter.getObjectMapper();
+
+        // 设置驼峰标志转下划线
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+
+        // 设置格式化内容
+        converter.setObjectMapper(objectMapper);
+        converters.add(0, converter);
+        super.extendMessageConverters(converters);
     }
 }

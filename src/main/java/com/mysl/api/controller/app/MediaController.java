@@ -1,5 +1,6 @@
 package com.mysl.api.controller.app;
 
+import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.entity.dto.MediaDTO;
 import com.mysl.api.entity.dto.PlayerEventDTO;
@@ -11,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * @author Ivan Su
@@ -30,14 +29,14 @@ public class MediaController {
 
     @ApiOperation("查询媒体列表（App首页导学媒体）")
     @GetMapping
-    public ResponseData<List<MediaDTO>> list(@ApiParam(value = "默认 0")
-                                             @RequestParam(defaultValue = "0", required = false) Integer offset,
-                                             @ApiParam(value = "默认 5")
-                                             @RequestParam(defaultValue = "5", required = false) Integer limit,
-                                             @ApiParam(value = "媒体类型(AUDIO:音频, VIDEO:视频)")
-                                             @RequestParam(required = false) MediaType type) {
-        log.info("get app media list, offset: {}, limit: {}, type: {}", offset, limit, type);
-        return ResponseData.ok(mediaService.getMediaList(offset, limit, null, type, Boolean.TRUE));
+    public ResponseData<PageInfo<MediaDTO>> list(@ApiParam(value = "页数，默认 1")
+                                                 @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
+                                                 @ApiParam(value = "每页记录，默认 5")
+                                                 @RequestParam(name = "page_size", defaultValue = "5", required = false) Integer pageSize,
+                                                 @ApiParam(value = "媒体类型(AUDIO:音频, VIDEO:视频)")
+                                                 @RequestParam(required = false) MediaType type) {
+        log.info("get app media list, page: {}, size: {}, type: {}", pageNum, pageSize, type);
+        return ResponseData.ok(mediaService.getMediaList(pageNum, pageSize, null, type, Boolean.TRUE));
     }
 
 //    @ApiOperation("根据id查询媒体详情")

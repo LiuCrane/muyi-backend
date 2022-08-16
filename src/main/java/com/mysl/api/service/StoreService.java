@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface StoreService extends IService<Store> {
 
-    List<StoreFullDTO> getStores(Long id, Integer offset, Integer limit, StoreStatus status);
+    List<StoreFullDTO> getStores(Integer pageNum, Integer pageSize, Long id, StoreStatus status);
 
     boolean save(StoreCreateDTO dto);
 

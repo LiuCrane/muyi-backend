@@ -8,6 +8,7 @@ import com.mysl.api.entity.dto.StoreSimpleDTO;
 import com.mysl.api.service.StoreService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,10 @@ public class StoreController {
     @ApiOperation("查询门店加盟商列表")
     @Secured({"ROLE_STORE_MANAGER"})
     @GetMapping("/franchisees")
-    public ResponseData<List<StoreSimpleDTO>> getFranchisees(@RequestParam(defaultValue = "0", required = false) Integer offset,
-                                                             @RequestParam(defaultValue = "20", required = false) Integer limit){
+    public ResponseData<List<StoreSimpleDTO>> getFranchisees(@ApiParam(value = "页数，默认 1")
+                                                             @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
+                                                             @ApiParam(value = "每页记录，默认 20")
+                                                             @RequestParam(name = "page_size", defaultValue = "20", required = false) Integer pageSize) {
         return ResponseData.ok();
     }
 }
