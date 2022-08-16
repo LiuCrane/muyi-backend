@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mysl.api.mapper.ClassCourseMapper">
+    <select id="findAll" resultType="com.mysl.api.entity.dto.CourseDTO">
+        SELECT c.id, c.title, c.description, date_format(sec_to_time(c.duration), '%H:%i:%s') AS duration,
+        (SELECT count(media_id) FROM course_media WHERE course_id = c.id) AS media_num,
+        IFNULL(cc.status, "UN_APPLICABLE") AS `status` FROM course c
+        LEFT JOIN class_course cc ON c.id = cc.course_id AND cc.class_id = #{class_id} WHERE c.active = 1
+    </select>
+
+    <select id="findMediaByCourseId" resultType="com.mysl.api.entity.dto.MediaDTO">
+        SELECT
+        m.id, m.title, m.type, m.description, m.img, m.url, m.created_at,
+        date_format(sec_to_time(m.duration), '%H:%i:%s') AS duration
+        FROM class_course cc
+        LEFT JOIN course c ON cc.course_id = c.id
+        LEFT JOIN course_media cm ON c.id = cm.course_id
+        LEFT JOIN media m ON cm.media_id = m.id AND m.active
+        WHERE cc.course_id = #{course_id} ORDER BY m.created_at ASC
+    </select>
+</mapper>

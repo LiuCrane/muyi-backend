@@ -4,19 +4,24 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.mysl.api.common.exception.ResourceNotFoundException;
+import com.mysl.api.common.exception.ServiceException;
 import com.mysl.api.entity.Class;
 import com.mysl.api.entity.ClassCourse;
+import com.mysl.api.entity.ClassCourseApplication;
 import com.mysl.api.entity.Course;
 import com.mysl.api.entity.dto.ClassFullDTO;
 import com.mysl.api.entity.dto.CourseDTO;
+import com.mysl.api.entity.dto.MediaDTO;
 import com.mysl.api.entity.enums.ClassCourseStatus;
 import com.mysl.api.entity.enums.StudyProgress;
+import com.mysl.api.mapper.ClassCourseApplicationMapper;
 import com.mysl.api.mapper.ClassCourseMapper;
 import com.mysl.api.mapper.ClassMapper;
 import com.mysl.api.mapper.CourseMapper;
 import com.mysl.api.service.ClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -33,6 +38,8 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     ClassCourseMapper classCourseMapper;
     @Autowired
     CourseMapper courseMapper;
+    @Autowired
+    ClassCourseApplicationMapper classCourseApplicationMapper;
 
     @Override
     public List<ClassFullDTO> getClasses(Integer pageNum, Integer pageSize, Long id, Long storeId) {
@@ -64,15 +71,38 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     }
 
     @Override
-    public boolean applyCourse(Long storeId, Long classId, Long classCourseId) {
+    @Transactional
+    public boolean applyCourse(Long storeId, Long classId, Long courseId) {
         Class cls = super.baseMapper.selectOne(new QueryWrapper<Class>().eq("store_id", storeId).eq("id", classId));
         if (cls == null) {
             throw new ResourceNotFoundException("找不到班级信息");
         }
-        ClassCourse classCourse = classCourseMapper.selectOne(new QueryWrapper<ClassCourse>().eq("id", classCourseId).eq("class_id", classId));
-        if (classCourse == null) {
-            throw new ResourceNotFoundException("找不到课程信息");
+        ClassCourse classCourse = classCourseMapper.selectOne(
+                new QueryWrapper<ClassCourse>().eq("course_id", courseId).eq("class_id", classId));
+        if (classCourse == null || !ClassCourseStatus.APPLICABLE.equals(classCourse.getStatus())) {
+            throw new ServiceException("当前课程不可申请");
+        }
+        classCourse.setStatus(ClassCourseStatus.UNDER_APPLICATION);
+        if (classCourseMapper.updateById(classCourse) > 0) {
+            ClassCourseApplication application = new ClassCourseApplication();
+            application.setClassCourseId(classCourse.getId());
+            return classCourseApplicationMapper.insert(application) > 0;
         }
         return false;
     }
+
+    @Override
+    public List<MediaDTO> getClassCourseMedia(Long storeId, Long classId, Long courseId) {
+        Class cls = super.baseMapper.selectOne(new QueryWrapper<Class>().eq("store_id", storeId).eq("id", classId));
+        if (cls == null) {
+            throw new ResourceNotFoundException("找不到班级信息");
+        }
+        ClassCourse classCourse = classCourseMapper.selectOne(
+                new QueryWrapper<ClassCourse>().eq("course_id", courseId).eq("class_id", classId));
+        if (classCourse != null && ClassCourseStatus.ACCESSIBLE.equals(classCourse.getStatus())) {
+            return classCourseMapper.findMediaByCourseId(courseId);
+        }
+        return new ArrayList<>();
+    }
+
 }

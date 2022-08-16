@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class MediaServiceImp extends ServiceImpl<MediaMapper, Media> implements MediaService {
+public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements MediaService {
 
     @Override
     public PageInfo<MediaDTO> getMediaList(Integer pageNum, Integer pageSize, Long id, MediaType type, Boolean publicly) {

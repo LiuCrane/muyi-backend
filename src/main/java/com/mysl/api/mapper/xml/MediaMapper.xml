@@ -7,7 +7,7 @@
         date_format(sec_to_time(m.duration), '%H:%i:%s') AS duration
         FROM media m
         <where>
-            1 = 1
+            m.active
             <if test="id != null">
                 AND m.id = #{id}
             </if>
@@ -19,9 +19,6 @@
             </if>
         </where>
         ORDER BY m.created_at desc
-<!--        <if test="offset != null and limit!= null">-->
-<!--            LIMIT #{offset}, #{limit}-->
-<!--        </if>-->
     </select>
 
     <select id="sumMediaDuration" resultType="java.lang.Integer">

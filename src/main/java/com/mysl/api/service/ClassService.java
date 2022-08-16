@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.mysl.api.entity.Class;
 import com.mysl.api.entity.dto.ClassFullDTO;
 import com.mysl.api.entity.dto.CourseDTO;
+import com.mysl.api.entity.dto.MediaDTO;
 
 import java.util.List;
 
@@ -17,5 +18,7 @@ public interface ClassService extends IService<Class> {
 
     List<CourseDTO> getClassCourse(Long storeId, Long classId);
 
-    boolean applyCourse(Long storeId, Long classId, Long classCourseId);
+    boolean applyCourse(Long storeId, Long classId, Long courseId);
+
+    List<MediaDTO> getClassCourseMedia(Long storeId, Long classId, Long courseId);
 }

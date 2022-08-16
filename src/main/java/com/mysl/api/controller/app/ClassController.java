@@ -101,13 +101,14 @@ public class ClassController {
     @ApiOperation("申请课程")
     @PostMapping("/{class_id}/courses/{id}/apply")
     public ResponseData apply(@PathVariable("class_id") Long classId, @PathVariable Long id) {
+        classService.applyCourse(JwtTokenUtil.getCurrentStoreId(), classId, id);
         return ResponseData.ok();
     }
 
     @ApiOperation("查询课程内媒体列表")
     @GetMapping("/{class_id}/courses/{course_id}/media")
-    public ResponseData<List<MediaDTO>> getMedia(@PathVariable("class_id") Long classId, @PathVariable Long courseId) {
-        return ResponseData.ok();
+    public ResponseData<List<MediaDTO>> getMedia(@PathVariable("class_id") Long classId, @PathVariable("course_id") Long courseId) {
+        return ResponseData.ok(classService.getClassCourseMedia(JwtTokenUtil.getCurrentStoreId(), classId, courseId));
     }
 
 }

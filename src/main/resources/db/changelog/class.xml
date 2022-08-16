@@ -78,6 +78,15 @@
                                  onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="course" validate="true"/>
     </changeSet>
+    <changeSet id="change status field's length of class_course table" author="Ivan Su">
+        <dropColumn tableName="class_course" columnName="status"/>
+        <addColumn tableName="class_course">
+            <column name="status" type="VARCHAR(20)"
+                    remarks="状态(APPLICABLE:可申请,UN_APPLICABLE:不可申请,UNDER_APPLICATION:申请中,ACCESSIBLE:可进入课程,COMPLETED:已完成)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
     <changeSet id="class_course_application" author="Ivan Su">
         <createTable tableName="class_course_application" remarks="课程申请">
@@ -125,6 +134,9 @@
                                  deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="media" validate="true"/>
+    </changeSet>
+    <changeSet id="rename table class_course_media to class_course_event" author="Ivan Su">
+        <renameTable oldTableName="class_course_media" newTableName="class_course_event" />
     </changeSet>
 
     <changeSet id="change fk for class_course_media" author="Ivan Su">
