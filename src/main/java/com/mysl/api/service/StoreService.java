@@ -1,9 +1,11 @@
 package com.mysl.api.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 import com.mysl.api.entity.Store;
 import com.mysl.api.entity.dto.StoreCreateDTO;
 import com.mysl.api.entity.dto.StoreFullDTO;
+import com.mysl.api.entity.dto.StoreSimpleDTO;
 import com.mysl.api.entity.enums.StoreStatus;
 
 import java.util.List;
@@ -15,6 +17,8 @@ import java.util.List;
 public interface StoreService extends IService<Store> {
 
     List<StoreFullDTO> getStores(Integer pageNum, Integer pageSize, Long id, StoreStatus status);
+
+    PageInfo<StoreSimpleDTO> getFranchisees(Integer pageNum, Integer pageSize, Long excludeId);
 
     boolean save(StoreCreateDTO dto);
 

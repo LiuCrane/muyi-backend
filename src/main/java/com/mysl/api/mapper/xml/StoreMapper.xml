@@ -25,12 +25,15 @@
         FROM store s
         LEFT JOIN user u ON s.manager_user_id = u.id
         <where>
-            1 = 1
+            1 = 1 AND s.active
             <if test="id != null">
                 AND s.id = #{id}
             </if>
             <if test="status != null">
                 AND s.status = #{status}
+            </if>
+            <if test="exclude_id != null">
+                AND s.id != #{exclude_id}
             </if>
         </where>
         ORDER BY s.created_at DESC
