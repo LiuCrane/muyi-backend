@@ -1,11 +1,9 @@
 package com.mysl.api.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 import com.mysl.api.entity.Student;
-import com.mysl.api.entity.dto.StudentCreateDTO;
-import com.mysl.api.entity.dto.StudentFullDTO;
-import com.mysl.api.entity.dto.StudentSimpleDTO;
-import com.mysl.api.entity.dto.StudentVisionDTO;
+import com.mysl.api.entity.dto.*;
 
 import java.util.List;
 
@@ -16,6 +14,8 @@ import java.util.List;
 public interface StudentService extends IService<Student> {
 
     List<StudentFullDTO> getStudents(Integer pageNum, Integer pageSize, Long id, String name, Long storeId, Long classId, Boolean rehab);
+
+    PageInfo<StudentDTO> getStudents(Integer pageNum, Integer pageSize, Long storeId, Long classId, Boolean rehab);
 
     List<StudentSimpleDTO> getSimpleStudents(Long storeId, Long classId);
 

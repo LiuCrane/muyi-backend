@@ -5,6 +5,7 @@ import cn.hutool.extra.cglib.CglibUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.entity.Student;
@@ -37,6 +38,16 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
                                             Long storeId, Long classId, Boolean rehab) {
         PageHelper.startPage(pageNum, pageSize);
         return super.baseMapper.findAll(id, name, storeId, classId, rehab);
+    }
+
+    @Override
+    public PageInfo<StudentDTO> getStudents(Integer pageNum, Integer pageSize, Long storeId, Long classId, Boolean rehab) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<StudentFullDTO> list = super.baseMapper.findAll(null, null, storeId, classId, rehab);
+        PageInfo<StudentDTO> pageInfo = new PageInfo<>();
+        CglibUtil.copy(new PageInfo<>(list), pageInfo);
+        pageInfo.setList(CglibUtil.copyList(list, StudentDTO::new));
+        return pageInfo;
     }
 
     @Override

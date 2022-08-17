@@ -14,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -21,6 +22,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,8 +41,6 @@ public class ClassController {
     @Autowired
     ClassService classService;
     @Autowired
-    StoreService storeService;
-    @Autowired
     StudentService studentService;
 
     @ApiOperation("查询班级列表")
@@ -48,16 +49,9 @@ public class ClassController {
                                                  @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
                                                  @ApiParam(value = "每页记录，默认 20")
                                                  @RequestParam(name = "page_size", defaultValue = "20", required = false) Integer pageSize) {
-        log.info("pageNum: {}, pageSize: {}", pageNum, pageSize);
-        List<ClassDTO> list = new ArrayList<>();
-        Long storeId = JwtTokenUtil.getCurrentStoreId();
-        if (storeId != null) {
-            List<ClassFullDTO> classFullDTOList = classService.getClasses(pageNum, pageSize, null, storeId);
-            if (!CollectionUtils.isEmpty(classFullDTOList)) {
-                list = CglibUtil.copyList(classFullDTOList, ClassDTO::new);
-            }
-        }
-        return ResponseData.ok(new PageInfo<>(list));
+        log.info("list class, pageNum: {}, pageSize: {}", pageNum, pageSize);
+
+        return ResponseData.ok(classService.getClasses(pageNum, pageSize, JwtTokenUtil.getCurrentStoreId()));
     }
 
     @ApiOperation("创建班级")

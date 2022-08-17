@@ -34,20 +34,18 @@ public class StudentController {
     @ApiOperation("查询学员列表")
     @GetMapping("/students")
     public ResponseData<PageInfo<StudentDTO>> list(@ApiParam(value = "页数，默认 1")
-                                               @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
-                                               @ApiParam(value = "每页记录，默认 20")
-                                               @RequestParam(name = "page_size", defaultValue = "20", required = false) Integer pageSize,
-                                               @ApiParam(value = "班级id")
-                                               @RequestParam(name = "class_id", required = false) Long classId,
-                                               @ApiParam(value = "true:查询复训学员列表，false:查询学习中的学员列表，不传查全部学员")
-                                               @RequestParam(value = "rehab", required = false) String rehab) {
+                                                   @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
+                                                   @ApiParam(value = "每页记录，默认 20")
+                                                   @RequestParam(name = "page_size", defaultValue = "20", required = false) Integer pageSize,
+                                                   @ApiParam(value = "班级id")
+                                                   @RequestParam(name = "class_id", required = false) Long classId,
+                                                   @ApiParam(value = "true:查询复训学员列表，false:查询学习中的学员列表，不传查全部学员")
+                                                   @RequestParam(value = "rehab", required = false) String rehab) {
         Boolean rehabVal = null;
         if ("true".equals(rehab) || "false".equals(rehab)) {
             rehabVal = Boolean.valueOf(rehab);
         }
-        List<StudentFullDTO> dtoList = studentService.getStudents(pageNum, pageSize, null, null, JwtTokenUtil.getCurrentStoreId(), classId, rehabVal);
-        List<StudentDTO> list = CglibUtil.copyList(dtoList, StudentDTO::new);
-        return ResponseData.ok(new PageInfo<>(list));
+        return ResponseData.ok(studentService.getStudents(pageNum, pageSize, JwtTokenUtil.getCurrentStoreId(), classId, rehabVal));
     }
 
     @ApiOperation("查询学员信息详情")

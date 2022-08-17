@@ -1,18 +1,19 @@
 package com.mysl.api.service.impl;
 
+import cn.hutool.extra.cglib.CglibUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.exception.ServiceException;
 import com.mysl.api.entity.Class;
 import com.mysl.api.entity.ClassCourse;
 import com.mysl.api.entity.ClassCourseApplication;
 import com.mysl.api.entity.Course;
-import com.mysl.api.entity.dto.ClassFullDTO;
-import com.mysl.api.entity.dto.CourseDTO;
-import com.mysl.api.entity.dto.MediaDTO;
+import com.mysl.api.entity.dto.*;
 import com.mysl.api.entity.enums.ClassCourseStatus;
+import com.mysl.api.entity.enums.StoreStatus;
 import com.mysl.api.entity.enums.StudyProgress;
 import com.mysl.api.mapper.ClassCourseApplicationMapper;
 import com.mysl.api.mapper.ClassCourseMapper;
@@ -45,6 +46,16 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     public List<ClassFullDTO> getClasses(Integer pageNum, Integer pageSize, Long id, Long storeId) {
         PageHelper.startPage(pageNum, pageSize);
         return super.baseMapper.findAll(id, storeId);
+    }
+
+    @Override
+    public PageInfo<ClassDTO> getClasses(Integer pageNum, Integer pageSize, Long storeId) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<ClassFullDTO> classes = super.baseMapper.findAll(null, storeId);
+        PageInfo<ClassDTO> pageInfo = new PageInfo<>();
+        CglibUtil.copy(new PageInfo<>(classes), pageInfo);
+        pageInfo.setList(CglibUtil.copyList(classes, ClassDTO::new));
+        return pageInfo;
     }
 
     @Override

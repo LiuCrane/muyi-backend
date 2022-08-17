@@ -1,7 +1,9 @@
 package com.mysl.api.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 import com.mysl.api.entity.Class;
+import com.mysl.api.entity.dto.ClassDTO;
 import com.mysl.api.entity.dto.ClassFullDTO;
 import com.mysl.api.entity.dto.CourseDTO;
 import com.mysl.api.entity.dto.MediaDTO;
@@ -15,6 +17,8 @@ import java.util.List;
 public interface ClassService extends IService<Class> {
 
     List<ClassFullDTO> getClasses(Integer pageNum, Integer pageSize, Long id, Long storeId);
+
+    PageInfo<ClassDTO> getClasses(Integer pageNum, Integer pageSize, Long storeId);
 
     List<CourseDTO> getClassCourse(Long storeId, Long classId);
 
