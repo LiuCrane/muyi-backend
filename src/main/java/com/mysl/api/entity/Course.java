@@ -15,5 +15,6 @@ public class Course extends BaseModel<Course> {
     private String title;
     private String description;
     private BigDecimal duration;
+    private String coverPath;
 
 }

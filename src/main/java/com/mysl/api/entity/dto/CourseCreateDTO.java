@@ -31,4 +31,7 @@ public class CourseCreateDTO implements Serializable {
     @JsonProperty("media_ids")
     private List<Long> mediaIds;
 
+    @ApiModelProperty("封面路径")
+    private String coverPath;
+
 }

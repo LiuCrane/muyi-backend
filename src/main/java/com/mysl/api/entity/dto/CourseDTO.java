@@ -35,4 +35,7 @@ public class CourseDTO implements Serializable {
 
     @ApiModelProperty("状态(APPLICABLE:可申请, UN_APPLICABLE:不可申请, UNDER_APPLICATION:申请中, ACCESSIBLE:可进入课程, COMPLETED:已完成)")
     private ClassCourseStatus status;
+
+    @ApiModelProperty("封面url")
+    private String coverUrl;
 }
