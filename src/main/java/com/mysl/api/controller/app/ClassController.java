@@ -70,7 +70,7 @@ public class ClassController {
         if (storeId == null) {
             return ResponseData.ok();
         }
-        List<ClassFullDTO> classFullDTOList = classService.getClasses(0, 1, id, storeId);
+        List<ClassFullDTO> classFullDTOList = classService.getClasses(1, 1, id, storeId);
         if (CollectionUtils.isEmpty(classFullDTOList)) {
             throw new ResourceNotFoundException("找不到班级");
         }
