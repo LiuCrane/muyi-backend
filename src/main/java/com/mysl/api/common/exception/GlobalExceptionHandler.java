@@ -23,7 +23,7 @@ import java.util.Objects;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = Exception.class)
     public ResponseData handler(Exception e) {
         String msg = e.getMessage();
@@ -32,50 +32,50 @@ public class GlobalExceptionHandler {
         return ResponseData.generator(HttpStatus.INTERNAL_SERVER_ERROR.value(), "服务错误", null);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseData methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         return ResponseData.generator(HttpStatus.BAD_REQUEST.value(), Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage(), null);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, MissingServletRequestParameterException.class})
     public ResponseData requestParameterExceptionHandler(Exception e) {
         return ResponseData.generator(HttpStatus.BAD_REQUEST.value(), "参数格式错误", null);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseData httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException e) {
         return ResponseData.generator(HttpStatus.BAD_REQUEST.value(), "请求内容为空", null);
     }
 
-    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+//    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseData httpRequestMethodNotSupportedExceptionHandler(HttpRequestMethodNotSupportedException e) {
         return ResponseData.generator(HttpStatus.METHOD_NOT_ALLOWED.value(), "请求方式错误", null);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AuthenticationException.class)
     public ResponseData authenticationExceptionHandler(AuthenticationException e) {
         log.error("authenticationExceptionHandler: ", e);
-        return ResponseData.generator(HttpStatus.BAD_REQUEST.value(), "用户名或密码错误", null);
+        return ResponseData.generator(400102);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ServiceException.class)
     public ResponseData serviceErrorHandler(ServiceException e) {
         return ResponseData.generator(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
     }
 
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+//    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseData accessDeniedExceptionHandler(AccessDeniedException e) {
         return ResponseData.generator(HttpStatus.FORBIDDEN.value(), "无权限访问", null);
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseData resourceNotFoundExceptionHandler(ResourceNotFoundException e) {
         return ResponseData.generator(HttpStatus.NOT_FOUND.value(), e.getMessage(), null);

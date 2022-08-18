@@ -26,9 +26,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
                          AuthenticationException authException) throws IOException {
         response.setHeader("Content-type", MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setStatus(HttpServletResponse.SC_OK);
         try (PrintWriter out = response.getWriter()) {
-            out.print(JSONObject.toJSONString(ResponseData.generator(HttpServletResponse.SC_UNAUTHORIZED, "token丢失或无效", null)));
+            out.print(JSONObject.toJSONString(ResponseData.generator(400101)));
         }
     }
 }

@@ -61,13 +61,13 @@ public class AuthController extends AbstractAuthController {
                 NumberUtil.toBigDecimal(req.getLat()).doubleValue());
         log.info("login({}) distance: {}", req.getUsername(), distance);
         if (BigDecimal.valueOf(distance).compareTo(BigDecimal.valueOf(distanceLimit)) > 0) {
-            throw new ServiceException("您的位置与注册地址偏差较大，请在指定位置登录！");
+            return ResponseData.generator(400103);
         }
 
         // 判断是否在工作时间(9:00-18:00)
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         if (hour < 9 || hour > 18) {
-            throw new ServiceException("当前处于禁止登录时间，将退出应用。");
+            return ResponseData.generator(400104);
         }
 
         return ResponseData.ok(new LoginResDTO(token));
