@@ -81,15 +81,16 @@ public class ClassController {
 
     @ApiOperation("查询班级学员列表")
     @GetMapping("/{class_id}/students")
-    public ResponseData<List<StudentSimpleDTO>> getStudents(@PathVariable("class_id") Long classId) {
+    public ResponseData<ListData<StudentSimpleDTO>> getStudents(@PathVariable("class_id") Long classId) {
         List<StudentSimpleDTO> list = studentService.getSimpleStudents(JwtTokenUtil.getCurrentStoreId(), classId);
-        return ResponseData.ok(list);
+        return ResponseData.ok(new ListData<StudentSimpleDTO>().setList(list));
     }
 
     @ApiOperation("查询班级课程列表")
     @GetMapping("/{class_id}/courses")
-    public ResponseData<List<CourseDTO>> getCourses(@PathVariable("class_id") Long classId) {
-        return ResponseData.ok(classService.getClassCourse(JwtTokenUtil.getCurrentStoreId(), classId));
+    public ResponseData<ListData<CourseDTO>> getCourses(@PathVariable("class_id") Long classId) {
+        List<CourseDTO> list = classService.getClassCourse(JwtTokenUtil.getCurrentStoreId(), classId);
+        return ResponseData.ok(new ListData<CourseDTO>().setList(list));
     }
 
     @ApiOperation("申请课程")
@@ -101,8 +102,9 @@ public class ClassController {
 
     @ApiOperation("查询课程内媒体列表")
     @GetMapping("/{class_id}/courses/{course_id}/media")
-    public ResponseData<List<MediaDTO>> getMedia(@PathVariable("class_id") Long classId, @PathVariable("course_id") Long courseId) {
-        return ResponseData.ok(classService.getClassCourseMedia(JwtTokenUtil.getCurrentStoreId(), classId, courseId));
+    public ResponseData<ListData<MediaDTO>> getMedia(@PathVariable("class_id") Long classId, @PathVariable("course_id") Long courseId) {
+        List<MediaDTO> list = classService.getClassCourseMedia(JwtTokenUtil.getCurrentStoreId(), classId, courseId);
+        return ResponseData.ok(new ListData<MediaDTO>().setList(list));
     }
 
 }
