@@ -191,6 +191,13 @@
       <scope>compile</scope>
     </dependency>
 
+    <!-- tecent cloud cos api -->
+    <dependency>
+      <groupId>com.qcloud</groupId>
+      <artifactId>cos_api</artifactId>
+      <version>5.6.75</version>
+    </dependency>
+
   </dependencies>
 
   <build>
