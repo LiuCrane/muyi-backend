@@ -27,19 +27,24 @@ public class MediaEditDTO implements Serializable {
     @NotNull(message = "类型不能为空")
     private MediaType type;
 
+    @ApiModelProperty(value = "分类", required = true)
+    @NotEmpty(message = "分类不能为空")
+    private String category;
+
     @ApiModelProperty("封面图片路径")
     private String img;
 
     @ApiModelProperty("简介")
     private String description;
 
-    @ApiModelProperty("媒体路径")
+    @ApiModelProperty(value = "媒体路径", required = true)
     @NotEmpty(message = "媒体路径不能为空")
     private String url;
 
-    @ApiModelProperty("媒体时长，单位：秒")
+    @ApiModelProperty(value = "媒体时长，单位：秒", required = true)
+    @NotNull(message = "媒体时长不能为空")
     private BigDecimal duration;
 
-    @ApiModelProperty(value = "是否公开，默认否", required = true)
+    @ApiModelProperty(value = "是否公开，默认否")
     private Boolean publicly;
 }

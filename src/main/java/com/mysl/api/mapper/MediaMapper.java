@@ -2,10 +2,9 @@ package com.mysl.api.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mysl.api.entity.Media;
-import com.mysl.api.entity.dto.MediaDTO;
+import com.mysl.api.entity.dto.MediaFullDTO;
 import com.mysl.api.entity.enums.MediaType;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -15,9 +14,12 @@ import java.util.List;
  */
 public interface MediaMapper extends BaseMapper<Media> {
 
-    List<MediaDTO> findAll(@Param("id") Long id,
-                           @Param("type") MediaType type,
-                           @Param("publicly") Boolean publicly);
+    List<MediaFullDTO> findAll(@Param("id") Long id,
+                                   @Param("type") MediaType type,
+                                   @Param("publicly") Boolean publicly,
+                                   @Param("title") String title,
+                                   @Param("description") String description,
+                                   @Param("category") String category);
 
     int sumMediaDuration(@Param("media_ids") List<Long> mediaIds);
 

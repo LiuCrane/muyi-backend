@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mysl.api.mapper.MediaMapper">
-    <select id="findAll" resultType="com.mysl.api.entity.dto.MediaDTO">
+    <select id="findAll" resultType="com.mysl.api.entity.dto.MediaFullDTO">
         SELECT
-        m.id, m.title, m.type, m.description, m.img, m.url, m.created_at,
+        m.id, m.title, m.type, m.description, m.category, m.img, m.url,
+        m.created_at, m.created_by, m.updated_at, m.updated_by,
         date_format(sec_to_time(m.duration), '%H:%i:%s') AS duration
         FROM media m
         <where>
@@ -16,6 +17,17 @@
             </if>
             <if test="publicly != null">
                 AND m.publicly = #{publicly}
+            </if>
+            <if test="title != null">
+                <bind name="title" value="'%' + title + '%'"/>
+                AND m.title LIKE #{title}
+            </if>
+            <if test="description != null">
+                <bind name="description" value="'%' + description + '%'"/>
+                AND m.description LIKE #{description}
+            </if>
+            <if test="category != null">
+                AND m.category = #{category}
             </if>
         </where>
         ORDER BY m.created_at desc

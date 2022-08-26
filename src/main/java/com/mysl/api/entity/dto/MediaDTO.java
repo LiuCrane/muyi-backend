@@ -46,4 +46,7 @@ public class MediaDTO implements Serializable {
     @ApiModelProperty("媒体时长")
     private String duration;
 
+    @ApiModelProperty("分类")
+    private String category;
+
 }

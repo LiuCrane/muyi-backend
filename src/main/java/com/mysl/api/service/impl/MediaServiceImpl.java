@@ -1,5 +1,6 @@
 package com.mysl.api.service.impl;
 
+import cn.hutool.extra.cglib.CglibUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
@@ -8,8 +9,7 @@ import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.entity.*;
 import com.mysl.api.entity.Class;
-import com.mysl.api.entity.dto.MediaDTO;
-import com.mysl.api.entity.dto.PlayerEventDTO;
+import com.mysl.api.entity.dto.*;
 import com.mysl.api.entity.enums.ClassCourseStatus;
 import com.mysl.api.entity.enums.MediaType;
 import com.mysl.api.entity.enums.PlayerEvent;
@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -46,8 +47,27 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
     @Override
     public PageInfo<MediaDTO> getMediaList(Integer pageNum, Integer pageSize, Long id, MediaType type, Boolean publicly) {
         PageHelper.startPage(pageNum, pageSize);
-        List<MediaDTO> list = super.baseMapper.findAll(id, type, publicly);
+        List<MediaFullDTO> list = super.baseMapper.findAll(id, type, publicly, null, null, null);
+        PageInfo<MediaDTO> pageInfo = new PageInfo<>();
+        CglibUtil.copy(new PageInfo<>(list), pageInfo);
+        pageInfo.setList(CglibUtil.copyList(list, MediaDTO::new));
+        return pageInfo;
+    }
+
+    @Override
+    public PageInfo<MediaFullDTO> getMediaList(MediaSearchDTO dto) {
+        PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
+        List<MediaFullDTO> list = super.baseMapper.findAll(null, dto.getType(), dto.getPublicly(), dto.getTitle(), dto.getDescription(), dto.getCategory());
         return new PageInfo<>(list);
+    }
+
+    @Override
+    public MediaFullDTO getMediaById(Long id) {
+        List<MediaFullDTO> list = super.baseMapper.findAll(id, null, null, null, null, null);
+        if (CollectionUtils.isEmpty(list)) {
+            throw new ResourceNotFoundException("找不到媒体");
+        }
+        return list.get(0);
     }
 
     @Override
@@ -72,6 +92,17 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
 
         // 处理课程学习进度
         handleCauseProgress(dto.getClassId(), dto.getCourseId(), dto.getEvent());
+        return true;
+    }
+
+    @Override
+    public boolean remove(Long id) {
+        Media media = super.getById(id);
+        if (media == null) {
+            throw new ResourceNotFoundException("找不到媒体");
+        }
+        media.setActive(Boolean.FALSE);
+        super.updateById(media);
         return true;
     }
 

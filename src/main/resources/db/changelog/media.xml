@@ -51,4 +51,9 @@
             <column name="duration" type="DECIMAL(8,3)" defaultValue="0" remarks="时长"/>
         </addColumn>
     </changeSet>
+    <changeSet id="add category to media" author="Ivan Su">
+        <addColumn tableName="media">
+            <column name="category" type="VARCHAR(32)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
