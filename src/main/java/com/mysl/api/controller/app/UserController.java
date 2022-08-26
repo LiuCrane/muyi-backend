@@ -5,11 +5,11 @@ import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.entity.dto.RegisterDTO;
 import com.mysl.api.entity.dto.UserDTO;
 import com.mysl.api.entity.dto.UserPwdUpdateDTO;
-import com.mysl.api.entity.dto.UserUpdateDTO;
+import com.mysl.api.common.OperateType;
 import com.mysl.api.service.UserService;
+import io.github.flyhero.easylog.annotation.EasyLog;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -30,6 +30,8 @@ public class UserController {
     UserService userService;
 
     @ApiOperation("用户注册")
+    @EasyLog(module = "App-用户注册", type = OperateType.ADD, detail = "{{#dto.toString()}}",
+            success = "", fail = "{{#_errMsg}}")
     @PostMapping("/register")
     public ResponseData register(@Validated @RequestBody RegisterDTO dto) {
         log.info("register dto: {}", dto);
@@ -37,16 +39,11 @@ public class UserController {
         return ResponseData.ok();
     }
 
-    /**
-     * 获取用户详情
-     *
-     * @param token
-     * @return
-     */
     @ApiOperation("查询用户信息")
+    @EasyLog(module = "App-查询用户信息", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @Secured("ROLE_APP_USER")
     @GetMapping
-        public ResponseData<UserDTO> getUserDetail(@ApiParam("用户token") @RequestHeader("Authorization") final String token) {
+        public ResponseData<UserDTO> getUserDetail() {
         UserDTO dto = JwtTokenUtil.getCurrentUser();
         return ResponseData.ok(dto);
     }
@@ -60,6 +57,7 @@ public class UserController {
 //    }
 
     @ApiOperation("修改密码")
+    @EasyLog(module = "App-修改密码", type = OperateType.UPDATE, success = "", fail = "{{#_errMsg}}")
     @Secured("ROLE_APP_USER")
     @PostMapping("/reset_password")
     public ResponseData updateUserPwd(@RequestBody UserPwdUpdateDTO dto) {

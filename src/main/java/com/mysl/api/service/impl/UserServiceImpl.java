@@ -52,7 +52,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .password(password).name(dto.getName()).type(UserType.APP_USER).build();
         if (super.save(user)) {
             // 管理员未审核前只有ROLE_APP_USER
-            UserRole userRole = UserRole.builder().userId(user.getId()).roleId(GlobalConstant.ROLE_APP_USER).build();
+            UserRole userRole = UserRole.builder().userId(user.getId()).roleId(GlobalConstant.ROLE_APP_USER_ID).build();
             userRoleService.save(userRole);
 
             StoreCreateDTO storeCreateDTO = StoreCreateDTO.builder()

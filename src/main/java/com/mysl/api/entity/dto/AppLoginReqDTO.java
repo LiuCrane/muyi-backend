@@ -3,6 +3,7 @@ package com.mysl.api.entity.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotEmpty;
  */
 @ApiModel("登录请求")
 @Data
+@ToString(callSuper = true)
 public class AppLoginReqDTO extends LoginReqDTO {
     private static final long serialVersionUID = 5833340139135457677L;
 

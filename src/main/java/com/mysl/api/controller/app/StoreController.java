@@ -1,12 +1,14 @@
 package com.mysl.api.controller.app;
 
 import com.github.pagehelper.PageInfo;
+import com.mysl.api.common.OperateType;
 import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.entity.Store;
 import com.mysl.api.entity.dto.StoreDTO;
 import com.mysl.api.entity.dto.StoreSimpleDTO;
 import com.mysl.api.service.StoreService;
+import io.github.flyhero.easylog.annotation.EasyLog;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -32,6 +34,7 @@ public class StoreController {
     StoreService storeService;
 
     @ApiOperation("查询门店信息")
+    @EasyLog(module = "App-查询门店信息", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @Secured({"ROLE_APP_USER", "ROLE_STORE_MANAGER"})
     @GetMapping
     public ResponseData<StoreDTO> get() {
@@ -42,6 +45,7 @@ public class StoreController {
     }
 
     @ApiOperation("查询门店加盟商列表")
+    @EasyLog(module = "App-查询加盟商列表", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @Secured({"ROLE_STORE_MANAGER"})
     @GetMapping("/franchisees")
     public ResponseData<PageInfo<StoreSimpleDTO>> getFranchisees(@ApiParam(value = "页数，默认 1")

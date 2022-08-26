@@ -79,7 +79,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
             super.saveOrUpdate(store);
 
             // 更新用户权限（加 ROLE_STORE_MANAGER）
-            UserRole userRole = UserRole.builder().userId(store.getManagerUserId()).roleId(GlobalConstant.ROLE_APP_USER).build();
+            UserRole userRole = UserRole.builder().userId(store.getManagerUserId()).roleId(GlobalConstant.ROLE_STORE_MANAGER_ID).build();
             return userRoleService.save(userRole);
 
         }

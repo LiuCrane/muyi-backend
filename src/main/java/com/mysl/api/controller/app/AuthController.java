@@ -2,16 +2,15 @@ package com.mysl.api.controller.app;
 
 import cn.hutool.core.util.NumberUtil;
 import com.mysl.api.common.GlobalConstant;
-import com.mysl.api.common.exception.ServiceException;
 import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.common.util.CoordUtil;
 import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.controller.AbstractAuthController;
 import com.mysl.api.entity.Store;
 import com.mysl.api.entity.dto.AppLoginReqDTO;
-import com.mysl.api.entity.dto.LoginReqDTO;
 import com.mysl.api.entity.dto.LoginResDTO;
 import com.mysl.api.service.StoreService;
+import io.github.flyhero.easylog.annotation.EasyLog;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.Date;
 
 
 /**
@@ -48,6 +46,7 @@ public class AuthController extends AbstractAuthController {
      * @return
      */
     @ApiOperation(value = "登录")
+    @EasyLog(module = "App-登录", success = "", fail = "{{#_errMsg}}", detail = "{{#req.toString()}}")
     @PostMapping("/login")
     public ResponseData<LoginResDTO> login(@Validated @RequestBody AppLoginReqDTO req) {
         final String token = super.authenticate(GlobalConstant.CLIENT_APP, req.getUsername(), req.getPassword());
@@ -74,6 +73,7 @@ public class AuthController extends AbstractAuthController {
     }
 
     @ApiOperation("退出登录")
+    @EasyLog(module = "App-退出登录", success = "", fail = "{{#_errMsg}}", detail = "{{#token}}")
     @Secured("ROLE_APP_USER")
     @PostMapping("/logout")
     public ResponseData logout(@RequestHeader("Authorization") final String token) {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
@@ -31,6 +32,7 @@ public class RegisterDTO implements Serializable {
     @ApiModelProperty(value = "密码", required = true)
     @NotEmpty(message = "密码不能为空")
     @Length(min = 6, message = "密码长度不能小于6位数")
+    @ToString.Exclude
     private String password;
 
     @ApiModelProperty(value = "身份证", required = true)

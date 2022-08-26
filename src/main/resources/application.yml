@@ -38,6 +38,13 @@ mybatis-plus:
   configuration:
     # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+pagehelper:
+  helperDialect: mysql
+  reasonable: false
+  supportMethodsArguments: true
+  params: count=countSql
+easylog:
+  banner: false
 server:
   port: 3001
 logging:

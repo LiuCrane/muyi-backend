@@ -1,12 +1,14 @@
 package com.mysl.api.controller.admin;
 
 import com.github.pagehelper.PageInfo;
+import com.mysl.api.common.OperateType;
 import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.entity.dto.StoreAuditDTO;
 import com.mysl.api.entity.dto.StoreFullDTO;
 import com.mysl.api.entity.enums.StoreStatus;
 import com.mysl.api.service.StoreService;
+import io.github.flyhero.easylog.annotation.EasyLog;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -34,6 +36,7 @@ public class StoreController {
     StoreService storeService;
 
     @ApiOperation("查询门店列表")
+    @EasyLog(module = "Admin-查询门店列表", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping
     public ResponseData<PageInfo<StoreFullDTO>> list(@ApiParam(value = "页数，默认 1")
                                                  @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
@@ -45,6 +48,7 @@ public class StoreController {
     }
 
     @ApiOperation("查询门店详情")
+    @EasyLog(module = "Admin-查询门店详情", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @GetMapping("/{id}")
     public ResponseData<StoreFullDTO> get(@PathVariable Long id) {
         List<StoreFullDTO> list = storeService.getStores(1, 1, id, null);
@@ -55,6 +59,7 @@ public class StoreController {
     }
 
     @ApiOperation("审核门店信息")
+    @EasyLog(module = "Admin-审核门店信息", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
     @PostMapping("/{id}/audit")
     public ResponseData audit(@PathVariable Long id, @Validated @RequestBody StoreAuditDTO dto) {
         storeService.updateStatus(id, dto.getResult());
