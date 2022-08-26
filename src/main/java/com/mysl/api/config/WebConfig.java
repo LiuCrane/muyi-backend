@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.mysl.api.config.param.UnderlineToCamelArgumentResolver;
 import com.mysl.api.interceptor.MyInterceptor;
 import com.mysl.api.lib.AesFile;
 
@@ -30,6 +31,7 @@ import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
@@ -160,5 +162,10 @@ public class WebConfig extends WebMvcConfigurationSupport {
         converter.setObjectMapper(objectMapper);
         converters.add(0, converter);
         super.extendMessageConverters(converters);
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(new UnderlineToCamelArgumentResolver());
     }
 }
