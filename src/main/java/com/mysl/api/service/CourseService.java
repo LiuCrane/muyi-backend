@@ -12,4 +12,8 @@ import com.mysl.api.entity.dto.CourseCreateDTO;
 public interface CourseService extends IService<Course> {
 
     boolean save(CourseCreateDTO dto);
+
+    boolean update(Long id, CourseCreateDTO dto);
+
+    boolean remove(Long id);
 }

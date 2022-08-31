@@ -21,4 +21,6 @@ public interface ClassCourseMapper extends BaseMapper<ClassCourse> {
 
     int updateClassCourseStatus(@Param("class_id") Long classId, @Param("course_id") Long courseId,
                                 @Param("status")ClassCourseStatus status, @Param("updated_by") String updatedBy);
+
+    int countByCourseIdAndStatus(@Param("course_id") Long courseId, @Param("status") ClassCourseStatus status);
 }

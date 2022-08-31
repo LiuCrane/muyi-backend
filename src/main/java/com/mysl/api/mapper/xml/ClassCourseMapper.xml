@@ -27,4 +27,8 @@
         updated_by = #{updated_by}
         WHERE class_id = #{class_id} AND course_id = #{course_id}
     </update>
+
+    <select id="countByCourseIdAndStatus" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM class_course WHERE course_id = #{course_id} AND status = #{status}
+    </select>
 </mapper>
