@@ -16,6 +16,8 @@ public interface StoreMapper extends BaseMapper<Store> {
 
     List<StoreFullDTO> findAll(@Param("id") Long id,
                                @Param("status") StoreStatus status,
-                               @Param("exclude_id") Long excludeId);
+                               @Param("exclude_id") Long excludeId,
+                               @Param("name") String name,
+                               @Param("manager_user_ids") List<Long> managerUserIds);
 
 }

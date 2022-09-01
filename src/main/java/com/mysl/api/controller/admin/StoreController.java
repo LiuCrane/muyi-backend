@@ -6,6 +6,7 @@ import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.entity.dto.StoreAuditDTO;
 import com.mysl.api.entity.dto.StoreFullDTO;
+import com.mysl.api.entity.dto.StoreUpdateDTO;
 import com.mysl.api.entity.enums.StoreStatus;
 import com.mysl.api.service.StoreService;
 import io.github.flyhero.easylog.annotation.EasyLog;
@@ -39,19 +40,23 @@ public class StoreController {
     @EasyLog(module = "Admin-查询门店列表", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping
     public ResponseData<PageInfo<StoreFullDTO>> list(@ApiParam(value = "页数，默认 1")
-                                                 @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
+                                                     @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
                                                      @ApiParam(value = "每页记录，默认 20")
-                                                 @RequestParam(name = "page_size", defaultValue = "20", required = false) Integer pageSize,
+                                                     @RequestParam(name = "page_size", defaultValue = "20", required = false) Integer pageSize,
                                                      @ApiParam(value = "门店状态(SUBMITTED:待审核, APPROVED: 审核通过, REJECTED: 拒绝)")
-                                                 @RequestParam(required = false) StoreStatus status) {
-        return ResponseData.ok(new PageInfo<>(storeService.getStores(pageNum, pageSize, null, status)));
+                                                     @RequestParam(required = false) StoreStatus status,
+                                                     @ApiParam(value = "门店名称")
+                                                     @RequestParam(name = "name", required = false) String name,
+                                                     @ApiParam(value = "店长")
+                                                     @RequestParam(name = "manager_name", required = false) String managerName) {
+        return ResponseData.ok(new PageInfo<>(storeService.getStores(pageNum, pageSize, null, status, name, managerName)));
     }
 
     @ApiOperation("查询门店详情")
     @EasyLog(module = "Admin-查询门店详情", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @GetMapping("/{id}")
     public ResponseData<StoreFullDTO> get(@PathVariable Long id) {
-        List<StoreFullDTO> list = storeService.getStores(1, 1, id, null);
+        List<StoreFullDTO> list = storeService.getStores(1, 1, id, null, null, null);
         if (CollectionUtils.isEmpty(list)) {
             throw new ResourceNotFoundException("找不到门店信息");
         }
@@ -63,6 +68,23 @@ public class StoreController {
     @PostMapping("/{id}/audit")
     public ResponseData audit(@PathVariable Long id, @Validated @RequestBody StoreAuditDTO dto) {
         storeService.updateStatus(id, dto.getResult());
+        return ResponseData.ok();
+    }
+
+    @ApiOperation("修改门店信息")
+    @EasyLog(module = "Admin-修改门店信息", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
+    @PutMapping("/{id}")
+    public ResponseData update(@PathVariable Long id, @Validated @RequestBody StoreUpdateDTO dto) {
+        log.info("update store dto: {}", dto);
+        storeService.update(id, dto);
+        return ResponseData.ok();
+    }
+
+    @ApiOperation("注销门店")
+    @EasyLog(module = "Admin-注销门店", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
+    @PostMapping("/{id}/cancel")
+    public ResponseData cancel(@PathVariable Long id) {
+        storeService.cancel(id);
         return ResponseData.ok();
     }
 

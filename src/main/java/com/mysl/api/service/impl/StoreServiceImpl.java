@@ -7,21 +7,29 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.GlobalConstant;
 import com.mysl.api.common.exception.ResourceNotFoundException;
+import com.mysl.api.common.exception.ServiceException;
 import com.mysl.api.entity.Store;
+import com.mysl.api.entity.User;
 import com.mysl.api.entity.UserRole;
 import com.mysl.api.entity.dto.StoreCreateDTO;
 import com.mysl.api.entity.dto.StoreFullDTO;
 import com.mysl.api.entity.dto.StoreSimpleDTO;
+import com.mysl.api.entity.dto.StoreUpdateDTO;
 import com.mysl.api.entity.enums.StoreStatus;
+import com.mysl.api.entity.enums.UserType;
 import com.mysl.api.mapper.StoreMapper;
+import com.mysl.api.mapper.UserMapper;
 import com.mysl.api.service.StoreService;
 import com.mysl.api.service.UserRoleService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Ivan Su
@@ -32,17 +40,23 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
 
     @Autowired
     UserRoleService userRoleService;
+    @Autowired
+    UserMapper userMapper;
 
     @Override
-    public List<StoreFullDTO> getStores(Integer pageNum, Integer pageSize, Long id, StoreStatus status) {
+    public List<StoreFullDTO> getStores(Integer pageNum, Integer pageSize, Long id, StoreStatus status, String name, String managerName) {
+        List<Long> managerUserIds = new ArrayList<>();
+        if (StringUtils.isNotEmpty(managerName)) {
+            managerUserIds = userMapper.findByNameAndType(managerName, UserType.APP_USER);
+        }
         PageHelper.startPage(pageNum, pageSize);
-        return super.baseMapper.findAll(id, status, null);
+        return super.baseMapper.findAll(id, status, null, name, managerUserIds);
     }
 
     @Override
     public PageInfo<StoreSimpleDTO> getFranchisees(Integer pageNum, Integer pageSize, Long excludeId) {
         PageHelper.startPage(pageNum, pageSize);
-        List<StoreFullDTO> stores = super.baseMapper.findAll(null, StoreStatus.APPROVED, excludeId);
+        List<StoreFullDTO> stores = super.baseMapper.findAll(null, StoreStatus.APPROVED, excludeId, null, null);
         PageInfo<StoreSimpleDTO> pageInfo = new PageInfo<>();
         CglibUtil.copy(new PageInfo<>(stores), pageInfo);
         pageInfo.setList(CglibUtil.copyList(stores, StoreSimpleDTO::new));
@@ -76,6 +90,10 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
                 status = StoreStatus.REJECTED;
             }
             store.setStatus(status);
+
+            // 生成门店编号
+            store.setNumber(String.format("%05d", store.getId()));
+
             super.saveOrUpdate(store);
 
             // 更新用户权限（加 ROLE_STORE_MANAGER）
@@ -84,6 +102,53 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
 
         }
         return false;
+    }
+
+    @Override
+    @Transactional
+    public boolean update(Long id, StoreUpdateDTO dto) {
+        Store store = super.getById(id);
+        if (store == null) {
+            throw new ResourceNotFoundException("找不到门店");
+        }
+        if (Boolean.FALSE.equals(store.getActive())) {
+            throw new ServiceException("门店已注销");
+        }
+        User manager = userMapper.selectById(store.getManagerUserId());
+        if (!Objects.equals(dto.getManagerName(), manager.getName()) || !Objects.equals(dto.getManagerPhone(), manager.getPhone())) {
+            if (!Objects.equals(dto.getManagerPhone(), manager.getPhone())) {
+                int count = userMapper.countByPhone(dto.getManagerPhone());
+                if (count > 0) {
+                    throw new ServiceException("该手机号已被其他店长使用");
+                }
+            }
+            userMapper.updateUserNameAndPhone(manager.getId(), dto.getManagerName(), dto.getManagerPhone());
+        }
+        store.setName(dto.getName());
+        store.setAddress(dto.getAddress());
+        return super.updateById(store);
+    }
+
+    @Override
+    @Transactional
+    public boolean cancel(Long id) {
+        Store store = super.getById(id);
+        if (store == null) {
+            throw new ResourceNotFoundException("找不到门店");
+        }
+        if (Boolean.FALSE.equals(store.getActive())) {
+            throw new ServiceException("门店已注销");
+        }
+        store.setActive(Boolean.FALSE);
+        super.updateById(store);
+
+        User user = userMapper.selectById(store.getManagerUserId());
+        user.setActive(Boolean.FALSE);
+        String dePhone = user.getPhone().replaceFirst("1", "D");
+        user.setPhone(dePhone);
+        user.setUsername(dePhone);
+        userMapper.updateById(user);
+        return true;
     }
 
 

@@ -47,4 +47,10 @@ public class StoreFullDTO extends StoreDTO {
     @JsonProperty("updated_by")
     private String updatedBy;
 
+    @ApiModelProperty(value = "学员数量")
+    private Integer studentNum;
+
+    @ApiModelProperty(value = "浏览记录")
+    private String lastBrowseDate;
+
 }

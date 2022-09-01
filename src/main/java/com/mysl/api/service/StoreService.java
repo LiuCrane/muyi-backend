@@ -6,6 +6,7 @@ import com.mysl.api.entity.Store;
 import com.mysl.api.entity.dto.StoreCreateDTO;
 import com.mysl.api.entity.dto.StoreFullDTO;
 import com.mysl.api.entity.dto.StoreSimpleDTO;
+import com.mysl.api.entity.dto.StoreUpdateDTO;
 import com.mysl.api.entity.enums.StoreStatus;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public interface StoreService extends IService<Store> {
 
-    List<StoreFullDTO> getStores(Integer pageNum, Integer pageSize, Long id, StoreStatus status);
+    List<StoreFullDTO> getStores(Integer pageNum, Integer pageSize, Long id, StoreStatus status, String name, String managerName);
 
     PageInfo<StoreSimpleDTO> getFranchisees(Integer pageNum, Integer pageSize, Long excludeId);
 
@@ -25,5 +26,9 @@ public interface StoreService extends IService<Store> {
     Store findByUserId(Long userId);
 
     boolean updateStatus(Long id, Boolean auditResult);
+
+    boolean update(Long id, StoreUpdateDTO dto);
+
+    boolean cancel(Long id);
 
 }

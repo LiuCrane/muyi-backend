@@ -40,7 +40,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public User findByUsername(String username) {
         log.info("findByUsername: {}", username);
-        return super.getOne(new QueryWrapper<>(User.builder().username(username).build()));
+        return super.getOne(new QueryWrapper<>(User.builder().username(username).active(Boolean.TRUE).build()));
     }
 
     @Override

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mysl.api.mapper.UserMapper">
+    <select id="findByNameAndType" resultType="java.lang.Long">
+        <bind name="name" value="'%' + name + '%'"/>
+        SELECT u.id FROM user u WHERE u.name like #{name} AND u.type = #{type} AND u.active
+    </select>
+
+    <select id="countByPhone" resultType="java.lang.Integer">
+        SELECT count(id) FROM user WHERE phone = #{phone}
+    </select>
+
+    <update id="updateUserNameAndPhone">
+        UPDATE user SET name = #{name}, username = #{phone}, phone = #{phone} WHERE id = #{id}
+    </update>
+</mapper>
