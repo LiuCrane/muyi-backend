@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -15,6 +16,9 @@ import java.util.Date;
 @Data
 public class MediaFullDTO extends MediaDTO {
     private static final long serialVersionUID = -7453555331423241490L;
+
+    @ApiModelProperty(value = "媒体时长(编辑用)，单位：秒")
+    private BigDecimal durationActual;
 
     @ApiModelProperty(value = "修改时间")
     @JsonProperty("updated_at")

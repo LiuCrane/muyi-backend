@@ -5,7 +5,8 @@
         SELECT
         m.id, m.title, m.type, m.description, m.category, m.img, m.url,
         m.created_at, m.created_by, m.updated_at, m.updated_by,
-        date_format(sec_to_time(m.duration), '%H:%i:%s') AS duration
+        date_format(sec_to_time(m.duration), '%H:%i:%s') AS duration,
+        m.duration AS duration_actual
         FROM media m
         <where>
             m.active

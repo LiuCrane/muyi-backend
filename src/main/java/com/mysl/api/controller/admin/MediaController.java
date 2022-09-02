@@ -56,6 +56,7 @@ public class MediaController {
     public ResponseData create(@Validated @RequestBody MediaEditDTO dto) {
         Media media = new Media();
         BeanUtils.copyProperties(dto, media);
+        media.setDuration(dto.getDurationActual());
         mediaService.save(media);
         return ResponseData.ok();
     }
@@ -69,6 +70,7 @@ public class MediaController {
             throw new ResourceNotFoundException("找不到媒体");
         }
         BeanUtils.copyProperties(dto, media);
+        media.setDuration(dto.getDurationActual());
         mediaService.updateById(media);
         return ResponseData.ok();
     }
