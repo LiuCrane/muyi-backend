@@ -1,15 +1,16 @@
 package com.mysl.api.service.impl;
 
+import cn.hutool.extra.cglib.CglibUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.GlobalConstant;
 import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.exception.ServiceException;
 import com.mysl.api.entity.User;
 import com.mysl.api.entity.UserRole;
-import com.mysl.api.entity.dto.RegisterDTO;
-import com.mysl.api.entity.dto.StoreCreateDTO;
-import com.mysl.api.entity.dto.UserPwdUpdateDTO;
+import com.mysl.api.entity.dto.*;
 import com.mysl.api.entity.enums.StoreStatus;
 import com.mysl.api.entity.enums.UserType;
 import com.mysl.api.mapper.UserMapper;
@@ -21,6 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Ivan Su
@@ -78,5 +83,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         return super.updateById(user);
+    }
+
+    @Override
+    public PageInfo<UserFullDTO> getUsers(Integer pageNum, Integer pageSize, String phone, String name) {
+        PageHelper.startPage(pageNum, pageSize);
+        return new PageInfo<>(super.baseMapper.findAll(phone, name));
+    }
+
+    @Override
+    public List<UserSimpleDTO> getSimpleUsers() {
+        List<UserSimpleDTO> list = new ArrayList<>();
+        List<User> users = super.baseMapper.selectList(new QueryWrapper<User>().eq("active", 1));
+        if (!CollectionUtils.isEmpty(users)) {
+            list = CglibUtil.copyList(users, UserSimpleDTO::new);
+        }
+        return list;
     }
 }
