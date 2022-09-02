@@ -14,5 +14,5 @@ import java.util.List;
 public interface ClassMapper extends BaseMapper<Class>  {
 
     List<ClassFullDTO> findAll(@Param("id") Long id,
-                               @Param("store_id") Long storeId);
+                               @Param("store_id") Long storeId, @Param("key_word") String keyWord);
 }

@@ -29,4 +29,10 @@ public class StudentFullDTO extends StudentDTO {
     @ApiModelProperty(value = "修改人")
     @JsonProperty("updated_by")
     private String updatedBy;
+
+    @ApiModelProperty(value = "学习前左眼视力")
+    private String firstLeftVision;
+
+    @ApiModelProperty(value = "学习前右眼视力")
+    private String firstRightVision;
 }

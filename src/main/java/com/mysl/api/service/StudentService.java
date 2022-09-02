@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface StudentService extends IService<Student> {
 
-    List<StudentFullDTO> getStudents(Integer pageNum, Integer pageSize, Long id, String name, Long storeId, Long classId, Boolean rehab);
+    PageInfo<StudentFullDTO> getStudents(Integer pageNum, Integer pageSize, Long id, String name, Long storeId, Long classId, Boolean rehab, String keyWord);
 
     PageInfo<StudentDTO> getStudents(Integer pageNum, Integer pageSize, Long storeId, Long classId, Boolean rehab);
 

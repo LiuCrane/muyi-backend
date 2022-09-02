@@ -36,14 +36,8 @@ public class StudentDTO implements Serializable {
     @JsonProperty("parent_phone")
     private String parentPhone;
 
-//    @ApiModelProperty("近3次视力")
-//    private List<String> visions;
-
     @ApiModelProperty("视力是否提升")
     private Boolean improved;
-
-//    @ApiModelProperty("学习进度")
-//    private StudyProgress studyProgress;
 
     @ApiModelProperty("当前课程")
     private String currentCourse;
@@ -54,9 +48,9 @@ public class StudentDTO implements Serializable {
     @ApiModelProperty("视力数据列表")
     private List<StudentEyesightDTO> eyesightList;
 
-    @ApiModelProperty("左眼视力")
+    @ApiModelProperty("最新左眼视力")
     private String leftVision;
 
-    @ApiModelProperty("右眼视力")
+    @ApiModelProperty("最新右眼视力")
     private String rightVision;
 }

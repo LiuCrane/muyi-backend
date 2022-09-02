@@ -18,7 +18,8 @@ public interface StudentMapper extends BaseMapper<Student> {
                                  @Param("name") String name,
                                  @Param("store_id") Long storeId,
                                  @Param("class_id") Long classId,
-                                 @Param("rehab") Boolean rehab);
+                                 @Param("rehab") Boolean rehab,
+                                 @Param("key_word") String keyWord);
 
     List<StudentSimpleDTO> findSimpleList(@Param("store_id") Long storeId, @Param("class_id") Long classId);
 

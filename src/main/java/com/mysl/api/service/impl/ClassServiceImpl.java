@@ -13,7 +13,6 @@ import com.mysl.api.entity.ClassCourseApplication;
 import com.mysl.api.entity.Course;
 import com.mysl.api.entity.dto.*;
 import com.mysl.api.entity.enums.ClassCourseStatus;
-import com.mysl.api.entity.enums.StoreStatus;
 import com.mysl.api.entity.enums.StudyProgress;
 import com.mysl.api.mapper.ClassCourseApplicationMapper;
 import com.mysl.api.mapper.ClassCourseMapper;
@@ -43,19 +42,28 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     ClassCourseApplicationMapper classCourseApplicationMapper;
 
     @Override
-    public List<ClassFullDTO> getClasses(Integer pageNum, Integer pageSize, Long id, Long storeId) {
+    public PageInfo<ClassFullDTO> getClasses(Integer pageNum, Integer pageSize, Long id, Long storeId, String keyWord) {
         PageHelper.startPage(pageNum, pageSize);
-        return super.baseMapper.findAll(id, storeId);
+        return new PageInfo<>(super.baseMapper.findAll(id, storeId, keyWord));
     }
 
     @Override
     public PageInfo<ClassDTO> getClasses(Integer pageNum, Integer pageSize, Long storeId) {
         PageHelper.startPage(pageNum, pageSize);
-        List<ClassFullDTO> classes = super.baseMapper.findAll(null, storeId);
+        List<ClassFullDTO> classes = super.baseMapper.findAll(null, storeId, null);
         PageInfo<ClassDTO> pageInfo = new PageInfo<>();
         CglibUtil.copy(new PageInfo<>(classes), pageInfo);
         pageInfo.setList(CglibUtil.copyList(classes, ClassDTO::new));
         return pageInfo;
+    }
+
+    @Override
+    public ClassFullDTO getClassById(Long id, Long storeId) {
+        List<ClassFullDTO> list = super.baseMapper.findAll(id, storeId, null);
+        if (CollectionUtils.isEmpty(list)) {
+            throw new ResourceNotFoundException("找不到班级");
+        }
+        return list.get(0);
     }
 
     @Override
@@ -114,6 +122,16 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
             return classCourseMapper.findMediaByClassIdAndCourseId(classId, courseId);
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public boolean update(Long id, ClassUpdateDTO dto) {
+        Class cls = super.getById(id);
+        if (cls == null) {
+            throw new ResourceNotFoundException("找不到班级");
+        }
+        cls.setName(dto.getName());
+        return super.updateById(cls);
     }
 
 }

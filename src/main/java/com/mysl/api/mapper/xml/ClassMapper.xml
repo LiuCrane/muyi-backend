@@ -32,10 +32,11 @@
             <if test="store_id != null">
                 AND c.store_id = #{store_id}
             </if>
+            <if test="key_word != null">
+                <bind name="key_word" value="'%' + key_word + '%'"/>
+                AND (c.name LIKE #{key_word} OR s.name LIKE #{key_word} OR cr.title LIKE #{key_word})
+            </if>
         </where>
         ORDER BY c.created_at DESC
-<!--        <if test="offset != null and limit!= null">-->
-<!--            LIMIT #{offset}, #{limit}-->
-<!--        </if>-->
     </select>
 </mapper>

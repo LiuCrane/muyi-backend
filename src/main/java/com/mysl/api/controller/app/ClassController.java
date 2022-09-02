@@ -2,7 +2,6 @@ package com.mysl.api.controller.app;
 
 import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.OperateType;
-import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.entity.Class;
@@ -17,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,12 +67,9 @@ public class ClassController {
         if (storeId == null) {
             return ResponseData.ok();
         }
-        List<ClassFullDTO> classFullDTOList = classService.getClasses(1, 1, id, storeId);
-        if (CollectionUtils.isEmpty(classFullDTOList)) {
-            throw new ResourceNotFoundException("找不到班级");
-        }
+        ClassFullDTO dto = classService.getClassById(id, storeId);
         ClassDTO ret = new ClassDTO();
-        BeanUtils.copyProperties(classFullDTOList.get(0), ret);
+        BeanUtils.copyProperties(dto, ret);
         return ResponseData.ok(ret);
     }
 

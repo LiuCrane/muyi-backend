@@ -34,16 +34,16 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     StudentEyesightMapper studentEyesightMapper;
 
     @Override
-    public List<StudentFullDTO> getStudents(Integer pageNum, Integer pageSize, Long id, String name,
-                                            Long storeId, Long classId, Boolean rehab) {
+    public PageInfo<StudentFullDTO> getStudents(Integer pageNum, Integer pageSize, Long id, String name,
+                                            Long storeId, Long classId, Boolean rehab, String keyWord) {
         PageHelper.startPage(pageNum, pageSize);
-        return super.baseMapper.findAll(id, name, storeId, classId, rehab);
+        return new PageInfo<>(super.baseMapper.findAll(id, name, storeId, classId, rehab, keyWord));
     }
 
     @Override
     public PageInfo<StudentDTO> getStudents(Integer pageNum, Integer pageSize, Long storeId, Long classId, Boolean rehab) {
         PageHelper.startPage(pageNum, pageSize);
-        List<StudentFullDTO> list = super.baseMapper.findAll(null, null, storeId, classId, rehab);
+        List<StudentFullDTO> list = super.baseMapper.findAll(null, null, storeId, classId, rehab, null);
         PageInfo<StudentDTO> pageInfo = new PageInfo<>();
         CglibUtil.copy(new PageInfo<>(list), pageInfo);
         pageInfo.setList(CglibUtil.copyList(list, StudentDTO::new));
@@ -57,7 +57,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     @Override
     public StudentFullDTO getStudentById(Long id) {
-        List<StudentFullDTO> list = super.baseMapper.findAll(id, null, null, null, null);
+        List<StudentFullDTO> list = super.baseMapper.findAll(id, null, null, null, null, null);
         if (CollectionUtils.isEmpty(list)) {
             throw new ResourceNotFoundException("找不到学员信息");
         }
@@ -68,7 +68,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     @Override
     public StudentFullDTO getStudentByStoreIdAndId(Long storeId, Long id) {
-        List<StudentFullDTO> list = super.baseMapper.findAll(id, null, storeId, null, null);
+        List<StudentFullDTO> list = super.baseMapper.findAll(id, null, storeId, null, null, null);
         if (CollectionUtils.isEmpty(list)) {
             throw new ResourceNotFoundException("找不到学员信息");
         }
