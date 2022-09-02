@@ -57,7 +57,7 @@ public class SpringSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
+        httpSecurity.antMatcher("/app/**").antMatcher("/admin/**")
                 // jwt不需要csrf
                 .csrf().disable()
                 // 开启 cors 的支持
@@ -67,6 +67,7 @@ public class SpringSecurityConfiguration {
                 // 异常处理
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint()).and()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS, "/app/**", "/admin/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/app/auth/login", "/app/user/register", "/admin/auth/login", "/cos/queue/callback").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
