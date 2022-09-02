@@ -166,4 +166,13 @@
                                  constraintName="fk_cce_store_id" referencedTableName="store"
                                  referencedColumnNames="id" validate="true"/>
     </changeSet>
+    
+    <changeSet id="add recorded field to class_course_media_event" author="Ivan Su">
+        <addColumn tableName="class_course_media_event">
+            <column defaultValue="0" name="recorded" type="TINYINT(3) UNSIGNED"/>
+        </addColumn>
+        <createIndex tableName="class_course_media_event" indexName="idx_recorded">
+            <column name="recorded"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

@@ -56,4 +56,45 @@
             <column name="category" type="VARCHAR(32)"/>
         </addColumn>
     </changeSet>
+    
+    <changeSet id="media_browse_record" author="Ivan Su">
+        <createTable tableName="media_browse_record">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="BIGINT UNSIGNED" remarks="用户id"/>
+            <column name="store_id" type="BIGINT UNSIGNED" remarks="门店id"/>
+            <column name="store_name" type="VARCHAR(128)" remarks="门店名称"/>
+            <column name="store_address" type="VARCHAR(255)" remarks="门店地址"/>
+            <column name="store_manager" type="VARCHAR(32)" remarks="店长"/>
+            <column name="store_manager_phone" type="VARCHAR(11)" remarks="店长电话"/>
+            <column name="class_id" type="BIGINT UNSIGNED" remarks="班级id"/>
+            <column name="class_name" type="VARCHAR(128)" remarks="班级名称"/>
+            <column name="student_ids" type="TEXT" remarks="学员id"/>
+            <column name="course_id" type="BIGINT UNSIGNED" remarks="课程id"/>
+            <column name="course_title" type="VARCHAR(128)" remarks="课程名称"/>
+            <column name="media_id" type="BIGINT UNSIGNED" remarks="媒体id"/>
+            <column name="media_title" type="VARCHAR(128)" remarks="媒体标题"/>
+            <column name="media_type" type="VARCHAR(16)" remarks="媒体类型"/>
+            <column name="media_description" type="VARCHAR(255)" remarks="媒体简介"/>
+            <column name="start_time" type="datetime" remarks="起始时间"/>
+            <column name="end_time" type="datetime" remarks="结束时间"/>
+            <column name="total_time" type="VARCHAR(32)" remarks="总时长"/>
+            <column defaultValueNumeric="1" name="active" type="TINYINT(3) UNSIGNED"/>
+            <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+        </createTable>
+        <createIndex tableName="media_browse_record" indexName="idx_user_id">
+            <column name="user_id"/>
+        </createIndex>
+        <createIndex tableName="media_browse_record" indexName="idx_start_time">
+            <column name="start_time"/>
+        </createIndex>
+        <createIndex tableName="media_browse_record" indexName="idx_end_time">
+            <column name="end_time"/>
+        </createIndex>
+        <createIndex tableName="media_browse_record" indexName="idx_created_at">
+            <column name="created_at"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>
