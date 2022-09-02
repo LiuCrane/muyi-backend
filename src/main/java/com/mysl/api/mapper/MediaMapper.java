@@ -15,11 +15,12 @@ import java.util.List;
 public interface MediaMapper extends BaseMapper<Media> {
 
     List<MediaFullDTO> findAll(@Param("id") Long id,
-                                   @Param("type") MediaType type,
-                                   @Param("publicly") Boolean publicly,
-                                   @Param("title") String title,
-                                   @Param("description") String description,
-                                   @Param("category") String category);
+                               @Param("type") MediaType type,
+                               @Param("publicly") Boolean publicly,
+                               @Param("title") String title,
+                               @Param("description") String description,
+                               @Param("category") String category,
+                               @Param("key_word") String keyWord);
 
     int sumMediaDuration(@Param("media_ids") List<Long> mediaIds);
 

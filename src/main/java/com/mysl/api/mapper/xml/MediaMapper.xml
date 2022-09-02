@@ -30,6 +30,10 @@
             <if test="category != null">
                 AND m.category = #{category}
             </if>
+            <if test="key_word != null">
+                <bind name="kw" value="'%' + key_word + '%'"/>
+                AND (m.type = #{key_word} OR m.title LIKE #{kw} OR m.description LIKE #{kw} OR m.category = #{key_word})
+            </if>
         </where>
         ORDER BY m.created_at desc
     </select>

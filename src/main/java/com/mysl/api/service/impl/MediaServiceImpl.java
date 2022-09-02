@@ -1,5 +1,7 @@
 package com.mysl.api.service.impl;
 
+import cn.hutool.core.date.BetweenFormatter;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.extra.cglib.CglibUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -15,6 +17,7 @@ import com.mysl.api.entity.enums.MediaType;
 import com.mysl.api.entity.enums.PlayerEvent;
 import com.mysl.api.entity.enums.StudyProgress;
 import com.mysl.api.mapper.*;
+import com.mysl.api.service.MediaBrowseRecordService;
 import com.mysl.api.service.MediaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Ivan Su
@@ -43,11 +47,17 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
     CourseMapper courseMapper;
     @Autowired
     StudentMapper studentMapper;
+    @Autowired
+    StoreMapper storeMapper;
+    @Autowired
+    UserMapper userMapper;
+    @Autowired
+    MediaBrowseRecordService browseRecordService;
 
     @Override
     public PageInfo<MediaDTO> getMediaList(Integer pageNum, Integer pageSize, Long id, MediaType type, Boolean publicly) {
         PageHelper.startPage(pageNum, pageSize);
-        List<MediaFullDTO> list = super.baseMapper.findAll(id, type, publicly, null, null, null);
+        List<MediaFullDTO> list = super.baseMapper.findAll(id, type, publicly, null, null, null, null);
         PageInfo<MediaDTO> pageInfo = new PageInfo<>();
         CglibUtil.copy(new PageInfo<>(list), pageInfo);
         pageInfo.setList(CglibUtil.copyList(list, MediaDTO::new));
@@ -55,15 +65,15 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
     }
 
     @Override
-    public PageInfo<MediaFullDTO> getMediaList(MediaSearchDTO dto) {
-        PageHelper.startPage(dto.getPageNum(), dto.getPageSize());
-        List<MediaFullDTO> list = super.baseMapper.findAll(null, dto.getType(), dto.getPublicly(), dto.getTitle(), dto.getDescription(), dto.getCategory());
+    public PageInfo<MediaFullDTO> getMediaList(Integer pageNum, Integer pageSize, String keyWord) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<MediaFullDTO> list = super.baseMapper.findAll(null, null, null, null, null, null, keyWord);
         return new PageInfo<>(list);
     }
 
     @Override
     public MediaFullDTO getMediaById(Long id) {
-        List<MediaFullDTO> list = super.baseMapper.findAll(id, null, null, null, null, null);
+        List<MediaFullDTO> list = super.baseMapper.findAll(id, null, null, null, null, null, null);
         if (CollectionUtils.isEmpty(list)) {
             throw new ResourceNotFoundException("找不到媒体");
         }
@@ -92,6 +102,9 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
 
         // 处理课程学习进度
         handleCauseProgress(dto.getClassId(), dto.getCourseId(), dto.getEvent());
+
+        // 保存浏览记录
+        saveBrowseRecord(storeId, dto.getClassId(), dto.getCourseId(), id, dto.getEvent());
         return true;
     }
 
@@ -154,5 +167,73 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
 
                 break;
         }
+    }
+
+    @Async
+    @Transactional
+    private void saveBrowseRecord(Long storeId, Long classId, Long courseId, Long mediaId, PlayerEvent event) {
+        if (!PlayerEvent.END.equals(event)) {
+            return;
+        }
+        Store store = storeMapper.selectById(storeId);
+        if (store == null) {
+            return;
+        }
+        User manger = userMapper.selectById(store.getManagerUserId());
+        if (manger == null) {
+            return;
+        }
+        Class cls = classMapper.selectById(classId);
+        if (cls == null) {
+            return;
+        }
+        List<Student> students = studentMapper.selectList(new QueryWrapper<Student>().eq("class_id", classId));
+        if (CollectionUtils.isEmpty(students)) {
+            return;
+        }
+        String stuIds = students.stream().map(m -> m.getId().toString()).collect(Collectors.joining(","));
+
+        Course course = courseMapper.selectById(courseId);
+        if (course == null) {
+            return;
+        }
+        Media media = super.getById(mediaId);
+        if (media == null) {
+            return;
+        }
+        ClassCourse classCourse = classCourseMapper.selectOne(new QueryWrapper<ClassCourse>()
+                .eq("class_id", classId).eq("course_id", courseId));
+        if (classCourse == null) {
+            return;
+        }
+        ClassCourseMediaEvent firstStartEvent = eventMapper.getEvent(classCourse.getId(), mediaId, PlayerEvent.START, null);
+        if (firstStartEvent == null) {
+            return;
+        }
+        ClassCourseMediaEvent lastEndEvent = eventMapper.getEvent(classCourse.getId(), mediaId, PlayerEvent.END, Boolean.TRUE);
+        if (lastEndEvent == null) {
+            return;
+        }
+        String totalTime = DateUtil.formatBetween(firstStartEvent.getCreatedAt(), lastEndEvent.getCreatedAt(), BetweenFormatter.Level.SECOND);
+
+        MediaBrowseRecord browseRecord = MediaBrowseRecord.builder()
+                .userId(store.getManagerUserId())
+                .storeId(store.getId()).storeName(store.getName())
+                .storeAddress(store.getAddress())
+                .storeManager(manger.getName()).storeManagerPhone(manger.getPhone())
+                .classId(cls.getId()).className(cls.getName())
+                .studentIds(stuIds)
+                .courseId(courseId).courseTitle(course.getTitle())
+                .mediaId(mediaId).mediaTitle(media.getTitle())
+                .mediaType(media.getType().name())
+                .mediaDescription(media.getDescription())
+                .startTime(firstStartEvent.getCreatedAt())
+                .endTime(lastEndEvent.getCreatedAt())
+                .totalTime(totalTime)
+                .build();
+        browseRecordService.save(browseRecord);
+
+        eventMapper.updateRecorded(classCourse.getId(), mediaId);
+
     }
 }

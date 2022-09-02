@@ -18,7 +18,7 @@ public interface MediaService extends IService<Media> {
 
     PageInfo<MediaDTO> getMediaList(Integer pageNum, Integer pageSize, Long id, MediaType type, Boolean publicly);
 
-    PageInfo<MediaFullDTO> getMediaList(MediaSearchDTO dto);
+    PageInfo<MediaFullDTO> getMediaList(Integer pageNum, Integer pageSize, String keyWord);
 
     MediaFullDTO getMediaById(Long id);
 

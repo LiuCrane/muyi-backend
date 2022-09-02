@@ -164,8 +164,8 @@ public class WebConfig extends WebMvcConfigurationSupport {
         super.extendMessageConverters(converters);
     }
 
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new UnderlineToCamelArgumentResolver());
-    }
+//    @Override
+//    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+//        argumentResolvers.add(new UnderlineToCamelArgumentResolver());
+//    }
 }
