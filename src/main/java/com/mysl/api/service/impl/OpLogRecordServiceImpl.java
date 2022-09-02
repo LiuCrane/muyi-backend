@@ -25,7 +25,7 @@ public class OpLogRecordServiceImpl implements ILogRecordService {
     @Override
     @Async
     public void record(EasyLogInfo easyLogInfo) {
-        log.info("opt log info: {}", easyLogInfo);
+//        log.info("opt log info: {}", easyLogInfo);
         OperateLog log = new OperateLog();
         BeanUtils.copyProperties(easyLogInfo, log);
         log.setInfo(easyLogInfo.toString());

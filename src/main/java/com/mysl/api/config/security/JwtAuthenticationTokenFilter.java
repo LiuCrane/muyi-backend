@@ -4,6 +4,7 @@ import com.mysl.api.service.JwtBlacklistService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +22,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
+
+    private static final String USER_ID = "userId";
+    private static final String USERNAME = "username";
 
     private final UserDetailsService userDetailsService;
     private final JwtTokenUtil jwtTokenUtil;
@@ -56,11 +60,15 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
                     log.debug("该 " + username + "用户已认证, 设置安全上下文");
 
+                    ThreadContext.put(USER_ID, String.valueOf(((JwtUserDetails) userDetails).getUser().getId()));
+                    ThreadContext.put(USERNAME, username);
+
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
         }
         chain.doFilter(request, response);
+        ThreadContext.clearAll();
     }
 
     private String extractAuthTokenFromRequest(HttpServletRequest httpRequest, String tokenHeader) {
