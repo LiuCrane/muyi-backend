@@ -141,18 +141,28 @@ public class CosUtil {
         }
     }
 
+    public static String getImgShowUrl(String filePath) {
+        return endpoint + filePath;
+    }
+
     // 获取下载的预签名连接
-    public static String generateSimplePresignedDownloadUrl(String filePath, Date expirationDate) {
+    public static String generatePresignedDownloadUrl(String filePath, Date expirationDate) {
         GeneratePresignedUrlRequest req =
                 new GeneratePresignedUrlRequest(bucketName, filePath, HttpMethodName.GET);
         // 设置签名过期时间(可选), 若未进行设置则默认使用ClientConfig中的签名过期时间(1小时)
 //        Date expirationDate = new Date(System.currentTimeMillis() + 30 * 60 * 1000);
-        req.setExpiration(expirationDate);
+        if (expirationDate != null) {
+            req.setExpiration(expirationDate);
+        }
 
         URL url = getCosClient().generatePresignedUrl(req);
         return url.toString();
 //        return UriComponentsBuilder.fromUriString(url.toString()).queryParam("ci-process", "pm3u8").queryParam("expires", 3600).build().toString();
 
+    }
+
+    public static String generatePresignedDownloadUrl(String filePath) {
+        return generatePresignedDownloadUrl(filePath, null);
     }
 
     // 生成包含预签名上传连接的信息
@@ -176,6 +186,5 @@ public class CosUtil {
                         .queryParam("x-cos-security-token", credentials.sessionToken).build().toString())
                 .key(key).method(method.name()).build();
     }
-
 
 }

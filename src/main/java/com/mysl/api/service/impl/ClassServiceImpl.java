@@ -7,6 +7,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.exception.ServiceException;
+import com.mysl.api.common.util.CosUtil;
 import com.mysl.api.entity.Class;
 import com.mysl.api.entity.ClassCourse;
 import com.mysl.api.entity.ClassCourseApplication;
@@ -20,6 +21,7 @@ import com.mysl.api.mapper.ClassCourseMapper;
 import com.mysl.api.mapper.ClassMapper;
 import com.mysl.api.mapper.CourseMapper;
 import com.mysl.api.service.ClassService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,7 +91,15 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
                 classCourseMapper.insert(classCourse);
             }
         }
-        return classCourseMapper.findAll(classId);
+        List<CourseDTO> list = classCourseMapper.findAll(classId);
+        if (!CollectionUtils.isEmpty(list)) {
+            list.forEach(c -> {
+                if (StringUtils.isNotEmpty(c.getCoverUrl())) {
+                    c.setCoverUrl(CosUtil.getImgShowUrl(c.getCoverUrl()));
+                }
+            });
+        }
+        return list;
     }
 
     @Override
@@ -122,7 +132,18 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         ClassCourse classCourse = classCourseMapper.selectOne(
                 new QueryWrapper<ClassCourse>().eq("course_id", courseId).eq("class_id", classId));
         if (classCourse != null && ClassCourseStatus.ACCESSIBLE.equals(classCourse.getStatus())) {
-            return classCourseMapper.findMediaByClassIdAndCourseId(classId, courseId);
+            List<MediaDTO> list = classCourseMapper.findMediaByClassIdAndCourseId(classId, courseId);
+            if (!CollectionUtils.isEmpty(list)) {
+                list.forEach(m -> {
+                    if (StringUtils.isNotEmpty(m.getImg())) {
+                        m.setImg(CosUtil.getImgShowUrl(m.getImg()));
+                    }
+                    if (StringUtils.isNotEmpty(m.getUrl())) {
+                        m.setUrl(CosUtil.generatePresignedDownloadUrl(m.getUrl()));
+                    }
+                });
+                return list;
+            }
         }
         return new ArrayList<>();
     }

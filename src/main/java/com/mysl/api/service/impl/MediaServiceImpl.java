@@ -12,6 +12,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.exception.ServiceException;
+import com.mysl.api.common.util.CosUtil;
 import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.entity.*;
 import com.mysl.api.entity.Class;
@@ -21,6 +22,7 @@ import com.mysl.api.mapper.*;
 import com.mysl.api.service.MediaBrowseRecordService;
 import com.mysl.api.service.MediaService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -64,6 +66,14 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
     public PageInfo<MediaDTO> getMediaList(Integer pageNum, Integer pageSize, Long id, MediaType type, CourseType courseType) {
         PageHelper.startPage(pageNum, pageSize);
         List<MediaFullDTO> list = super.baseMapper.findAll(id, type, null, null, null, null, courseType);
+        list.forEach(m -> {
+            if (StringUtils.isNotEmpty(m.getImg())) {
+                m.setImg(CosUtil.getImgShowUrl(m.getImg()));
+            }
+            if (StringUtils.isNotEmpty(m.getUrl())) {
+                m.setUrl(CosUtil.generatePresignedDownloadUrl(m.getUrl()));
+            }
+        });
         PageInfo<MediaDTO> pageInfo = new PageInfo<>();
         CglibUtil.copy(new PageInfo<>(list), pageInfo);
         pageInfo.setList(CglibUtil.copyList(list, MediaDTO::new));
@@ -83,7 +93,14 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
         if (CollectionUtils.isEmpty(list)) {
             throw new ResourceNotFoundException("找不到媒体");
         }
-        return list.get(0);
+        MediaFullDTO dto = list.get(0);
+        if (StringUtils.isNotEmpty(dto.getImg())) {
+            dto.setImg(CosUtil.getImgShowUrl(dto.getImg()));
+        }
+        if (StringUtils.isNotEmpty(dto.getUrl())) {
+            dto.setUrl(CosUtil.generatePresignedDownloadUrl(dto.getUrl()));
+        }
+        return dto;
     }
 
     @Override

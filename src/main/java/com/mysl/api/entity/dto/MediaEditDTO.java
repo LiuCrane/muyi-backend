@@ -44,7 +44,4 @@ public class MediaEditDTO implements Serializable {
     @ApiModelProperty(value = "媒体时长，单位：秒", required = true)
     @NotNull(message = "媒体时长不能为空")
     private BigDecimal durationActual;
-
-    @ApiModelProperty(value = "是否公开，默认否")
-    private Boolean publicly;
 }
