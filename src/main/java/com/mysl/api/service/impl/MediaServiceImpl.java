@@ -16,10 +16,7 @@ import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.entity.*;
 import com.mysl.api.entity.Class;
 import com.mysl.api.entity.dto.*;
-import com.mysl.api.entity.enums.ClassCourseStatus;
-import com.mysl.api.entity.enums.MediaType;
-import com.mysl.api.entity.enums.PlayerEvent;
-import com.mysl.api.entity.enums.StudyProgress;
+import com.mysl.api.entity.enums.*;
 import com.mysl.api.mapper.*;
 import com.mysl.api.service.MediaBrowseRecordService;
 import com.mysl.api.service.MediaService;
@@ -64,9 +61,9 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
     MediaBrowseRecordService browseRecordService;
 
     @Override
-    public PageInfo<MediaDTO> getMediaList(Integer pageNum, Integer pageSize, Long id, MediaType type, Boolean publicly) {
+    public PageInfo<MediaDTO> getMediaList(Integer pageNum, Integer pageSize, Long id, MediaType type, CourseType courseType) {
         PageHelper.startPage(pageNum, pageSize);
-        List<MediaFullDTO> list = super.baseMapper.findAll(id, type, publicly, null, null, null, null);
+        List<MediaFullDTO> list = super.baseMapper.findAll(id, type, null, null, null, null, courseType);
         PageInfo<MediaDTO> pageInfo = new PageInfo<>();
         CglibUtil.copy(new PageInfo<>(list), pageInfo);
         pageInfo.setList(CglibUtil.copyList(list, MediaDTO::new));
@@ -76,7 +73,7 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
     @Override
     public PageInfo<MediaFullDTO> getMediaList(Integer pageNum, Integer pageSize, String keyWord) {
         PageHelper.startPage(pageNum, pageSize);
-        List<MediaFullDTO> list = super.baseMapper.findAll(null, null, null, null, null, null, keyWord);
+        List<MediaFullDTO> list = super.baseMapper.findAll(null,  null, null, null, null, keyWord, null);
         return new PageInfo<>(list);
     }
 
@@ -118,13 +115,24 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
     }
 
     @Override
+    @Transactional
     public boolean remove(Long id) {
         Media media = super.getById(id);
         if (media == null) {
             throw new ResourceNotFoundException("找不到媒体");
         }
+        Long oldCourseId = media.getCourseId();
         media.setActive(Boolean.FALSE);
-        super.updateById(media);
+        media.setCourseId(0L);
+        if (!super.updateById(media)) {
+            throw new ServiceException("操作失败");
+        }
+
+        if (courseMediaMapper.deleteOne(oldCourseId, id) < 1) {
+            throw new ServiceException("操作失败");
+        }
+        Course oldCourse = courseMapper.selectById(oldCourseId);
+        updateCourseDuration(oldCourse);
         return true;
     }
 
@@ -257,7 +265,7 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
                             classCourseMapper.updateById(classCourse);
                         }
                     } else {
-                        // 找不到下个课程，则该班级学员学习进度进入复训
+                        // 找不到下个课程，则该班级学员学习进度进入复健
                         Class cls2 = classMapper.selectById(classId);
                         if (StudyProgress.IN_PROGRESS.equals(cls2.getStudyProgress())) {
                             cls2.setStudyProgress(StudyProgress.REHAB_TRAINING);

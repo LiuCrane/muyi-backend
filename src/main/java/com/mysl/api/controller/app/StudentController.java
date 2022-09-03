@@ -41,7 +41,7 @@ public class StudentController {
                                                    @RequestParam(name = "page_size", defaultValue = "20", required = false) Integer pageSize,
                                                    @ApiParam(value = "班级id")
                                                    @RequestParam(name = "class_id", required = false) Long classId,
-                                                   @ApiParam(value = "true:查询复训学员列表，false:查询学习中的学员列表，不传查全部学员")
+                                                   @ApiParam(value = "true:查询复健学员列表，false:查询学习中的学员列表，不传查全部学员")
                                                    @RequestParam(value = "rehab", required = false) String rehab) {
         Boolean rehabVal = null;
         if ("true".equals(rehab) || "false".equals(rehab)) {

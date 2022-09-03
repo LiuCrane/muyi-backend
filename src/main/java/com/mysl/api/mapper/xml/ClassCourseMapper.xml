@@ -5,7 +5,7 @@
         SELECT c.id, c.title, c.description, date_format(sec_to_time(c.duration), '%H:%i:%s') AS duration,
         (SELECT count(media_id) FROM course_media WHERE course_id = c.id) AS media_num,
         IFNULL(cc.status, "UN_APPLICABLE") AS `status`, c.cover_path AS cover_url FROM course c
-        LEFT JOIN class_course cc ON c.id = cc.course_id AND cc.class_id = #{class_id} WHERE c.active = 1
+        LEFT JOIN class_course cc ON c.id = cc.course_id AND cc.class_id = #{class_id} WHERE c.active = 1 AND c.type = 'STAGE'
     </select>
 
     <select id="findMediaByClassIdAndCourseId" resultType="com.mysl.api.entity.dto.MediaDTO">

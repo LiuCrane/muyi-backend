@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.mysl.api.entity.Media;
 import com.mysl.api.entity.dto.*;
+import com.mysl.api.entity.enums.CourseType;
 import com.mysl.api.entity.enums.MediaType;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public interface MediaService extends IService<Media> {
 
-    PageInfo<MediaDTO> getMediaList(Integer pageNum, Integer pageSize, Long id, MediaType type, Boolean publicly);
+    PageInfo<MediaDTO> getMediaList(Integer pageNum, Integer pageSize, Long id, MediaType type, CourseType courseType);
 
     PageInfo<MediaFullDTO> getMediaList(Integer pageNum, Integer pageSize, String keyWord);
 

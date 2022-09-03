@@ -13,6 +13,7 @@ import com.mysl.api.entity.ClassCourseApplication;
 import com.mysl.api.entity.Course;
 import com.mysl.api.entity.dto.*;
 import com.mysl.api.entity.enums.ClassCourseStatus;
+import com.mysl.api.entity.enums.CourseType;
 import com.mysl.api.entity.enums.StudyProgress;
 import com.mysl.api.mapper.ClassCourseApplicationMapper;
 import com.mysl.api.mapper.ClassCourseMapper;
@@ -74,11 +75,13 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         }
 
         if (StudyProgress.NOT_STARTED.equals(cls.getStudyProgress()) || StudyProgress.IN_PROGRESS.equals(cls.getStudyProgress())) {
-            List<Course> courses = courseMapper.selectList(new QueryWrapper<Course>().eq("active", 1).orderByAsc("created_at"));
+            List<Course> courses = courseMapper.selectList(new QueryWrapper<Course>()
+                    .eq("active", 1).eq("type", CourseType.STAGE).orderByAsc("created_at"));
             if (CollectionUtils.isEmpty(courses)) {
                 return new ArrayList<>();
             }
-            List<ClassCourse> classCourses = classCourseMapper.selectList(new QueryWrapper<ClassCourse>().eq("class_id", classId).orderByDesc("created_at"));
+            List<ClassCourse> classCourses = classCourseMapper.selectList(new QueryWrapper<ClassCourse>()
+                    .eq("class_id", classId).orderByDesc("created_at"));
             if (CollectionUtils.isEmpty(classCourses)) {
                 // 当前无班级课程，创建一条可申请的课程
                 ClassCourse classCourse = ClassCourse.builder()

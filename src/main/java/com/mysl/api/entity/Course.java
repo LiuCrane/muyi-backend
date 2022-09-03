@@ -1,5 +1,6 @@
 package com.mysl.api.entity;
 
+import com.mysl.api.entity.enums.CourseType;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -16,5 +17,6 @@ public class Course extends BaseModel<Course> {
     private String description;
     private BigDecimal duration;
     private String coverPath;
+    private CourseType type;
 
 }

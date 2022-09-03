@@ -6,6 +6,7 @@ import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.entity.dto.MediaDTO;
 import com.mysl.api.entity.dto.PlayerEventDTO;
+import com.mysl.api.entity.enums.CourseType;
 import com.mysl.api.entity.enums.MediaType;
 import com.mysl.api.service.MediaService;
 import io.github.flyhero.easylog.annotation.EasyLog;
@@ -40,7 +41,7 @@ public class MediaController {
                                                  @ApiParam(value = "媒体类型(AUDIO:音频, VIDEO:视频)")
                                                  @RequestParam(required = false) MediaType type) {
         log.info("get app media list, page: {}, size: {}, type: {}", pageNum, pageSize, type);
-        return ResponseData.ok(mediaService.getMediaList(pageNum, pageSize, null, type, Boolean.TRUE));
+        return ResponseData.ok(mediaService.getMediaList(pageNum, pageSize, null, type, CourseType.GUIDE));
     }
 
 //    @ApiOperation("根据id查询媒体详情")

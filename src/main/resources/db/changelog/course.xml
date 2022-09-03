@@ -41,6 +41,11 @@
             <column name="cover_path" type="VARCHAR(255)" remarks="封面路径" />
         </addColumn>
     </changeSet>
+    <changeSet id="add type to course" author="Ivan Su">
+        <addColumn tableName="course">
+            <column name="type" type="VARCHAR(16)" remarks="类型(GUIDE:导学, STAGE:学习阶段, REHAB: 复训)" />
+        </addColumn>
+    </changeSet>
 
     <changeSet id="course_media" author="Ivan Su">
         <createTable tableName="course_media" remarks="课程媒体">

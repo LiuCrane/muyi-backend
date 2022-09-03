@@ -17,9 +17,6 @@
             <if test="type != null">
                 AND m.type = #{type}
             </if>
-            <if test="publicly != null">
-                AND m.publicly = #{publicly}
-            </if>
             <if test="title != null">
                 <bind name="title" value="'%' + title + '%'"/>
                 AND m.title LIKE #{title}
@@ -34,6 +31,9 @@
             <if test="key_word != null">
                 <bind name="kw" value="'%' + key_word + '%'"/>
                 AND (m.type = #{key_word} OR m.title LIKE #{kw} OR m.description LIKE #{kw} OR c.title = #{key_word})
+            </if>
+            <if test="course_type != null">
+                AND c.type = #{course_type}
             </if>
         </where>
         ORDER BY m.created_at desc

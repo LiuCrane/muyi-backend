@@ -34,7 +34,7 @@ public class ClassDTO implements Serializable {
     @JsonProperty("store_number")
     private String storeNumber;
 
-    @ApiModelProperty("学习进度(NOT_STARTED:未开始, IN_PROGRESS:进行中, REHAB_TRAINING:复训中, ENDED:已结束)")
+    @ApiModelProperty("学习进度(NOT_STARTED:未开始, IN_PROGRESS:进行中, REHAB_TRAINING:复健中, ENDED:已结束)")
     @JsonProperty("study_progress")
     private StudyProgress studyProgress;
 
