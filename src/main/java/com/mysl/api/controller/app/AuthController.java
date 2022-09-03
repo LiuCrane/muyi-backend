@@ -39,6 +39,10 @@ public class AuthController extends AbstractAuthController {
 
     @Value("${mysl.login.distance-limit}")
     Integer distanceLimit;
+    @Value("${mysl.login.location-check}")
+    Boolean locationCheck;
+    @Value("${mysl.login.time-check}")
+    Boolean timeCheck;
 
     /**
      * 登录
@@ -51,22 +55,26 @@ public class AuthController extends AbstractAuthController {
     public ResponseData<LoginResDTO> login(@Validated @RequestBody AppLoginReqDTO req) {
         final String token = super.authenticate(GlobalConstant.CLIENT_APP, req.getUsername(), req.getPassword());
 
-        // 计算登录位置与注册时门店位置的距离
-        Long storeId = JwtTokenUtil.getCurrentStoreId();
-        Store store = storeService.getById(storeId);
-        double distance = CoordUtil.getDistance(NumberUtil.toBigDecimal(store.getLng()).doubleValue(),
-                NumberUtil.toBigDecimal(store.getLat()).doubleValue(),
-                NumberUtil.toBigDecimal(req.getLng()).doubleValue(),
-                NumberUtil.toBigDecimal(req.getLat()).doubleValue());
-        log.info("login({}) distance: {}", req.getUsername(), distance);
-        if (BigDecimal.valueOf(distance).compareTo(BigDecimal.valueOf(distanceLimit)) > 0) {
-            return ResponseData.generator(400103);
+        if (Boolean.TRUE.equals(locationCheck)) {
+            // 计算登录位置与注册时门店位置的距离
+            Long storeId = JwtTokenUtil.getCurrentStoreId();
+            Store store = storeService.getById(storeId);
+            double distance = CoordUtil.getDistance(NumberUtil.toBigDecimal(store.getLng()).doubleValue(),
+                    NumberUtil.toBigDecimal(store.getLat()).doubleValue(),
+                    NumberUtil.toBigDecimal(req.getLng()).doubleValue(),
+                    NumberUtil.toBigDecimal(req.getLat()).doubleValue());
+            log.info("login({}) distance: {}", req.getUsername(), distance);
+            if (BigDecimal.valueOf(distance).compareTo(BigDecimal.valueOf(distanceLimit)) > 0) {
+                return ResponseData.generator(400103);
+            }
         }
 
-        // 判断是否在工作时间(9:00-18:00)
-        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        if (hour < 9 || hour > 18) {
-            return ResponseData.generator(400104);
+        if (Boolean.TRUE.equals(timeCheck)) {
+            // 判断是否在工作时间(9:00-18:00)
+            int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+            if (hour < 9 || hour > 18) {
+                return ResponseData.generator(400104);
+            }
         }
 
         return ResponseData.ok(new LoginResDTO(token));
