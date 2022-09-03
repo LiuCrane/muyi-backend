@@ -63,7 +63,7 @@ public class MediaController {
     public ResponseData savePlayerEvent(@ApiParam("媒体id") @PathVariable Long id,
                                         @Validated @RequestBody PlayerEventDTO dto) {
         log.info("media {} player event: {}", id, dto);
-        mediaService.savePlayerEvent(id, dto, JwtTokenUtil.getCurrentStoreId());
+        mediaService.savePlayerEvent(id, dto, JwtTokenUtil.getCurrentStoreId(), JwtTokenUtil.getCurrentUserId());
         return ResponseData.ok();
     }
 

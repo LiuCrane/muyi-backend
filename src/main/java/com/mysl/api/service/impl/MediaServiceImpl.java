@@ -48,7 +48,7 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
     @Autowired
     ClassMapper classMapper;
     @Autowired
-    ClassCourseMediaEventMapper eventMapper;
+    MediaPlayEventMapper eventMapper;
     @Autowired
     CourseMapper courseMapper;
     @Autowired
@@ -104,30 +104,35 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
     }
 
     @Override
-    public boolean savePlayerEvent(Long id, PlayerEventDTO dto, Long storeId) {
+    public boolean savePlayerEvent(Long id, PlayerEventDTO dto, Long storeId, Long userId) {
         if (dto.getClassId() == null || dto.getCourseId() == null) {
-            return true;
-        }
-        Class cls = classMapper.selectOne(new QueryWrapper<Class>().eq("store_id", storeId).eq("id", dto.getClassId()));
-        if (cls == null) {
-            throw new ResourceNotFoundException("找不到班级");
-        }
-        ClassCourse classCourse = classCourseMapper.selectOne(new QueryWrapper<ClassCourse>()
-                .eq("class_id", dto.getClassId()).eq("course_id", dto.getCourseId()));
-        if (classCourse == null) {
-            throw new ResourceNotFoundException("找不到课程");
-        }
-        // 保存记录
-        ClassCourseMediaEvent event = ClassCourseMediaEvent.builder()
-                .storeId(storeId).classCourseId(classCourse.getId())
-                .mediaId(id).playerEvent(dto.getEvent()).build();
-        eventMapper.insert(event);
+            MediaPlayEvent event = MediaPlayEvent.builder()
+                    .mediaId(id).playerEvent(dto.getEvent()).userId(userId).build();
+            eventMapper.insert(event);
+            // 保存浏览记录
+            saveBrowseRecord(id, dto.getEvent(), userId);
+        } else {
+            Class cls = classMapper.selectOne(new QueryWrapper<Class>().eq("store_id", storeId).eq("id", dto.getClassId()));
+            if (cls == null) {
+                throw new ResourceNotFoundException("找不到班级");
+            }
+            ClassCourse classCourse = classCourseMapper.selectOne(new QueryWrapper<ClassCourse>()
+                    .eq("class_id", dto.getClassId()).eq("course_id", dto.getCourseId()));
+            if (classCourse == null) {
+                throw new ResourceNotFoundException("找不到课程");
+            }
+            // 保存记录
+            MediaPlayEvent event = MediaPlayEvent.builder()
+                    .storeId(storeId).classCourseId(classCourse.getId())
+                    .mediaId(id).playerEvent(dto.getEvent()).userId(userId).build();
+            eventMapper.insert(event);
 
-        // 处理课程学习进度
-        handleCauseProgress(dto.getClassId(), dto.getCourseId(), dto.getEvent());
+            // 处理课程学习进度
+            handleCauseProgress(dto.getClassId(), dto.getCourseId(), dto.getEvent());
 
-        // 保存浏览记录
-        saveBrowseRecord(storeId, dto.getClassId(), dto.getCourseId(), id, dto.getEvent());
+            // 保存浏览记录
+            saveBrowseRecord(storeId, dto.getClassId(), dto.getCourseId(), id, dto.getEvent(), userId);
+        }
         return true;
     }
 
@@ -298,7 +303,7 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
 
     @Async
     @Transactional
-    private void saveBrowseRecord(Long storeId, Long classId, Long courseId, Long mediaId, PlayerEvent event) {
+    private void saveBrowseRecord(Long storeId, Long classId, Long courseId, Long mediaId, PlayerEvent event, Long userId) {
         if (!PlayerEvent.END.equals(event)) {
             return;
         }
@@ -333,18 +338,18 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
         if (classCourse == null) {
             return;
         }
-        ClassCourseMediaEvent firstStartEvent = eventMapper.getEvent(classCourse.getId(), mediaId, PlayerEvent.START, null);
+        MediaPlayEvent firstStartEvent = eventMapper.getEvent(classCourse.getId(), mediaId, PlayerEvent.START, null, null);
         if (firstStartEvent == null) {
             return;
         }
-        ClassCourseMediaEvent lastEndEvent = eventMapper.getEvent(classCourse.getId(), mediaId, PlayerEvent.END, Boolean.TRUE);
+        MediaPlayEvent lastEndEvent = eventMapper.getEvent(classCourse.getId(), mediaId, PlayerEvent.END, null, Boolean.TRUE);
         if (lastEndEvent == null) {
             return;
         }
         String totalTime = DateUtil.formatBetween(firstStartEvent.getCreatedAt(), lastEndEvent.getCreatedAt(), BetweenFormatter.Level.SECOND);
 
         MediaBrowseRecord browseRecord = MediaBrowseRecord.builder()
-                .userId(store.getManagerUserId())
+                .userId(userId)
                 .storeId(store.getId()).storeName(store.getName())
                 .storeAddress(store.getAddress())
                 .storeManager(manger.getName()).storeManagerPhone(manger.getPhone())
@@ -360,7 +365,43 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
                 .build();
         browseRecordService.save(browseRecord);
 
-        eventMapper.updateRecorded(classCourse.getId(), mediaId);
+        eventMapper.updateRecorded(classCourse.getId(), mediaId, userId);
+
+    }
+
+    @Async
+    @Transactional
+    private void saveBrowseRecord(Long mediaId, PlayerEvent event, Long userId) {
+        if (!PlayerEvent.END.equals(event)) {
+            return;
+        }
+        Media media = super.getById(mediaId);
+        if (media == null) {
+            return;
+        }
+
+        MediaPlayEvent firstStartEvent = eventMapper.getEvent(null, mediaId, PlayerEvent.START, userId, null);
+        if (firstStartEvent == null) {
+            return;
+        }
+        MediaPlayEvent lastEndEvent = eventMapper.getEvent(null, mediaId, PlayerEvent.END, userId, Boolean.TRUE);
+        if (lastEndEvent == null) {
+            return;
+        }
+        String totalTime = DateUtil.formatBetween(firstStartEvent.getCreatedAt(), lastEndEvent.getCreatedAt(), BetweenFormatter.Level.SECOND);
+
+        MediaBrowseRecord browseRecord = MediaBrowseRecord.builder()
+                .userId(userId)
+                .mediaId(mediaId).mediaTitle(media.getTitle())
+                .mediaType(media.getType().name())
+                .mediaDescription(media.getDescription())
+                .startTime(firstStartEvent.getCreatedAt())
+                .endTime(lastEndEvent.getCreatedAt())
+                .totalTime(totalTime)
+                .build();
+        browseRecordService.save(browseRecord);
+
+        eventMapper.updateRecorded(null, mediaId, userId);
 
     }
 }

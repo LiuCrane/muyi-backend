@@ -22,7 +22,7 @@ public interface MediaService extends IService<Media> {
 
     MediaFullDTO getMediaById(Long id);
 
-    boolean savePlayerEvent(Long id, PlayerEventDTO dto, Long storeId);
+    boolean savePlayerEvent(Long id, PlayerEventDTO dto, Long storeId, Long userId);
 
     boolean remove(Long id);
 

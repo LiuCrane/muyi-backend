@@ -21,7 +21,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ClassCourseMediaEvent extends Model<ClassCourseMediaEvent> {
+public class MediaPlayEvent extends Model<MediaPlayEvent> {
     private static final long serialVersionUID = -4596387101611327119L;
 
     @TableId(type = IdType.AUTO)
@@ -34,5 +34,6 @@ public class ClassCourseMediaEvent extends Model<ClassCourseMediaEvent> {
     @TableField(fill = FieldFill.INSERT)
     private String createdBy;
     private Boolean recorded;
+    private Long userId;
 
 }

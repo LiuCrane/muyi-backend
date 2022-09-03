@@ -5,10 +5,9 @@ import cn.hutool.core.date.DateUtil;
 import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.OperateType;
 import com.mysl.api.common.lang.ResponseData;
-import com.mysl.api.entity.dto.MediaBrowseRecordDTO;
-import com.mysl.api.entity.dto.MediaCategoryDTO;
-import com.mysl.api.entity.dto.MediaEditDTO;
-import com.mysl.api.entity.dto.MediaFullDTO;
+import com.mysl.api.config.security.JwtTokenUtil;
+import com.mysl.api.entity.dto.*;
+import com.mysl.api.entity.enums.PlayerEvent;
 import com.mysl.api.service.MediaBrowseRecordService;
 import com.mysl.api.service.MediaService;
 import io.github.flyhero.easylog.annotation.EasyLog;
@@ -114,5 +113,14 @@ public class MediaController {
     @GetMapping("/categories")
     public ResponseData<List<MediaCategoryDTO>> getCategories() {
         return ResponseData.ok(mediaService.getCategories());
+    }
+
+    @ApiOperation(value = "记录媒体播放操作")
+    @EasyLog(module = "Admin-记录媒体播放操作", type = OperateType.ADD, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
+    @PostMapping("/{id}/player/{event}")
+    public ResponseData savePlayerEvent(@ApiParam("媒体id") @PathVariable Long id, @ApiParam("播放事件(START/PAUSE/END)") @PathVariable PlayerEvent event) {
+        log.info("admin media {} player event: {}", id, event);
+        mediaService.savePlayerEvent(id, new PlayerEventDTO().setEvent(event), JwtTokenUtil.getCurrentStoreId(), JwtTokenUtil.getCurrentUserId());
+        return ResponseData.ok();
     }
 }

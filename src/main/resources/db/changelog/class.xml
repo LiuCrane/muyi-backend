@@ -175,4 +175,17 @@
             <column name="recorded"/>
         </createIndex>
     </changeSet>
+    
+    <changeSet id="rename table class_course_media_event to media_play_event" author="Ivan Su">
+        <renameTable oldTableName="class_course_media_event" newTableName="media_play_event"/>
+        <dropForeignKeyConstraint baseTableName="media_play_event" constraintName="fk_cce_store_id"/>
+        <dropForeignKeyConstraint baseTableName="media_play_event" constraintName="fk_ccm_class_course_id"/>
+        <addColumn tableName="media_play_event">
+            <column name="user_id" type="BIGINT UNSIGNED"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="drop not null constraints for media_play_event" author="Ivan Su">
+        <dropNotNullConstraint tableName="media_play_event" columnName="class_course_id" columnDataType="BIGINT UNSIGNED"/>
+        <dropNotNullConstraint tableName="media_play_event" columnName="store_id" columnDataType="BIGINT UNSIGNED"/>
+    </changeSet>
 </databaseChangeLog>

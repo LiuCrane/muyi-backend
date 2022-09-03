@@ -4,6 +4,7 @@ import com.mysl.api.entity.enums.PlayerEvent;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotNull;
  */
 @ApiModel("播放事件")
 @Data
+@Accessors(chain = true)
 public class PlayerEventDTO {
 
     @ApiModelProperty("班级id，若属于课程内的媒体，该字段必传")
