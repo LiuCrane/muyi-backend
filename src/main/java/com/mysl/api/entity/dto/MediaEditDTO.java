@@ -27,9 +27,9 @@ public class MediaEditDTO implements Serializable {
     @NotNull(message = "类型不能为空")
     private MediaType type;
 
-    @ApiModelProperty(value = "分类", required = true)
-    @NotEmpty(message = "分类不能为空")
-    private String category;
+    @ApiModelProperty(value = "分类Id", required = true)
+    @NotNull(message = "分类id不能为空")
+    private Long categoryId;
 
     @ApiModelProperty("封面图片路径")
     private String img;

@@ -3,11 +3,12 @@
 <mapper namespace="com.mysl.api.mapper.MediaMapper">
     <select id="findAll" resultType="com.mysl.api.entity.dto.MediaFullDTO">
         SELECT
-        m.id, m.title, m.type, m.description, m.category, m.img, m.url,
+        m.id, m.title, m.type, m.description, m.course_id AS category_id, c.title AS category, m.img, m.url,
         m.created_at, m.created_by, m.updated_at, m.updated_by,
         date_format(sec_to_time(m.duration), '%H:%i:%s') AS duration,
         m.duration AS duration_actual
         FROM media m
+        LEFT JOIN course c ON m.course_id = c.id
         <where>
             m.active
             <if test="id != null">
@@ -32,7 +33,7 @@
             </if>
             <if test="key_word != null">
                 <bind name="kw" value="'%' + key_word + '%'"/>
-                AND (m.type = #{key_word} OR m.title LIKE #{kw} OR m.description LIKE #{kw} OR m.category = #{key_word})
+                AND (m.type = #{key_word} OR m.title LIKE #{kw} OR m.description LIKE #{kw} OR c.title = #{key_word})
             </if>
         </where>
         ORDER BY m.created_at desc

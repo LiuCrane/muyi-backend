@@ -56,6 +56,14 @@
             <column name="category" type="VARCHAR(32)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="change field for media" author="Ivan Su">
+        <dropColumn tableName="media" columnName="category"/>
+        <addColumn tableName="media">
+            <column name="course_id" type="BIGINT UNSIGNED" remarks="课程id" >
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
     
     <changeSet id="media_browse_record" author="Ivan Su">
         <createTable tableName="media_browse_record">

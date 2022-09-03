@@ -15,4 +15,6 @@ public interface CourseMediaMapper extends BaseMapper<CourseMedia> {
     List<Long> findMediaIds(@Param("course_id") Long courseId);
 
     int deleteByCourseId(@Param("course_id") Long courseId);
+
+    int deleteOne(@Param("course_id") Long courseId, @Param("media_id") Long mediaId);
 }

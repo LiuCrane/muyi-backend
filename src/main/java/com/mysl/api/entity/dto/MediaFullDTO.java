@@ -20,6 +20,9 @@ public class MediaFullDTO extends MediaDTO {
     @ApiModelProperty(value = "媒体时长(编辑用)，单位：秒")
     private BigDecimal durationActual;
 
+    @ApiModelProperty(value = "分类id")
+    private Long categoryId;
+
     @ApiModelProperty(value = "修改时间")
     @JsonProperty("updated_at")
     private Date updatedAt;

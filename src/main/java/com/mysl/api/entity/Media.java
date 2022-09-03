@@ -20,5 +20,5 @@ public class Media extends BaseModel<Media> {
     private String url;
     private Boolean publicly;
     private BigDecimal duration;
-    private String category;
+    private Long courseId;
 }

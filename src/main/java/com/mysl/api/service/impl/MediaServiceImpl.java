@@ -1,6 +1,9 @@
 package com.mysl.api.service.impl;
 
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.WeakCache;
 import cn.hutool.core.date.BetweenFormatter;
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.extra.cglib.CglibUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.exception.ResourceNotFoundException;
+import com.mysl.api.common.exception.ServiceException;
 import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.entity.*;
 import com.mysl.api.entity.Class;
@@ -20,12 +24,15 @@ import com.mysl.api.mapper.*;
 import com.mysl.api.service.MediaBrowseRecordService;
 import com.mysl.api.service.MediaService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,6 +58,8 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
     StoreMapper storeMapper;
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    CourseMediaMapper courseMediaMapper;
     @Autowired
     MediaBrowseRecordService browseRecordService;
 
@@ -117,6 +126,99 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
         media.setActive(Boolean.FALSE);
         super.updateById(media);
         return true;
+    }
+
+    WeakCache<String, List<MediaCategoryDTO>> categoriesCache = CacheUtil.newWeakCache(DateUnit.SECOND.getMillis() * 10);
+    private static final String CATEGORIES_CACHE_KEY = "categories";
+    @Override
+    public List<MediaCategoryDTO> getCategories() {
+        List<MediaCategoryDTO> list = categoriesCache.get(CATEGORIES_CACHE_KEY);
+        if (CollectionUtils.isEmpty(list)) {
+            list = new ArrayList<>();
+            List<Course> courses = courseMapper.selectList(new QueryWrapper<Course>()
+                    .select("id", "title").eq("active", 1)
+                    .orderByAsc("created_at"));
+            for (Course c : courses) {
+                list.add(new MediaCategoryDTO().setId(c.getId()).setName(c.getTitle()));
+            }
+            categoriesCache.put(CATEGORIES_CACHE_KEY, list);
+        }
+        return list;
+    }
+
+    @Override
+    @Transactional
+    public boolean save(MediaEditDTO dto) {
+        Course course = courseMapper.selectById(dto.getCategoryId());
+        if (course == null) {
+            throw new ServiceException("媒体分类不存在");
+        }
+        Media media = new Media();
+        BeanUtils.copyProperties(dto, media);
+        media.setDuration(dto.getDurationActual());
+        media.setCourseId(dto.getCategoryId());
+        if (!super.save(media)) {
+            throw new ServiceException("操作失败");
+        }
+
+        CourseMedia courseMedia = CourseMedia.builder().courseId(course.getId()).mediaId(media.getId()).build();
+        if (courseMediaMapper.insert(courseMedia) < 1) {
+            throw new ServiceException("操作失败");
+        }
+
+        // 更新课程时长
+        updateCourseDuration(course);
+
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean update(Long id, MediaEditDTO dto) {
+        Course course = courseMapper.selectById(dto.getCategoryId());
+        if (course == null) {
+            throw new ServiceException("媒体分类不存在");
+        }
+        Media media = super.getById(id);
+        if (media == null) {
+            throw new ResourceNotFoundException("找不到媒体");
+        }
+        Long oldCourseId = media.getCourseId();
+        BeanUtils.copyProperties(dto, media);
+        media.setDuration(dto.getDurationActual());
+        media.setCourseId(dto.getCategoryId());
+        if (!super.updateById(media)) {
+            throw new ServiceException("操作失败");
+        }
+        if (!oldCourseId.equals(dto.getCategoryId())) {
+            CourseMedia courseMedia = CourseMedia.builder().courseId(course.getId()).mediaId(media.getId()).build();
+            if (courseMediaMapper.insert(courseMedia) < 1) {
+                throw new ServiceException("操作失败");
+            }
+            // 更新课程时长
+            updateCourseDuration(course);
+
+            if (oldCourseId > 0) {
+                // 移除原来的关联
+                if (courseMediaMapper.deleteOne(oldCourseId, id) < 1) {
+                    throw new ServiceException("操作失败");
+                }
+                // 更新旧课程时长
+                Course oldCourse = courseMapper.selectById(oldCourseId);
+                updateCourseDuration(oldCourse);
+            }
+
+        }
+        return true;
+    }
+
+    private void updateCourseDuration(Course course) {
+        List<Long> mediaIds = courseMediaMapper.findMediaIds(course.getId());
+        int duration = super.baseMapper.sumMediaDuration(mediaIds);
+        course.setDuration(BigDecimal.valueOf(duration));
+        if (courseMapper.updateById(course) < 1) {
+            throw new ServiceException("操作失败");
+        }
     }
 
     @Async

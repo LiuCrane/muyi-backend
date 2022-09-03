@@ -145,10 +145,17 @@
       <version>5.8.5</version>
     </dependency>
 
-    <!-- hutool core -->
+    <!-- hutool extra -->
     <dependency>
       <groupId>cn.hutool</groupId>
       <artifactId>hutool-extra</artifactId>
+      <version>5.8.5</version>
+    </dependency>
+
+    <!-- hutool cache -->
+    <dependency>
+      <groupId>cn.hutool</groupId>
+      <artifactId>hutool-cache</artifactId>
       <version>5.8.5</version>
     </dependency>
 

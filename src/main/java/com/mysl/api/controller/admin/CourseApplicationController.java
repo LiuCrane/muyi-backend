@@ -14,12 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * @author Ivan Su
  * @date 2022/8/13
  */
 @Api(tags = "课程申请审核接口")
+@ApiIgnore
 @RestController
 @RequestMapping("/admin/course/applications")
 @Secured("ROLE_ADMIN")

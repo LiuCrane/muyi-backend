@@ -3,11 +3,10 @@ package com.mysl.api.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.mysl.api.entity.Media;
-import com.mysl.api.entity.dto.MediaDTO;
-import com.mysl.api.entity.dto.MediaFullDTO;
-import com.mysl.api.entity.dto.MediaSearchDTO;
-import com.mysl.api.entity.dto.PlayerEventDTO;
+import com.mysl.api.entity.dto.*;
 import com.mysl.api.entity.enums.MediaType;
+
+import java.util.List;
 
 
 /**
@@ -25,4 +24,10 @@ public interface MediaService extends IService<Media> {
     boolean savePlayerEvent(Long id, PlayerEventDTO dto, Long storeId);
 
     boolean remove(Long id);
+
+    List<MediaCategoryDTO> getCategories();
+
+    boolean save(MediaEditDTO dto);
+
+    boolean update(Long id, MediaEditDTO dto);
 }

@@ -4,10 +4,9 @@ import cn.hutool.core.date.DateException;
 import cn.hutool.core.date.DateUtil;
 import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.OperateType;
-import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.lang.ResponseData;
-import com.mysl.api.entity.Media;
 import com.mysl.api.entity.dto.MediaBrowseRecordDTO;
+import com.mysl.api.entity.dto.MediaCategoryDTO;
 import com.mysl.api.entity.dto.MediaEditDTO;
 import com.mysl.api.entity.dto.MediaFullDTO;
 import com.mysl.api.service.MediaBrowseRecordService;
@@ -17,7 +16,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -25,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -67,25 +66,14 @@ public class MediaController {
     @EasyLog(module = "Admin-添加媒体", type = OperateType.ADD, success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
     @PostMapping
     public ResponseData create(@Validated @RequestBody MediaEditDTO dto) {
-        Media media = new Media();
-        BeanUtils.copyProperties(dto, media);
-        media.setDuration(dto.getDurationActual());
-        mediaService.save(media);
-        return ResponseData.ok();
+        return ResponseData.ok(mediaService.save(dto));
     }
 
     @ApiOperation("修改媒体")
     @EasyLog(module = "Admin-修改媒体", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
     @PutMapping("/{id}")
     public ResponseData update(@PathVariable Long id, @Validated @RequestBody MediaEditDTO dto) {
-        Media media = mediaService.getById(id);
-        if (media == null) {
-            throw new ResourceNotFoundException("找不到媒体");
-        }
-        BeanUtils.copyProperties(dto, media);
-        media.setDuration(dto.getDurationActual());
-        mediaService.updateById(media);
-        return ResponseData.ok();
+        return ResponseData.ok(mediaService.update(id, dto));
     }
 
     @ApiOperation("删除媒体")
@@ -119,5 +107,12 @@ public class MediaController {
             return ResponseData.generator(HttpStatus.BAD_REQUEST.value(), "时间格式错误", null);
         }
         return ResponseData.ok(browseRecordService.getRecords(pageNum, pageSize, userId, start, end));
+    }
+
+    @ApiOperation("查询媒体分类")
+    @EasyLog(module = "Admin-查询媒体分类", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @GetMapping("/categories")
+    public ResponseData<List<MediaCategoryDTO>> getCategories() {
+        return ResponseData.ok(mediaService.getCategories());
     }
 }
