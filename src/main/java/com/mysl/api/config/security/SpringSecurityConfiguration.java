@@ -56,8 +56,28 @@ public class SpringSecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.antMatcher("/app/**").antMatcher("/admin/**")
+    public SecurityFilterChain filterChainForAdmin(HttpSecurity httpSecurity) throws Exception {
+        httpSecurityConfig(httpSecurity, "/admin","/admin/auth/login", "/cos/queue/callback");
+        return httpSecurity.build();
+    }
+
+    @Bean
+    public SecurityFilterChain filterChainForApp(HttpSecurity httpSecurity) throws Exception {
+        httpSecurityConfig(httpSecurity, "/app", "/app/auth/login", "/app/user/register");
+        return httpSecurity.build();
+    }
+
+    @Bean
+    WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().antMatchers("/swagger-ui/**")
+                .antMatchers("/swagger-resources/**")
+                .antMatchers("/v3/api-docs/**");
+    }
+
+    private void httpSecurityConfig(HttpSecurity httpSecurity, String uri, String... permitUri) throws Exception {
+        String antPattern = String.format("%s/**", uri);
+        httpSecurity
+                .antMatcher(antPattern)
                 // jwt不需要csrf
                 .csrf().disable()
                 // 开启 cors 的支持
@@ -67,8 +87,8 @@ public class SpringSecurityConfiguration {
                 // 异常处理
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint()).and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/app/**", "/admin/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/app/auth/login", "/app/user/register", "/admin/auth/login", "/cos/queue/callback").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, antPattern).permitAll()
+                .antMatchers(HttpMethod.POST, "/app/auth/login", "/app/user/register").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
         JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter = new JwtAuthenticationTokenFilter(
@@ -81,14 +101,5 @@ public class SpringSecurityConfiguration {
         httpSecurity.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
         // 禁用页面缓存
         httpSecurity.headers().cacheControl();
-
-        return httpSecurity.build();
-    }
-
-    @Bean
-    WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().antMatchers("/swagger-ui/**")
-                .antMatchers("/swagger-resources/**")
-                .antMatchers("/v3/api-docs/**");
     }
 }
