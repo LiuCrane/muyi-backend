@@ -44,19 +44,19 @@ public class StoreController {
                                                      @ApiParam(value = "每页记录，默认 20")
                                                      @RequestParam(name = "page_size", defaultValue = "20", required = false) Integer pageSize,
                                                      @ApiParam(value = "门店状态(SUBMITTED:待审核, APPROVED: 审核通过, REJECTED: 拒绝)")
-                                                     @RequestParam(required = false) StoreStatus status,
+                                                     @RequestParam(required = false, defaultValue = "APPROVED") StoreStatus status,
                                                      @ApiParam(value = "门店名称")
                                                      @RequestParam(name = "name", required = false) String name,
                                                      @ApiParam(value = "店长")
                                                      @RequestParam(name = "manager_name", required = false) String managerName) {
-        return ResponseData.ok(new PageInfo<>(storeService.getStores(pageNum, pageSize, null, status, name, managerName)));
+        return ResponseData.ok(new PageInfo<>(storeService.getStores(pageNum, pageSize, null, status, name, managerName, null)));
     }
 
     @ApiOperation("查询门店详情")
     @EasyLog(module = "Admin-查询门店详情", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @GetMapping("/{id}")
     public ResponseData<StoreFullDTO> get(@PathVariable Long id) {
-        List<StoreFullDTO> list = storeService.getStores(1, 1, id, null, null, null);
+        List<StoreFullDTO> list = storeService.getStores(1, 1, id, null, null, null, null);
         if (CollectionUtils.isEmpty(list)) {
             throw new ResourceNotFoundException("找不到门店信息");
         }

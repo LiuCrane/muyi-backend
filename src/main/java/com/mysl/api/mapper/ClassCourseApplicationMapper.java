@@ -3,6 +3,7 @@ package com.mysl.api.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mysl.api.entity.ClassCourseApplication;
 import com.mysl.api.entity.dto.ClassCourseApplicationDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -12,5 +13,7 @@ import java.util.List;
  */
 public interface ClassCourseApplicationMapper extends BaseMapper<ClassCourseApplication> {
 
-    List<ClassCourseApplicationDTO> findAll();
+    List<ClassCourseApplicationDTO> findAll(@Param("result") Boolean result, @Param("key_word") String keyWord);
+
+    int countApplications();
 }

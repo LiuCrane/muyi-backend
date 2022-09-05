@@ -18,6 +18,9 @@ public interface StoreMapper extends BaseMapper<Store> {
                                @Param("status") StoreStatus status,
                                @Param("exclude_id") Long excludeId,
                                @Param("name") String name,
-                               @Param("manager_user_ids") List<Long> managerUserIds);
+                               @Param("manager_user_ids") List<Long> managerUserIds,
+                               @Param("key_word") String keyWord);
+
+    int countStores();
 
 }

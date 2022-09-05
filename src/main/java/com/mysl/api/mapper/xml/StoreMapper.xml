@@ -48,7 +48,15 @@
                     #{item}
                 </foreach>
             </if>
+            <if test="key_word != null">
+                <bind name="kw" value="'%' + key_word + '%'"/>
+                AND (s.name LIKE #{kw} OR u.name LIKE #{kw} OR u.phone = #{key_word} OR s.address LIKE #{kw})
+            </if>
         </where>
         ORDER BY s.created_at DESC
+    </select>
+
+    <select id="countStores" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM store WHERE active AND status = 'SUBMITTED'
     </select>
 </mapper>

@@ -109,6 +109,12 @@
       <optional>true</optional>
     </dependency>
 
+    <!-- web socket -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-websocket</artifactId>
+    </dependency>
+
     <!-- 排除掉默认的日志框架 -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

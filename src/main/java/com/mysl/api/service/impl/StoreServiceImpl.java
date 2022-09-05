@@ -1,6 +1,7 @@
 package com.mysl.api.service.impl;
 
 import cn.hutool.extra.cglib.CglibUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
@@ -8,17 +9,17 @@ import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.GlobalConstant;
 import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.exception.ServiceException;
+import com.mysl.api.common.lang.ResponseData;
+import com.mysl.api.config.WebSocketServer;
 import com.mysl.api.entity.Store;
 import com.mysl.api.entity.User;
 import com.mysl.api.entity.UserRole;
-import com.mysl.api.entity.dto.StoreCreateDTO;
-import com.mysl.api.entity.dto.StoreFullDTO;
-import com.mysl.api.entity.dto.StoreSimpleDTO;
-import com.mysl.api.entity.dto.StoreUpdateDTO;
+import com.mysl.api.entity.dto.*;
 import com.mysl.api.entity.enums.StoreStatus;
 import com.mysl.api.entity.enums.UserType;
 import com.mysl.api.mapper.StoreMapper;
 import com.mysl.api.mapper.UserMapper;
+import com.mysl.api.service.ApplicationService;
 import com.mysl.api.service.StoreService;
 import com.mysl.api.service.UserRoleService;
 import org.apache.commons.lang3.StringUtils;
@@ -42,21 +43,23 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
     UserRoleService userRoleService;
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    ApplicationService applicationService;
 
     @Override
-    public List<StoreFullDTO> getStores(Integer pageNum, Integer pageSize, Long id, StoreStatus status, String name, String managerName) {
+    public List<StoreFullDTO> getStores(Integer pageNum, Integer pageSize, Long id, StoreStatus status, String name, String managerName, String keyWord) {
         List<Long> managerUserIds = new ArrayList<>();
         if (StringUtils.isNotEmpty(managerName)) {
             managerUserIds = userMapper.findByNameAndType(managerName, UserType.APP_USER);
         }
         PageHelper.startPage(pageNum, pageSize);
-        return super.baseMapper.findAll(id, status, null, name, managerUserIds);
+        return super.baseMapper.findAll(id, status, null, name, managerUserIds, keyWord);
     }
 
     @Override
     public PageInfo<StoreSimpleDTO> getFranchisees(Integer pageNum, Integer pageSize, Long excludeId) {
         PageHelper.startPage(pageNum, pageSize);
-        List<StoreFullDTO> stores = super.baseMapper.findAll(null, StoreStatus.APPROVED, excludeId, null, null);
+        List<StoreFullDTO> stores = super.baseMapper.findAll(null, StoreStatus.APPROVED, excludeId, null, null, null);
         PageInfo<StoreSimpleDTO> pageInfo = new PageInfo<>();
         CglibUtil.copy(new PageInfo<>(stores), pageInfo);
         pageInfo.setList(CglibUtil.copyList(stores, StoreSimpleDTO::new));
@@ -64,10 +67,30 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
     }
 
     @Override
+    public PageInfo<ApplicationDTO> getStores(Integer pageNum, Integer pageSize, String keyWord) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<StoreFullDTO> stores = super.baseMapper.findAll(null, StoreStatus.SUBMITTED, null, null, null, keyWord);
+        PageInfo<ApplicationDTO> pageInfo = new PageInfo<>();
+        CglibUtil.copy(new PageInfo<>(stores), pageInfo);
+        List<ApplicationDTO> list = new ArrayList<>();
+        stores.forEach(s -> list.add(ApplicationDTO.builder().id(s.getId()).createdAt(s.getCreatedAt())
+                .storeName(s.getName()).storeManager(s.getManagerName())
+                .storeManagerPhone(s.getManagerPhone()).storeAddress(s.getAddress()).build()));
+        pageInfo.setList(list);
+        return pageInfo;
+    }
+
+    @Override
     public boolean save(StoreCreateDTO dto) {
         Store store = new Store();
         BeanUtils.copyProperties(dto, store);
-        return super.save(store);
+        if (super.save(store)) {
+            int count = applicationService.countApplications();
+            WebSocketServer.send(JSON.toJSONString(ResponseData.ok(count)));
+        } else {
+            throw new ServiceException("操作失败");
+        }
+        return true;
     }
 
     @Override

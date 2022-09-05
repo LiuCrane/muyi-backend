@@ -26,6 +26,12 @@ public class ClassCourseApplicationDTO implements Serializable {
     @ApiModelProperty("店长")
     private String storeManagerName;
 
+    @ApiModelProperty("店长电话")
+    private String storeManagerPhone;
+
+    @ApiModelProperty("门店地址")
+    private String storeAddress;
+
     @ApiModelProperty("班级")
     private String className;
 

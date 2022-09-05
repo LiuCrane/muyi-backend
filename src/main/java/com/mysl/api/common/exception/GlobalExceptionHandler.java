@@ -38,10 +38,16 @@ public class GlobalExceptionHandler {
     }
 
 //    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({MethodArgumentTypeMismatchException.class, MissingServletRequestParameterException.class})
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     public ResponseData requestParameterExceptionHandler(Exception e) {
-        log.error("RequestParameterException: ", e);
+        log.error("MethodArgumentTypeMismatchException: ", e);
         return ResponseData.generator(HttpStatus.BAD_REQUEST.value(), "参数格式错误", null);
+    }
+
+    @ExceptionHandler({MissingServletRequestParameterException.class})
+    public ResponseData missingServletRequestParameterException(MissingServletRequestParameterException e) {
+        log.error("MissingServletRequestParameterException: ", e);
+        return ResponseData.generator(HttpStatus.BAD_REQUEST.value(), "参数缺失", null);
     }
 
 //    @ResponseStatus(HttpStatus.BAD_REQUEST)

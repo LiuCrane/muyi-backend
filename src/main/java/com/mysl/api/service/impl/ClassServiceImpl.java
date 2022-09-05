@@ -1,13 +1,16 @@
 package com.mysl.api.service.impl;
 
 import cn.hutool.extra.cglib.CglibUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.exception.ServiceException;
+import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.common.util.CosUtil;
+import com.mysl.api.config.WebSocketServer;
 import com.mysl.api.entity.Class;
 import com.mysl.api.entity.ClassCourse;
 import com.mysl.api.entity.ClassCourseApplication;
@@ -20,6 +23,7 @@ import com.mysl.api.mapper.ClassCourseApplicationMapper;
 import com.mysl.api.mapper.ClassCourseMapper;
 import com.mysl.api.mapper.ClassMapper;
 import com.mysl.api.mapper.CourseMapper;
+import com.mysl.api.service.ApplicationService;
 import com.mysl.api.service.ClassService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +47,8 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     CourseMapper courseMapper;
     @Autowired
     ClassCourseApplicationMapper classCourseApplicationMapper;
+    @Autowired
+    ApplicationService applicationService;
 
     @Override
     public PageInfo<ClassFullDTO> getClasses(Integer pageNum, Integer pageSize, Long id, Long storeId, String keyWord) {
@@ -118,7 +124,12 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         if (classCourseMapper.updateById(classCourse) > 0) {
             ClassCourseApplication application = new ClassCourseApplication();
             application.setClassCourseId(classCourse.getId());
-            return classCourseApplicationMapper.insert(application) > 0;
+            if (classCourseApplicationMapper.insert(application) > 0) {
+                int count = applicationService.countApplications();
+                WebSocketServer.send(JSON.toJSONString(ResponseData.ok(count)));
+            } else {
+                throw new ServiceException("操作失败");
+            }
         }
         return false;
     }
