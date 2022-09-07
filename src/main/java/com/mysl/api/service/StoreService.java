@@ -25,7 +25,7 @@ public interface StoreService extends IService<Store> {
 
     Store findByUserId(Long userId);
 
-    boolean updateStatus(Long id, Boolean auditResult);
+    boolean updateStatus(List<Long> ids, Boolean auditResult);
 
     boolean update(Long id, StoreUpdateDTO dto);
 

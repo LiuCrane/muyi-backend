@@ -72,9 +72,9 @@ public class ApplicationController {
         }
         boolean ret = false;
         if (ApplicationType.STORE.name().equals(dto.getType())) {
-            ret = storeService.updateStatus(dto.getId(), dto.getResult());
+            ret = storeService.updateStatus(dto.getIds(), dto.getResult());
         } else if (ApplicationType.STUDY.name().equals(dto.getType())) {
-            ret = courseApplicationService.audit(dto.getId(), dto.getResult());
+            ret = courseApplicationService.audit(dto.getIds(), dto.getResult());
         }
         if (!ret) {
             return ResponseData.generator(HttpStatus.BAD_REQUEST.value(), "操作失败", null);
@@ -83,6 +83,7 @@ public class ApplicationController {
     }
 
     @ApiOperation("查询待审核申请数量")
+    @EasyLog(module = "Admin-查询待审核申请数量", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping("/get_application_count")
     public ResponseData count() {
         return ResponseData.ok(applicationService.countApplications());

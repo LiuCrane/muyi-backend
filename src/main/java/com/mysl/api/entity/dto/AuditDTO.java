@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Ivan Su
@@ -17,9 +18,9 @@ import java.io.Serializable;
 public class AuditDTO implements Serializable {
     private static final long serialVersionUID = -5933343766360613086L;
 
-    @ApiModelProperty("申请id")
+    @ApiModelProperty("申请id集合")
     @NotNull(message = "申请id不能为空")
-    private Long id;
+    private List<Long> ids;
     @ApiModelProperty("申请类型(STORE/STUDY)")
     @NotEmpty(message = "申请类型不能为空")
     private String type;

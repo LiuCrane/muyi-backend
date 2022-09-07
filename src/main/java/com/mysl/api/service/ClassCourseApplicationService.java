@@ -6,6 +6,8 @@ import com.mysl.api.entity.ClassCourseApplication;
 import com.mysl.api.entity.dto.ApplicationDTO;
 import com.mysl.api.entity.dto.ClassCourseApplicationDTO;
 
+import java.util.List;
+
 /**
  * @author Ivan Su
  * @date 2022/8/14
@@ -16,5 +18,5 @@ public interface ClassCourseApplicationService extends IService<ClassCourseAppli
 
     PageInfo<ApplicationDTO> getApplications(Integer pageNum, Integer pageSize, String keyWord);
 
-    boolean audit(Long id, Boolean result);
+    boolean audit(List<Long> ids, Boolean result);
 }

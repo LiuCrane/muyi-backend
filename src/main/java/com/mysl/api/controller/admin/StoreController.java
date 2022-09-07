@@ -63,13 +63,13 @@ public class StoreController {
         return ResponseData.ok(list.get(0));
     }
 
-    @ApiOperation("审核门店信息")
-    @EasyLog(module = "Admin-审核门店信息", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
-    @PostMapping("/{id}/audit")
-    public ResponseData audit(@PathVariable Long id, @Validated @RequestBody StoreAuditDTO dto) {
-        storeService.updateStatus(id, dto.getResult());
-        return ResponseData.ok();
-    }
+//    @ApiOperation("审核门店信息")
+//    @EasyLog(module = "Admin-审核门店信息", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
+//    @PostMapping("/{id}/audit")
+//    public ResponseData audit(@PathVariable Long id, @Validated @RequestBody StoreAuditDTO dto) {
+//        storeService.updateStatus(id, dto.getResult());
+//        return ResponseData.ok();
+//    }
 
     @ApiOperation("修改门店信息")
     @EasyLog(module = "Admin-修改门店信息", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")

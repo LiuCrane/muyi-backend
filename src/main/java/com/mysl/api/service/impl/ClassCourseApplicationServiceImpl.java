@@ -47,7 +47,7 @@ public class ClassCourseApplicationServiceImpl extends ServiceImpl<ClassCourseAp
         if (!CollectionUtils.isEmpty(dtos)) {
             List<ApplicationDTO> list = new ArrayList<>();
             dtos.forEach(a ->
-                    list.add(ApplicationDTO.builder()
+                    list.add(ApplicationDTO.builder().id(a.getId()).createdAt(a.getCreatedAt())
                             .storeName(a.getStoreName())
                             .storeManager(a.getStoreManagerName())
                             .storeManagerPhone(a.getStoreManagerPhone())
@@ -62,24 +62,26 @@ public class ClassCourseApplicationServiceImpl extends ServiceImpl<ClassCourseAp
 
     @Override
     @Transactional
-    public boolean audit(Long id, Boolean result) {
-        ClassCourseApplication application = super.baseMapper.selectById(id);
-        if (application == null) {
-            throw new ServiceException("找不到申请信息");
-        }
-        if (application.getResult() != null) {
-            throw new ServiceException("该申请已审核");
-        }
-        application.setResult(result);
-        if (super.updateById(application)) {
-            ClassCourse classCourse = classCourseMapper.selectById(application.getClassCourseId());
-            if (Boolean.TRUE.equals(result)) {
-                classCourse.setStatus(ClassCourseStatus.ACCESSIBLE);
-            } else {
-                classCourse.setStatus(ClassCourseStatus.APPLICABLE);
+    public boolean audit(List<Long> ids, Boolean result) {
+        for (Long id : ids) {
+            ClassCourseApplication application = super.baseMapper.selectById(id);
+            if (application == null) {
+                continue;
             }
-            return classCourseMapper.updateById(classCourse) > 0;
+            if (application.getResult() != null) {
+                continue;
+            }
+            application.setResult(result);
+            if (super.updateById(application)) {
+                ClassCourse classCourse = classCourseMapper.selectById(application.getClassCourseId());
+                if (Boolean.TRUE.equals(result)) {
+                    classCourse.setStatus(ClassCourseStatus.ACCESSIBLE);
+                } else {
+                    classCourse.setStatus(ClassCourseStatus.APPLICABLE);
+                }
+                classCourseMapper.updateById(classCourse);
+            }
         }
-        return false;
+        return true;
     }
 }

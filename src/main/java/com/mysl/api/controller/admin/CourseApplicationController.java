@@ -46,7 +46,7 @@ public class CourseApplicationController {
     @EasyLog(module = "Admin-审核课程申请", type = OperateType.UPDATE, success = "", fail = "{{#_errMsg}}", bizNo = "{{#id}}", detail = "{{#dto.toString()}}")
     @PostMapping("/{id}/audit")
     public ResponseData audit(@PathVariable Long id, @Validated @RequestBody CourseAuditDTO dto) {
-        classCourseApplicationService.audit(id, dto.getResult());
+//        classCourseApplicationService.audit(id, dto.getResult());
         return ResponseData.ok();
     }
 }

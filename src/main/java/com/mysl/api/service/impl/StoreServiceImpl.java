@@ -100,31 +100,33 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
 
     @Override
     @Transactional
-    public boolean updateStatus(Long id, Boolean auditResult) {
-        Store store = super.getById(id);
-        if (store == null) {
-            throw new ResourceNotFoundException("找不到门店信息");
-        }
-        if (StoreStatus.SUBMITTED.equals(store.getStatus())) {
-            StoreStatus status = null;
-            if (auditResult) {
-                status = StoreStatus.APPROVED;
-            } else {
-                status = StoreStatus.REJECTED;
+    public boolean updateStatus(List<Long> ids, Boolean auditResult) {
+        for (Long id : ids) {
+            Store store = super.getById(id);
+            if (store == null) {
+                continue;
             }
-            store.setStatus(status);
+            if (StoreStatus.SUBMITTED.equals(store.getStatus())) {
+                StoreStatus status = null;
+                if (Boolean.TRUE.equals(auditResult)) {
+                    status = StoreStatus.APPROVED;
+                } else {
+                    status = StoreStatus.REJECTED;
+                }
+                store.setStatus(status);
 
-            // 生成门店编号
-            store.setNumber(String.format("%05d", store.getId()));
+                // 生成门店编号
+                store.setNumber(String.format("%05d", store.getId()));
 
-            super.saveOrUpdate(store);
+                super.saveOrUpdate(store);
 
-            // 更新用户权限（加 ROLE_STORE_MANAGER）
-            UserRole userRole = UserRole.builder().userId(store.getManagerUserId()).roleId(GlobalConstant.ROLE_STORE_MANAGER_ID).build();
-            return userRoleService.save(userRole);
-
+                // 更新用户权限（加 ROLE_STORE_MANAGER）
+                UserRole userRole = UserRole.builder().userId(store.getManagerUserId()).roleId(GlobalConstant.ROLE_STORE_MANAGER_ID).build();
+                userRoleService.save(userRole);
+            }
         }
-        return false;
+
+        return true;
     }
 
     @Override
