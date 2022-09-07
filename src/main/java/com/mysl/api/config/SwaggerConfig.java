@@ -52,8 +52,7 @@ public class SwaggerConfig {
                 // 忽略以"/error"开头的路径,可以防止显示如404错误接口
                 .paths(PathSelectors.regex("/error.*").negate())
                 // 忽略以"/actuator"开头的路径
-                .paths(PathSelectors.regex("/actuator.*").negate())
-                .build();
+                .paths(PathSelectors.regex("/actuator.*").negate()).build();
     }
 
     /**
@@ -63,7 +62,9 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("SHILI-API 接口文档")
                 .version("1.0.0")
+                .description("WebSocket 文档可<a href='/wsapi-ui/index.html' target='_blank'>点击访问这里</a>。")
                 .build();
     }
+
 
 }

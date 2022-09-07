@@ -88,7 +88,7 @@ public class SpringSecurityConfiguration {
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint()).and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, antPattern).permitAll()
-                .antMatchers(HttpMethod.POST, "/app/auth/login", "/app/user/register").permitAll()
+                .antMatchers(HttpMethod.POST, permitUri).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
         JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter = new JwtAuthenticationTokenFilter(
