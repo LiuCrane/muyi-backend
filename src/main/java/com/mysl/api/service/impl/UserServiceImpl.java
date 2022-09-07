@@ -8,6 +8,7 @@ import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.GlobalConstant;
 import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.exception.ServiceException;
+import com.mysl.api.entity.Store;
 import com.mysl.api.entity.User;
 import com.mysl.api.entity.UserRole;
 import com.mysl.api.entity.dto.*;
@@ -52,6 +53,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Transactional
     public boolean register(RegisterDTO dto) {
         String password = passwordEncoder.encode(dto.getPassword());
+        if (super.count(new QueryWrapper<User>().eq("phone", dto.getPhone())) > 0) {
+            throw new ServiceException("该手机号已注册");
+        }
+        if (storeService.count(new QueryWrapper<Store>().eq("manager_id_card_num", dto.getIdCardNum())) > 0) {
+            throw new ServiceException("该身份证号已注册");
+        }
         User user = User.builder()
                 .username(dto.getPhone()).phone(dto.getPhone())
                 .password(password).name(dto.getName()).type(UserType.APP_USER).build();
