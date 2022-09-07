@@ -1,5 +1,6 @@
 package com.mysl.api.config.security;
 
+import com.mysl.api.common.exception.JwtTokenException;
 import com.mysl.api.service.JwtBlacklistService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,11 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         final String authToken = this.extractAuthTokenFromRequest(request, this.tokenHeader);
         String username = null;
         if (StringUtils.isNotBlank(authToken)) {
-            username = jwtTokenUtil.getUsernameFromToken(authToken);
+            try {
+                username = jwtTokenUtil.getUsernameFromToken(authToken);
+            } catch (Exception e) {
+                throw new JwtTokenException("getUsernameFromToken error: ", e);
+            }
         }
 
         log.debug("request uri: {}", request.getRequestURI());
@@ -45,7 +50,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
         if (username != null) {
             if (blacklistService.isExist(authToken)) {
-                throw new AuthorizationServiceException("the token is in blacklist");
+//                throw new AuthorizationServiceException("the token is in blacklist");
+                throw new JwtTokenException("token is in blacklist");
             }
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {

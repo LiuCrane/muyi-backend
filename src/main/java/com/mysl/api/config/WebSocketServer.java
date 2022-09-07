@@ -144,7 +144,11 @@ public class WebSocketServer {
         try {
             String username = null;
             if (StringUtils.isNotBlank(token)) {
-                username = jwtTokenUtil.getUsernameFromToken(token);
+                try {
+                    username = jwtTokenUtil.getUsernameFromToken(token);
+                } catch (Exception e) {
+                    return false;
+                }
             }
             if (username != null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);

@@ -89,4 +89,9 @@ public class GlobalExceptionHandler {
         return ResponseData.generator(HttpStatus.NOT_FOUND.value(), e.getMessage(), null);
     }
 
+    @ExceptionHandler(JwtTokenException.class)
+    public ResponseData jwtTokenException(ResourceNotFoundException e) {
+        return ResponseData.generator(400101);
+    }
+
 }
