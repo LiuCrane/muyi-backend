@@ -18,7 +18,7 @@
             1 = 1
             <if test="key_word != null">
                 <bind name="kw" value="'%' + key_word + '%'"/>
-                AND (s.name LIKE #{kw} OR u.name LIKE #{kw} OR u.PHONE = #{key_word} OR s.address LIKE #{kw} OR c.title = #{key_word})
+                AND (s.name LIKE #{kw} OR u.name LIKE #{kw} OR u.PHONE = #{key_word} OR s.address LIKE #{kw} OR cr.title = #{key_word})
             </if>
             <if test="result == null">
                 AND cca.result IS NULL
