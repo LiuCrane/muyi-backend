@@ -27,6 +27,8 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/master.xml
+  jackson:
+    property-naming-strategy: SNAKE_CASE
 springfox:
   documentation:
     swagger-ui:
@@ -48,23 +50,24 @@ easylog:
 server:
   port: 3001
 logging:
-  level:
-    root: info
-    "[com.mysl]": trace
-  pattern:
-    # console: "%clr(%d{yyyy-MM-dd E HH:mm:ss}){blue} %clr([%-5p]) pid=%clr(${PID}){faint}%clr %clr([%15.15t]){cyan} %clr%logger:%line{blue} %n           %clr(%m){faint}%n"
-    console: "%d{yyyy-MM-dd E HH:mm:ss} [%-5p] pid=${PID} [%15.15t] %logger:%line %n           %m%n"
-    # console: "%p%m%n"
-    file: ${logging.pattern.console}
-  file:
-    path: ./logs
+  config: classpath:log4j2.xml
 mysl:
   jwt:
-    key: 1q2w3e4r5t6y7u8i9o0p
+    key: a1b2c3
     expiration: 86400
-  login:
-    distance-limit: 100
-  open:
-    wx:
-      xcx-id:
-      xcx-secret:
+    login:
+      distance-limit: 100
+      location-check: false
+      time-check: false
+    tencent:
+      api:
+        secretId:
+        secretKey:
+      cos:
+        endpoint:
+        bucketName:
+        region:
+    open:
+      wx:
+        xcx-id:
+        xcx-secret:
