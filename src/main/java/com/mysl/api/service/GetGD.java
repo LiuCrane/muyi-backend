@@ -11,7 +11,7 @@ import com.mysl.api.lib.GlobalData;
 import com.mysl.api.lib.Permission;
 import com.mysl.api.entity.Group;
 import com.mysl.api.entity.Users2;
-import com.mysl.api.mapper.AddressMapper;
+import com.mysl.api.mapper.AddressV1Mapper;
 import com.mysl.api.mapper.GroupMapper;
 import com.mysl.api.mapper.HaveMediaMapper;
 import com.mysl.api.mapper.MediaV1Mapper;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class GetGD {
   @Autowired
-  AddressMapper addressMapper;
+  AddressV1Mapper addressV1Mapper;
 
   @Autowired
   GroupMapper groupMapper;
@@ -44,7 +44,7 @@ public class GetGD {
     GlobalData gd = new GlobalData();
     long place = AesFile.Placeholder(per.group);
 
-    gd.setAddress(addressMapper.selectList(null));
+    gd.setAddress(addressV1Mapper.selectList(null));
     if (per.node(2, 1 << 4)) { // 权限组读m取
       gd.setGroup(groupMapper.selectList(null));
       if (per.group == 0) {

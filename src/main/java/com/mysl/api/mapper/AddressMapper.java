@@ -1,16 +1,11 @@
 package com.mysl.api.mapper;
 
-import com.mysl.api.entity.Address;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.mysl.api.entity.Address;
 
 /**
- * <p>
- * 地名 Mapper 接口
- * </p>
- *
- * @author mac-xiang
- * @since 2021-05-16
+ * @author Ivan Su
+ * @date 2022/9/12
  */
 public interface AddressMapper extends BaseMapper<Address> {
-
 }
