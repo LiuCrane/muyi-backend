@@ -49,4 +49,9 @@
                                  onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="user" validate="true"/>
     </changeSet>
+    <changeSet id="add address_info_id to store" author="Ivan Su">
+        <addColumn tableName="store">
+            <column name="address_info_id" type="BIGINT UNSIGNED" remarks="地址信息id"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

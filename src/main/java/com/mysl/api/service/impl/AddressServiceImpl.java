@@ -7,9 +7,11 @@ import cn.hutool.extra.cglib.CglibUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mysl.api.entity.Address;
+import com.mysl.api.entity.dto.AddressCascadeDTO;
 import com.mysl.api.entity.dto.AddressDTO;
 import com.mysl.api.mapper.AddressMapper;
 import com.mysl.api.service.AddressService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -57,6 +59,45 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
             addressCache.put(ADDRESS_CACHE_KEY, list);
         }
         return list;
+    }
+
+    @Override
+    public AddressCascadeDTO getAddressCascade(Long lastAreaId) {
+        AddressCascadeDTO dto = new AddressCascadeDTO();
+        Address address = super.baseMapper.selectById(lastAreaId);
+        if (address != null) {
+            CglibUtil.copy(address, dto);
+            if (address.getParentId() != 0L) {
+                dto = getAddressCascade(address.getParentId(), dto);
+            }
+        }
+        return dto;
+    }
+
+    @Override
+    public String getAreaByCascade(AddressCascadeDTO dto) {
+        return getAreaByCascade("", dto);
+    }
+
+    private String getAreaByCascade(String area, AddressCascadeDTO dto) {
+        String ret = String.format("%s%s", area, dto.getName());
+        if (dto.getChild() != null && StringUtils.isNotEmpty(dto.getChild().getName())) {
+            return getAreaByCascade(ret, dto.getChild());
+        }
+        return ret;
+    }
+
+    private AddressCascadeDTO getAddressCascade(Long areaId, AddressCascadeDTO childDTO) {
+        AddressCascadeDTO dto = new AddressCascadeDTO();
+        Address address = super.baseMapper.selectById(areaId);
+        if (address != null) {
+            CglibUtil.copy(address, dto);
+            dto.setChild(childDTO);
+            if (address.getParentId() != 0L) {
+                dto = getAddressCascade(address.getParentId(), dto);
+            }
+        }
+        return dto;
     }
 
     private List<AddressDTO> buildTree(Long pid) {

@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @author Ivan Su
  * @date 2022/7/28
  */
-@ApiModel("用户信息")
+@ApiModel("用户基础信息")
 @Getter
 @Setter
 @NoArgsConstructor

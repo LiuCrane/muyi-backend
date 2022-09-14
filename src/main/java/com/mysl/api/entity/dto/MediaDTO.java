@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author Ivan Su
  * @date 2022/7/28
  */
-@ApiModel("媒体信息")
+@ApiModel("媒体基础信息")
 @Getter
 @Setter
 @NoArgsConstructor

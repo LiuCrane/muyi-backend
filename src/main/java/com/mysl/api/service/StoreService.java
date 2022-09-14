@@ -15,7 +15,7 @@ import java.util.List;
 public interface StoreService extends IService<Store> {
 
     List<StoreFullDTO> getStores(Integer pageNum, Integer pageSize, Long id, StoreStatus status, String name,
-                                 String managerName, String keyWord);
+                                 String managerName, String keyWord, Long managerUserId);
 
     PageInfo<StoreSimpleDTO> getFranchisees(Integer pageNum, Integer pageSize, Long excludeId);
 

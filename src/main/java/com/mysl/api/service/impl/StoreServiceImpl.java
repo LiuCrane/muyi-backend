@@ -11,14 +11,14 @@ import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.exception.ServiceException;
 import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.config.WebSocketServer;
-import com.mysl.api.entity.Store;
-import com.mysl.api.entity.User;
-import com.mysl.api.entity.UserRole;
+import com.mysl.api.entity.*;
 import com.mysl.api.entity.dto.*;
 import com.mysl.api.entity.enums.StoreStatus;
 import com.mysl.api.entity.enums.UserType;
+import com.mysl.api.mapper.AddressInfoMapper;
 import com.mysl.api.mapper.StoreMapper;
 import com.mysl.api.mapper.UserMapper;
+import com.mysl.api.service.AddressService;
 import com.mysl.api.service.ApplicationService;
 import com.mysl.api.service.StoreService;
 import com.mysl.api.service.UserRoleService;
@@ -45,12 +45,19 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
     UserMapper userMapper;
     @Autowired
     ApplicationService applicationService;
+    @Autowired
+    AddressInfoMapper addressInfoMapper;
+    @Autowired
+    AddressService addressService;
 
     @Override
-    public List<StoreFullDTO> getStores(Integer pageNum, Integer pageSize, Long id, StoreStatus status, String name, String managerName, String keyWord) {
+    public List<StoreFullDTO> getStores(Integer pageNum, Integer pageSize, Long id, StoreStatus status, String name, String managerName, String keyWord, Long managerUserId) {
         List<Long> managerUserIds = new ArrayList<>();
         if (StringUtils.isNotEmpty(managerName)) {
             managerUserIds = userMapper.findByNameAndType(managerName, UserType.APP_USER);
+        }
+        if (managerUserId != null) {
+            managerUserIds.add(managerUserId);
         }
         PageHelper.startPage(pageNum, pageSize);
         return super.baseMapper.findAll(id, status, null, name, managerUserIds, keyWord);
@@ -81,9 +88,26 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
     }
 
     @Override
+    @Transactional
     public boolean save(StoreCreateDTO dto) {
         Store store = new Store();
         BeanUtils.copyProperties(dto, store);
+        if (dto.getAreaId() != null) {
+            Address address = addressService.getById(dto.getAreaId());
+            if (address == null) {
+                throw new ServiceException("所选地区不存在");
+            }
+            AddressCascadeDTO addressCascadeDTO = addressService.getAddressCascade(dto.getAreaId());
+            AddressInfo info = AddressInfo.builder().lastAreaId(dto.getAreaId())
+                    .addressCascade(JSON.toJSONString(addressCascadeDTO))
+                    .addressArea(addressService.getAreaByCascade(addressCascadeDTO))
+                    .addressDetail(dto.getAddressDetail()).build();
+            if (addressInfoMapper.insert(info) < 1) {
+                throw new ServiceException("操作失败");
+            }
+            store.setAddressInfoId(info.getId());
+        }
+
         if (super.save(store)) {
             int count = applicationService.countApplications();
             WebSocketServer.send(JSON.toJSONString(ResponseData.ok(count)));

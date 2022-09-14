@@ -71,6 +71,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                     .name(dto.getStoreName()).address(dto.getStoreAddress())
                     .lat(dto.getStoreLat()).lng(dto.getStoreLng())
                     .managerUserId(user.getId()).managerIdCardNum(dto.getIdCardNum())
+                    .areaId(dto.getStoreAreaId()).addressDetail(dto.getStoreAddressDetail())
                     .status(StoreStatus.SUBMITTED).createdBy(user.getUsername()).build();
             if (!storeService.save(storeCreateDTO)) {
                 throw new ServiceException("注册失败");

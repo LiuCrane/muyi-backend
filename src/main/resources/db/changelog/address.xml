@@ -21,4 +21,18 @@
             <column name="name"/>
         </createIndex>
     </changeSet>
+    
+    <changeSet id="address_info" author="Ivan Su">
+        <createTable tableName="address_info">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="last_area_id" type="BIGINT UNSIGNED" remarks="最后一级地区id" />
+            <column name="address_cascade" type="TEXT" remarks="地区级联信息"/>
+            <column name="address_area" type="VARCHAR(255)" remarks="所在地区"/>
+            <column name="address_detail" type="VARCHAR(255)" remarks="详细地址"/>
+            <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

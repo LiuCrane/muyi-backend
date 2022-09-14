@@ -49,14 +49,14 @@ public class StoreController {
                                                      @RequestParam(name = "name", required = false) String name,
                                                      @ApiParam(value = "店长")
                                                      @RequestParam(name = "manager_name", required = false) String managerName) {
-        return ResponseData.ok(new PageInfo<>(storeService.getStores(pageNum, pageSize, null, status, name, managerName, null)));
+        return ResponseData.ok(new PageInfo<>(storeService.getStores(pageNum, pageSize, null, status, name, managerName, null, null)));
     }
 
     @ApiOperation("查询门店详情")
     @EasyLog(module = "Admin-查询门店详情", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @GetMapping("/{id}")
     public ResponseData<StoreFullDTO> get(@PathVariable Long id) {
-        List<StoreFullDTO> list = storeService.getStores(1, 1, id, null, null, null, null);
+        List<StoreFullDTO> list = storeService.getStores(1, 1, id, null, null, null, null, null);
         if (CollectionUtils.isEmpty(list)) {
             throw new ResourceNotFoundException("找不到门店信息");
         }

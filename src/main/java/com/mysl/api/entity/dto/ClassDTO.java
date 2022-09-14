@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author Ivan Su
  * @date 2022/8/9
  */
-@ApiModel("班级信息")
+@ApiModel("班级基础信息")
 @Data
 public class ClassDTO implements Serializable {
     private static final long serialVersionUID = 4614811115382912322L;

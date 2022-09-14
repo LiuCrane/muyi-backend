@@ -1,6 +1,7 @@
 package com.mysl.api.entity.dto;
 
 import com.mysl.api.entity.enums.MediaType;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 import lombok.Data;
@@ -11,6 +12,7 @@ import java.io.Serializable;
  * @author Ivan Su
  * @date 2022/8/26
  */
+@ApiModel("媒体搜索请求")
 @Data
 public class MediaSearchDTO implements Serializable {
     private static final long serialVersionUID = 4082693265450979797L;

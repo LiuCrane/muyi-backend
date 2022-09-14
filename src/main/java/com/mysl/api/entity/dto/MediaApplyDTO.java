@@ -12,7 +12,7 @@ import java.util.List;
  * @author Ivan Su
  * @date 2022/8/5
  */
-@ApiModel("音视频申请信息")
+@ApiModel("媒体申请信息")
 @Data
 public class MediaApplyDTO implements Serializable {
     private static final long serialVersionUID = -2745458956758533367L;

@@ -1,5 +1,6 @@
 package com.mysl.api.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
@@ -45,18 +47,29 @@ public class RegisterDTO implements Serializable {
     @JsonProperty("store_name")
     private String storeName;
 
-    @ApiModelProperty(value = "门店地址", required = true)
+    @ApiModelProperty(value = "门店地址")
     @JsonProperty("store_address")
+    @JsonIgnore
     private String storeAddress;
 
     @ApiModelProperty(value = "门店位置纬度", required = true)
     @NotEmpty(message = "纬度不能为空")
+    @Length(max = 16, message = "纬度长度不能超过16位")
+    @Digits(integer = 3, fraction = 8, message = "纬度格式错误")
     @JsonProperty("store_lat")
     private String storeLat;
 
     @ApiModelProperty(value = "门店位置经度", required = true)
     @NotEmpty(message = "经度不能为空")
+    @Length(max = 16, message = "经度长度不能超过16位")
+    @Digits(integer = 3, fraction = 8, message = "经度格式错误")
     @JsonProperty("store_lng")
     private String storeLng;
+
+    @ApiModelProperty(value = "最后一级地区id")
+    private Long storeAreaId;
+
+    @ApiModelProperty(value = "详细地址")
+    private String storeAddressDetail;
 
 }

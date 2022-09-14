@@ -14,7 +14,7 @@ import java.util.List;
  * @author Ivan Su
  * @date 2022/8/9
  */
-@ApiModel("课程信息")
+@ApiModel("课程创建信息")
 @Data
 public class CourseCreateDTO implements Serializable {
 

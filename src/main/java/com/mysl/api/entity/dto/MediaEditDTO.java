@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  * @author Ivan Su
  * @date 2022/8/13
  */
-@ApiModel("媒体信息")
+@ApiModel("媒体编辑信息")
 @Data
 public class MediaEditDTO implements Serializable {
     private static final long serialVersionUID = 5770936545191887385L;

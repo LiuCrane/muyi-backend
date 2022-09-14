@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author Ivan Su
  * @date 2022/8/5
  */
-@ApiModel("门店信息")
+@ApiModel("门店简要信息")
 @Data
 public class StoreSimpleDTO implements Serializable {
 

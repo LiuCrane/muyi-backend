@@ -4,8 +4,8 @@ import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.OperateType;
 import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.config.security.JwtTokenUtil;
-import com.mysl.api.entity.Store;
 import com.mysl.api.entity.dto.StoreDTO;
+import com.mysl.api.entity.dto.StoreFullDTO;
 import com.mysl.api.entity.dto.StoreSimpleDTO;
 import com.mysl.api.service.StoreService;
 import io.github.flyhero.easylog.annotation.EasyLog;
@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,8 +40,10 @@ public class StoreController {
     @GetMapping
     public ResponseData<StoreDTO> get() {
         StoreDTO dto = new StoreDTO();
-        Store store = storeService.findByUserId(JwtTokenUtil.getCurrentUserId());
-        BeanUtils.copyProperties(store, dto);
+        List<StoreFullDTO> list = storeService.getStores(1, 1, null, null, null, null, null, JwtTokenUtil.getCurrentUserId());
+        if (!CollectionUtils.isEmpty(list)) {
+            BeanUtils.copyProperties(list.get(0), dto);
+        }
         return ResponseData.ok(dto);
     }
 
