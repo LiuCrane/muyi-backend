@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Ivan Su
  * @date 2022/8/29
  */
-@Api(tags = "学员信息接口")
+@Api(tags = "学员管理接口")
 @RestController("adminStudentController")
 @RequestMapping("/admin/students")
 @Slf4j

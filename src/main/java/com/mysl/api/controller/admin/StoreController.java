@@ -26,7 +26,7 @@ import java.util.List;
  * @author Ivan Su
  * @date 2022/8/12
  */
-@Api(tags = "门店信息接口")
+@Api(tags = "门店管理接口")
 @RestController("adminStoreController")
 @RequestMapping("/admin/stores")
 @Slf4j

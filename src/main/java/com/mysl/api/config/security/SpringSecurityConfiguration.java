@@ -63,7 +63,7 @@ public class SpringSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChainForApp(HttpSecurity httpSecurity) throws Exception {
-        httpSecurityConfig(httpSecurity, "/app", "/app/auth/login", "/app/user/register");
+        httpSecurityConfig(httpSecurity, "/app", "/app/auth/login", "/app/user/register", "/app/address/**");
         return httpSecurity.build();
     }
 
@@ -88,7 +88,7 @@ public class SpringSecurityConfiguration {
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint()).and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, antPattern).permitAll()
-                .antMatchers(HttpMethod.POST, permitUri).permitAll()
+                .antMatchers(permitUri).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
         JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter = new JwtAuthenticationTokenFilter(

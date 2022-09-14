@@ -18,13 +18,13 @@ import java.util.List;
 public class AuditDTO implements Serializable {
     private static final long serialVersionUID = -5933343766360613086L;
 
-    @ApiModelProperty("申请id集合")
+    @ApiModelProperty(value = "申请id集合", required = true)
     @NotNull(message = "申请id不能为空")
     private List<Long> ids;
-    @ApiModelProperty("申请类型(STORE/STUDY)")
+    @ApiModelProperty(value = "申请类型(STORE/STUDY)", required = true)
     @NotEmpty(message = "申请类型不能为空")
     private String type;
-    @ApiModelProperty("审核结果")
+    @ApiModelProperty(value = "审核结果", required = true)
     @NotNull
     private Boolean result;
 }

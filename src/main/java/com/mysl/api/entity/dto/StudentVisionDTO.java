@@ -19,11 +19,11 @@ import java.io.Serializable;
 public class StudentVisionDTO implements Serializable {
     private static final long serialVersionUID = -6151763698399667952L;
 
-    @ApiModelProperty(value = "左眼视力", required = true)
+    @ApiModelProperty(value = "左眼视力")
     @JsonProperty("left_vision")
     private String leftVision;
 
-    @ApiModelProperty(value = "右眼视力", required = true)
+    @ApiModelProperty(value = "右眼视力")
     @JsonProperty("right_vision")
     private String rightVision;
 

@@ -174,7 +174,22 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
             userMapper.updateUserNameAndPhone(manager.getId(), dto.getManagerName(), dto.getManagerPhone());
         }
         store.setName(dto.getName());
-        store.setAddress(dto.getAddress());
+//        store.setAddress(dto.getAddress());
+        if (dto.getAreaId() != null && !dto.getAreaId().equals(store.getAddressInfoId())) {
+            Address address = addressService.getById(dto.getAreaId());
+            if (address == null) {
+                throw new ServiceException("所选地区不存在");
+            }
+            AddressCascadeDTO addressCascadeDTO = addressService.getAddressCascade(dto.getAreaId());
+            AddressInfo info = AddressInfo.builder().lastAreaId(dto.getAreaId())
+                    .addressCascade(JSON.toJSONString(addressCascadeDTO))
+                    .addressArea(addressService.getAreaByCascade(addressCascadeDTO))
+                    .addressDetail(dto.getAddressDetail()).build();
+            if (addressInfoMapper.insert(info) < 1) {
+                throw new ServiceException("操作失败");
+            }
+            store.setAddressInfoId(info.getId());
+        }
         return super.updateById(store);
     }
 

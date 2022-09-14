@@ -41,12 +41,12 @@ public class StudentCreateDTO implements Serializable {
     @JsonProperty("parent_phone")
     private String parentPhone;
 
-    @ApiModelProperty(value = "左眼度数", required = true)
+    @ApiModelProperty(value = "左眼度数")
 //    @NotEmpty(message = "左眼度数不能为空")
     @JsonProperty("left_diopter")
     private String leftDiopter;
 
-    @ApiModelProperty(value = "右眼度数", required = true)
+    @ApiModelProperty(value = "右眼度数")
 //    @NotEmpty(message = "右眼度数不能为空")
     @JsonProperty("right_diopter")
     private String rightDiopter;
@@ -73,11 +73,11 @@ public class StudentCreateDTO implements Serializable {
     @Digits(integer = 3, fraction = 2, message = "双眼视力格式错误")
     private String binocularVision;
 
-    @ApiModelProperty(value = "最后一级地区id")
+    @ApiModelProperty(value = "最后一级地区id", required = true)
     @NotNull(message = "地区id不能为空")
     private Long areaId;
 
-    @ApiModelProperty(value = "详细地址")
+    @ApiModelProperty(value = "详细地址", required = true)
     @NotEmpty(message = "详细地址不能为空")
     private String addressDetail;
 
