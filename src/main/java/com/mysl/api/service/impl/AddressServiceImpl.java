@@ -11,6 +11,7 @@ import com.mysl.api.entity.dto.AddressCascadeDTO;
 import com.mysl.api.entity.dto.AddressDTO;
 import com.mysl.api.mapper.AddressMapper;
 import com.mysl.api.service.AddressService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -23,6 +24,7 @@ import java.util.List;
  * @date 2022/9/13
  */
 @Service
+@Slf4j
 public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> implements AddressService {
 
     @Override
@@ -57,6 +59,7 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
         if (CollectionUtils.isEmpty(list)) {
             list = buildTree(0L);
             addressCache.put(ADDRESS_CACHE_KEY, list);
+            log.info("cache address data");
         }
         return list;
     }
