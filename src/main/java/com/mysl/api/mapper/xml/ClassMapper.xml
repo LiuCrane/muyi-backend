@@ -18,12 +18,13 @@
         c.id, c.name, c.teacher, c.store_id, c.study_progress AS study_progress,
         s.name AS store_name, s.number AS store_number, cr.title AS current_course,
         (SELECT COUNT(id) FROM student where class_id = c.id) AS student_num,
-        c.created_at, c.created_by, c.updated_at, c.updated_by
+        c.created_at, c.created_by, c.updated_at, c.updated_by, u.name AS store_manager
         FROM class c
         LEFT JOIN store s ON c.store_id = s.id
         LEFT JOIN (SELECT * FROM class_course WHERE id IN (SELECT MAX(id) id FROM class_course GROUP BY class_id)) cc
         ON cc.class_id = c.id
         LEFT JOIN course cr ON cr.id = cc.course_id
+        LEFT JOIN user u ON u.id = s.manager_user_id
         <where>
             1 = 1
             <if test="id != null">

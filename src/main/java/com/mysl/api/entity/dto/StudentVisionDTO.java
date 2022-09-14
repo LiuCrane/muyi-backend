@@ -1,5 +1,6 @@
 package com.mysl.api.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,15 +19,13 @@ import java.io.Serializable;
 public class StudentVisionDTO implements Serializable {
     private static final long serialVersionUID = -6151763698399667952L;
 
-//    @ApiModelProperty(value = "左眼视力", required = true)
-//    @JsonProperty("left_vision")
-//    @NotEmpty(message = "左眼视力必填")
-//    private String leftVision;
-//
-//    @ApiModelProperty(value = "右眼视力", required = true)
-//    @JsonProperty("right_vision")
-//    @NotEmpty(message = "右眼视力必填")
-//    private String rightVision;
+    @ApiModelProperty(value = "左眼视力", required = true)
+    @JsonProperty("left_vision")
+    private String leftVision;
+
+    @ApiModelProperty(value = "右眼视力", required = true)
+    @JsonProperty("right_vision")
+    private String rightVision;
 
     @ApiModelProperty(value = "课程id", required = true)
     @NotNull(message = "课程id不能为空")

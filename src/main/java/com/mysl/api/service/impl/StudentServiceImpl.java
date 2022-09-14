@@ -13,10 +13,7 @@ import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.entity.*;
 import com.mysl.api.entity.dto.*;
 import com.mysl.api.entity.enums.ClassCourseStatus;
-import com.mysl.api.mapper.AddressInfoMapper;
-import com.mysl.api.mapper.ClassCourseMapper;
-import com.mysl.api.mapper.StudentEyesightMapper;
-import com.mysl.api.mapper.StudentMapper;
+import com.mysl.api.mapper.*;
 import com.mysl.api.service.AddressService;
 import com.mysl.api.service.StudentService;
 import org.springframework.beans.BeanUtils;
@@ -43,6 +40,8 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     AddressService addressService;
     @Autowired
     ClassCourseMapper classCourseMapper;
+    @Autowired
+    CourseMapper courseMapper;
 
     @Override
     public PageInfo<StudentFullDTO> getStudents(Integer pageNum, Integer pageSize, Long id, String name,
@@ -73,7 +72,11 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
             throw new ResourceNotFoundException("找不到学员信息");
         }
         StudentFullDTO dto = list.get(0);
-        dto.setEyesightList(getStudentEyesight(id));
+        List<StudentEyesightDTO> eyesightDTOS = getStudentEyesight(id);
+        eyesightDTOS.add(0, StudentEyesightDTO.builder().title("疗愈前")
+                .leftVision(dto.getFirstLeftVision()).rightVision(dto.getFirstRightVision())
+                .binocularVision(dto.getBinocularVision()).createdAt(dto.getCreatedAt()).build());
+        dto.setEyesightList(eyesightDTOS);
         return dto;
     }
 
@@ -84,17 +87,16 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
             throw new ResourceNotFoundException("找不到学员信息");
         }
         StudentFullDTO dto = list.get(0);
-        dto.setEyesightList(getStudentEyesight(id));
+        List<StudentEyesightDTO> eyesightDTOS = getStudentEyesight(id);
+        eyesightDTOS.add(0, StudentEyesightDTO.builder().title("疗愈前")
+                .leftVision(dto.getFirstLeftVision()).rightVision(dto.getFirstRightVision())
+                .binocularVision(dto.getBinocularVision()).createdAt(dto.getCreatedAt()).build());
+        dto.setEyesightList(eyesightDTOS);
         return dto;
     }
 
     private List<StudentEyesightDTO> getStudentEyesight(Long studentId) {
-        List<StudentEyesightDTO> ret = new ArrayList<>();
-        List<StudentEyesight> list = studentEyesightMapper.selectList(new QueryWrapper<StudentEyesight>().eq("student_id", studentId).orderByAsc("id"));
-        if (!CollectionUtils.isEmpty(list)) {
-            ret = CglibUtil.copyList(list, StudentEyesightDTO::new);
-        }
-        return ret;
+        return studentEyesightMapper.findByStudentId(studentId);
     }
 
     @Override
@@ -148,6 +150,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         if (!ClassCourseStatus.COMPLETED.equals(classCourse.getStatus())) {
             throw new ServiceException("该课程未学习完成");
         }
+        Course course = courseMapper.selectById(dto.getCourseId());
         StudentEyesight last = studentEyesightMapper.selectList(
                 new QueryWrapper<StudentEyesight>().eq("student_id", id).orderByDesc("created_at")).get(0);
         Boolean improved = Boolean.FALSE;
@@ -158,6 +161,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         student.setImproved(improved);
         if (super.updateById(student)) {
             StudentEyesight eyesight = StudentEyesight.builder().studentId(id).courseId(dto.getCourseId())
+                    .leftVision(dto.getLeftVision()).rightVision(dto.getRightVision())
                     .binocularVision(dto.getBinocularVision()).improved(improved).build();
             return studentEyesightMapper.insert(eyesight) > 0;
         }

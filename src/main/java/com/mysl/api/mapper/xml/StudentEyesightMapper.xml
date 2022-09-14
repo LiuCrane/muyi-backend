@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mysl.api.mapper.StudentEyesightMapper">
+
+    <select id="findByStudentId" resultType="com.mysl.api.entity.dto.StudentEyesightDTO">
+        SELECT
+        c.title, e.left_vision, e.right_vision, e.binocular_vision, e.improved
+        FROM student_eyesight e
+        LEFT JOIN course c ON c.id = e.course_id
+        WHERE e.student_id = #{student_id}
+        ORDER BY e.created_at desc
+    </select>
+
+</mapper>
