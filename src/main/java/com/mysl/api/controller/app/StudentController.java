@@ -6,6 +6,8 @@ import com.mysl.api.common.OperateType;
 import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.config.security.JwtTokenUtil;
 import com.mysl.api.entity.dto.*;
+import com.mysl.api.entity.enums.Gender;
+import com.mysl.api.service.CourseService;
 import com.mysl.api.service.StudentService;
 import io.github.flyhero.easylog.annotation.EasyLog;
 import io.swagger.annotations.Api;
@@ -13,9 +15,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 
 /**
@@ -31,6 +35,8 @@ public class StudentController {
 
     @Autowired
     StudentService studentService;
+    @Autowired
+    CourseService courseService;
 
     @ApiOperation("查询学员列表")
     @EasyLog(module = "App-查询学员列表", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
@@ -65,6 +71,9 @@ public class StudentController {
     @PostMapping("/students")
     public ResponseData create(@Validated @RequestBody StudentCreateDTO dto) {
         log.info("create student dto: {}", dto);
+        if (!Gender.男.name().equals(dto.getGender()) && !Gender.女.name().equals(dto.getGender())) {
+            return ResponseData.generator(HttpStatus.BAD_REQUEST.value(), "性别数据错误", null);
+        }
         studentService.save(dto);
         return ResponseData.ok();
     }
@@ -78,6 +87,14 @@ public class StudentController {
         return ResponseData.ok();
     }
 
+    @ApiOperation("查询学员已完成的课程")
+    @EasyLog(module = "App-查询学员已完成的课程", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
+    @GetMapping("/students/{id}/courses")
+    public ResponseData<ListData<CourseSimpleDTO>> getCompletedCourse(@PathVariable Long id) {
+        return ResponseData.ok(new ListData<CourseSimpleDTO>().setList(courseService.getCompletedCourse(id)));
+    }
+
+    @ApiIgnore
     @ApiOperation(value = "学员签到", notes = "后台仅做记录")
     @EasyLog(module = "App-学员签到", type = OperateType.ADD, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @PostMapping("/students/{id}/sign_in")

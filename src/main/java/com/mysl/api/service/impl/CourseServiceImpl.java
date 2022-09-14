@@ -5,12 +5,11 @@ import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.exception.ServiceException;
 import com.mysl.api.entity.Course;
 import com.mysl.api.entity.CourseMedia;
+import com.mysl.api.entity.Student;
 import com.mysl.api.entity.dto.CourseCreateDTO;
+import com.mysl.api.entity.dto.CourseSimpleDTO;
 import com.mysl.api.entity.enums.ClassCourseStatus;
-import com.mysl.api.mapper.ClassCourseMapper;
-import com.mysl.api.mapper.CourseMapper;
-import com.mysl.api.mapper.CourseMediaMapper;
-import com.mysl.api.mapper.MediaMapper;
+import com.mysl.api.mapper.*;
 import com.mysl.api.service.CourseMediaService;
 import com.mysl.api.service.CourseService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +39,8 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     MediaMapper mediaMapper;
     @Autowired
     ClassCourseMapper classCourseMapper;
+    @Autowired
+    StudentMapper studentMapper;
 
     @Override
     @Transactional
@@ -106,6 +106,15 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         }
         course.setActive(Boolean.FALSE);
         return super.updateById(course);
+    }
+
+    @Override
+    public List<CourseSimpleDTO> getCompletedCourse(Long studentId) {
+        Student student = studentMapper.selectById(studentId);
+        if (student == null) {
+            throw new ResourceNotFoundException("找不到学员");
+        }
+        return classCourseMapper.findCompletedCourse(student.getClassId());
     }
 
 

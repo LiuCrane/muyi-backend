@@ -2,17 +2,22 @@ package com.mysl.api.service.impl;
 
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.extra.cglib.CglibUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mysl.api.common.exception.ResourceNotFoundException;
+import com.mysl.api.common.exception.ServiceException;
 import com.mysl.api.config.security.JwtTokenUtil;
-import com.mysl.api.entity.Student;
-import com.mysl.api.entity.StudentEyesight;
+import com.mysl.api.entity.*;
 import com.mysl.api.entity.dto.*;
+import com.mysl.api.entity.enums.ClassCourseStatus;
+import com.mysl.api.mapper.AddressInfoMapper;
+import com.mysl.api.mapper.ClassCourseMapper;
 import com.mysl.api.mapper.StudentEyesightMapper;
 import com.mysl.api.mapper.StudentMapper;
+import com.mysl.api.service.AddressService;
 import com.mysl.api.service.StudentService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +37,12 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     @Autowired
     StudentEyesightMapper studentEyesightMapper;
+    @Autowired
+    AddressInfoMapper addressInfoMapper;
+    @Autowired
+    AddressService addressService;
+    @Autowired
+    ClassCourseMapper classCourseMapper;
 
     @Override
     public PageInfo<StudentFullDTO> getStudents(Integer pageNum, Integer pageSize, Long id, String name,
@@ -92,15 +103,33 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         Student student = new Student();
         BeanUtils.copyProperties(dto, student);
         student.setStoreId(JwtTokenUtil.getCurrentStoreId());
-        if (super.save(student)) {
-            StudentEyesight eyesight = StudentEyesight.builder()
-                    .studentId(student.getId())
-                    .leftDiopter(dto.getLeftDiopter())
-                    .rightDiopter(dto.getRightDiopter())
-                    .leftVision(dto.getLeftVision())
-                    .rightVision(dto.getRightVision())
-                    .build();
-            return studentEyesightMapper.insert(eyesight) > 0;
+
+        if (dto.getAreaId() != null) {
+            Address address = addressService.getById(dto.getAreaId());
+            if (address == null) {
+                throw new ServiceException("所选地区不存在");
+            }
+            AddressCascadeDTO addressCascadeDTO = addressService.getAddressCascade(dto.getAreaId());
+            AddressInfo info = AddressInfo.builder().lastAreaId(dto.getAreaId())
+                    .addressCascade(JSON.toJSONString(addressCascadeDTO))
+                    .addressArea(addressService.getAreaByCascade(addressCascadeDTO))
+                    .addressDetail(dto.getAddressDetail()).build();
+            if (addressInfoMapper.insert(info) < 1) {
+                throw new ServiceException("操作失败");
+            }
+            student.setAddressInfoId(info.getId());
+        }
+
+        if (!super.save(student)) {
+            throw new ServiceException("操作失败");
+//            StudentEyesight eyesight = StudentEyesight.builder()
+//                    .studentId(student.getId())
+//                    .leftDiopter(dto.getLeftDiopter())
+//                    .rightDiopter(dto.getRightDiopter())
+//                    .leftVision(dto.getLeftVision())
+//                    .rightVision(dto.getRightVision())
+//                    .build();
+//            return studentEyesightMapper.insert(eyesight) > 0;
         }
         return false;
     }
@@ -112,19 +141,24 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         if (student == null) {
             throw new ResourceNotFoundException("找不到学员信息");
         }
+        ClassCourse classCourse = classCourseMapper.selectOne(new QueryWrapper<ClassCourse>().eq("class_id", student.getClassId()).eq("course_id", dto.getCourseId()));
+        if (classCourse == null) {
+            throw new ResourceNotFoundException("找不到课程");
+        }
+        if (!ClassCourseStatus.COMPLETED.equals(classCourse.getStatus())) {
+            throw new ServiceException("该课程未学习完成");
+        }
         StudentEyesight last = studentEyesightMapper.selectList(
                 new QueryWrapper<StudentEyesight>().eq("student_id", id).orderByDesc("created_at")).get(0);
         Boolean improved = Boolean.FALSE;
-        if (NumberUtil.add(dto.getLeftVision(), dto.getRightVision())
-                .compareTo(NumberUtil.add(last.getLeftVision(), last.getRightVision())) > 0) {
+        if (NumberUtil.toBigDecimal(dto.getBinocularVision())
+                .compareTo(NumberUtil.toBigDecimal(last.getBinocularVision())) > 0) {
             improved = Boolean.TRUE;
         }
-        student.setLeftVision(dto.getLeftVision());
-        student.setRightVision(dto.getRightVision());
         student.setImproved(improved);
         if (super.updateById(student)) {
-            StudentEyesight eyesight = StudentEyesight.builder().studentId(id)
-                    .leftVision(dto.getLeftVision()).rightVision(dto.getRightVision()).improved(improved).build();
+            StudentEyesight eyesight = StudentEyesight.builder().studentId(id).courseId(dto.getCourseId())
+                    .binocularVision(dto.getBinocularVision()).improved(improved).build();
             return studentEyesightMapper.insert(eyesight) > 0;
         }
         return false;

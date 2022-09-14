@@ -55,14 +55,14 @@ public class RegisterDTO implements Serializable {
     @ApiModelProperty(value = "门店位置纬度", required = true)
     @NotEmpty(message = "纬度不能为空")
     @Length(max = 16, message = "纬度长度不能超过16位")
-    @Digits(integer = 3, fraction = 8, message = "纬度格式错误")
+    @Digits(integer = 3, fraction = 12, message = "纬度格式错误")
     @JsonProperty("store_lat")
     private String storeLat;
 
     @ApiModelProperty(value = "门店位置经度", required = true)
     @NotEmpty(message = "经度不能为空")
     @Length(max = 16, message = "经度长度不能超过16位")
-    @Digits(integer = 3, fraction = 8, message = "经度格式错误")
+    @Digits(integer = 3, fraction = 12, message = "经度格式错误")
     @JsonProperty("store_lng")
     private String storeLng;
 

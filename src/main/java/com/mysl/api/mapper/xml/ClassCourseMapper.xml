@@ -31,4 +31,9 @@
     <select id="countByCourseIdAndStatus" resultType="java.lang.Integer">
         SELECT COUNT(id) FROM class_course WHERE course_id = #{course_id} AND status = #{status}
     </select>
+
+    <select id="findCompletedCourse" resultType="com.mysl.api.entity.dto.CourseSimpleDTO">
+        SELECT c.id, c.title FROM class_course cc LEFT JOIN course c ON cc.course_id = c.id
+        WHERE cc.class_id = #{class_id} AND cc.status = 'COMPLETED'
+    </select>
 </mapper>

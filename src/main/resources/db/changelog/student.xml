@@ -104,6 +104,23 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add new fields to student and student_eyesight" author="Ivan Su">
+        <addColumn tableName="student">
+            <column name="gender" type="VARCHAR(8)" remarks="性别"/>
+            <column name="age" type="INT UNSIGNED" defaultValue="0" remarks="年龄" />
+            <column name="address_info_id" type="BIGINT UNSIGNED" remarks="地址信息id"/>
+            <column name="binocular_vision" type="VARCHAR(8)" remarks="双眼视力"/>
+        </addColumn>
+        <addColumn tableName="student_eyesight">
+            <column name="binocular_vision" type="VARCHAR(8)" remarks="双眼视力"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="add course_id to student_eyesight" author="Ivan Su">
+        <addColumn tableName="student_eyesight">
+            <column name="course_id" type="BIGINT UNSIGNED" />
+        </addColumn>
+    </changeSet>
+
     <changeSet id="student_sign_in" author="Ivan Su">
         <createTable tableName="student_sign_in">
             <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">

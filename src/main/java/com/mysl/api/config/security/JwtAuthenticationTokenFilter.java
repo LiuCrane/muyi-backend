@@ -1,12 +1,14 @@
 package com.mysl.api.config.security;
 
-import com.mysl.api.common.exception.JwtTokenException;
+import com.alibaba.fastjson.JSON;
+import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.service.JwtBlacklistService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.ThreadContext;
-import org.springframework.security.access.AuthorizationServiceException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -41,7 +44,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             try {
                 username = jwtTokenUtil.getUsernameFromToken(authToken);
             } catch (Exception e) {
-                throw new JwtTokenException("getUsernameFromToken error: ", e);
+                setErrorResponse(400101, response, e);
+                return;
             }
         }
 
@@ -50,8 +54,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
         if (username != null) {
             if (blacklistService.isExist(authToken)) {
-//                throw new AuthorizationServiceException("the token is in blacklist");
-                throw new JwtTokenException("token is in blacklist");
+                setErrorResponse(400101, response, null);
+                return;
             }
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -85,5 +89,16 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             authToken = httpRequest.getParameter(tokenHeader);
         }
         return authToken;
+    }
+
+    private void setErrorResponse(int bizCode, HttpServletResponse response, Throwable ex){
+        response.setStatus(HttpStatus.OK.value());
+        response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
+        response.setHeader("Content-type", MediaType.APPLICATION_JSON_VALUE);
+        try {
+            response.getWriter().write(JSON.toJSONString(ResponseData.generator(bizCode)));
+        } catch (IOException e) {
+            log.error("setErrorResponse error: ", e);
+        }
     }
 }

@@ -22,5 +22,9 @@ public class Student extends BaseModel<Student> {
     private String leftDiopter;
     private String rightDiopter;
     private Boolean improved;
+    private String gender;
+    private Integer age;
+    private Long addressInfoId;
+    private String binocularVision;
 
 }

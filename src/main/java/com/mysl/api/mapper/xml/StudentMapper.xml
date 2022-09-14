@@ -6,14 +6,19 @@
         SELECT
         s.id, c.name AS class_name, s.name, s.parent_name, s.parent_phone, s.improved, c.study_progress,
         cr.title AS currentCourse, s.avatar_url, s.created_at, s.created_by, s.updated_at, s.updated_by,
-        s.left_vision, s.right_vision, fse.left_vision AS first_left_vision, fse.right_vision AS first_right_vision
+        s.left_vision AS first_left_vision, s.right_vision AS first_right_vision,
+        IFNULL(fse.left_vision, s.left_vision) AS left_vision, IFNULL(fse.right_vision, s.right_vision) AS right_vision,
+        IFNULL(fse.binocular_vision, s.binocular_vision) AS binocular_vision,
+        ai.last_area_id AS address_area_id, ai.address_cascade AS address_area_cascade_json, ai.address_area, ai.address_detail,
+        s.gender, s.age, s.binocular_vision AS first_binocular_vision
         FROM student s
         LEFT JOIN class c ON s.class_id = c.id
         LEFT JOIN
         (SELECT * FROM class_course where id IN (SELECT max(id) FROM class_course GROUP BY class_id)) cc
         ON s.class_id = cc.class_id
         LEFT JOIN course cr ON cc.course_id = cr.id
-        LEFT JOIN (SELECT student_id, left_vision, right_vision FROM student_eyesight WHERE id IN( SELECT MIN(id) FROM student_eyesight GROUP BY student_id )) fse ON fse.student_id = s.id
+        LEFT JOIN (SELECT student_id, left_vision, right_vision, binocular_vision, course_id FROM student_eyesight WHERE id IN( SELECT MAX(id) FROM student_eyesight GROUP BY student_id )) fse ON fse.student_id = s.id
+        LEFT JOIN address_info ai ON ai.id = s.address_info_id
         <where>
             1 = 1
             <if test="id != null">

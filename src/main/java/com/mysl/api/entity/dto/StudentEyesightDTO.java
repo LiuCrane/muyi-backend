@@ -1,6 +1,7 @@
 package com.mysl.api.entity.dto;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,8 +17,9 @@ public class StudentEyesightDTO implements Serializable {
 
     private static final long serialVersionUID = 4110200315468400294L;
 
-    private String leftVision;
-    private String rightVision;
+    @ApiModelProperty("双眼视力")
+    private String binocularVision;
+    @ApiModelProperty("是否有提升")
     private Boolean improved;
     private Date createdAt;
 }

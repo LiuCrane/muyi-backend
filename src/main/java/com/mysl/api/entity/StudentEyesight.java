@@ -22,4 +22,6 @@ public class StudentEyesight extends BaseModel<StudentEyesight> {
     private String leftVision;
     private String rightVision;
     private Boolean improved;
+    private String binocularVision;
+    private Long courseId;
 }

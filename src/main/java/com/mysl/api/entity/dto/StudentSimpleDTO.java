@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @author Ivan Su
  * @date 2022/8/5
  */
-@ApiModel("学员信息")
+@ApiModel("学员简要信息")
 @Data
 public class StudentSimpleDTO implements Serializable {
 
