@@ -304,6 +304,7 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
     @Async
     @Transactional
     private void saveBrowseRecord(Long storeId, Long classId, Long courseId, Long mediaId, PlayerEvent event, Long userId) {
+        log.info("saveBrowseRecord, storeId: {}, classId: {}, courseId: {}, mediaId: {}, event: {}, userId: {}", storeId, classId, courseId, mediaId, event, userId);
         if (!PlayerEvent.END.equals(event)) {
             return;
         }
@@ -324,6 +325,7 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
             return;
         }
         String stuIds = students.stream().map(m -> m.getId().toString()).collect(Collectors.joining(","));
+        log.info("stuIds: {}", stuIds);
 
         Course course = courseMapper.selectById(courseId);
         if (course == null) {
@@ -338,15 +340,18 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
         if (classCourse == null) {
             return;
         }
-        MediaPlayEvent firstStartEvent = eventMapper.getEvent(classCourse.getId(), mediaId, PlayerEvent.START, null, null);
+        MediaPlayEvent firstStartEvent = eventMapper.getEvent(classCourse.getId(), mediaId, PlayerEvent.START, userId, null);
         if (firstStartEvent == null) {
             return;
         }
-        MediaPlayEvent lastEndEvent = eventMapper.getEvent(classCourse.getId(), mediaId, PlayerEvent.END, null, Boolean.TRUE);
+        log.info("firstStartEvent createdAt: {}", firstStartEvent.getCreatedAt());
+        MediaPlayEvent lastEndEvent = eventMapper.getEvent(classCourse.getId(), mediaId, PlayerEvent.END, userId, Boolean.TRUE);
         if (lastEndEvent == null) {
             return;
         }
+        log.info("lastEndEvent createdAt: {}", lastEndEvent.getCreatedAt());
         String totalTime = DateUtil.formatBetween(firstStartEvent.getCreatedAt(), lastEndEvent.getCreatedAt(), BetweenFormatter.Level.SECOND);
+        log.info("totalTime: {}", totalTime);
 
         MediaBrowseRecord browseRecord = MediaBrowseRecord.builder()
                 .userId(userId)
