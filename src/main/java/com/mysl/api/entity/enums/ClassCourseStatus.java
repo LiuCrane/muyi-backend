@@ -9,5 +9,6 @@ public enum ClassCourseStatus {
     UN_APPLICABLE, // 不可申请
     UNDER_APPLICATION, // 申请中
     ACCESSIBLE, // 可进入课程
-    COMPLETED // 已完成
+    COMPLETED, // 已完成
+    EXPIRED // 已失效
 }

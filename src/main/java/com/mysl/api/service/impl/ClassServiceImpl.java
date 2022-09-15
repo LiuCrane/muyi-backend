@@ -1,5 +1,6 @@
 package com.mysl.api.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.extra.cglib.CglibUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -32,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -145,12 +147,13 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         if (classCourse != null && ClassCourseStatus.ACCESSIBLE.equals(classCourse.getStatus())) {
             List<MediaDTO> list = classCourseMapper.findMediaByClassIdAndCourseId(classId, courseId);
             if (!CollectionUtils.isEmpty(list)) {
+                Date expirationDate = DateUtil.endOfDay(new Date());
                 list.forEach(m -> {
                     if (StringUtils.isNotEmpty(m.getImg())) {
                         m.setImg(CosUtil.getImgShowUrl(m.getImg()));
                     }
                     if (StringUtils.isNotEmpty(m.getUrl())) {
-                        m.setUrl(CosUtil.generatePresignedDownloadUrl(m.getUrl()));
+                        m.setUrl(CosUtil.generatePresignedDownloadUrl(m.getUrl(), expirationDate));
                     }
                 });
                 return list;
@@ -168,5 +171,11 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         cls.setName(dto.getName());
         return super.updateById(cls);
     }
+
+    @Override
+    public void expireClassCourse() {
+        classCourseMapper.expireClassCourse();
+    }
+
 
 }

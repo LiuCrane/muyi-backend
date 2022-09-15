@@ -33,7 +33,7 @@ public class CourseDTO implements Serializable {
     @JsonProperty("media_num")
     private Integer mediaNum;
 
-    @ApiModelProperty("状态(APPLICABLE:可申请, UN_APPLICABLE:不可申请, UNDER_APPLICATION:申请中, ACCESSIBLE:可进入课程, COMPLETED:已完成)")
+    @ApiModelProperty("状态(APPLICABLE:可申请, UN_APPLICABLE:不可申请, UNDER_APPLICATION:申请中, ACCESSIBLE:可进入课程, COMPLETED:已完成, EXPIRED:已失效)")
     private ClassCourseStatus status;
 
     @ApiModelProperty("封面url")

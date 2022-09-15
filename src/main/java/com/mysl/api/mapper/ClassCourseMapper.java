@@ -26,4 +26,6 @@ public interface ClassCourseMapper extends BaseMapper<ClassCourse> {
     int countByCourseIdAndStatus(@Param("course_id") Long courseId, @Param("status") ClassCourseStatus status);
 
     List<CourseSimpleDTO> findCompletedCourse(@Param("class_id") Long classId);
+
+    int expireClassCourse();
 }

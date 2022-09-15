@@ -36,4 +36,11 @@
         SELECT c.id, c.title FROM class_course cc LEFT JOIN course c ON cc.course_id = c.id
         WHERE cc.class_id = #{class_id} AND cc.status = 'COMPLETED'
     </select>
+
+    <update id="expireClassCourse">
+        UPDATE class_course SET
+        status = 'EXPIRED',
+        updated_at = now()
+        WHERE status = 'ACCESSIBLE' AND created_at &lt; DATE_FORMAT(now(), "%Y-%m-%d 00:00:00")
+    </update>
 </mapper>

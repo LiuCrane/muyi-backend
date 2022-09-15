@@ -26,4 +26,6 @@ public interface ClassService extends IService<Class> {
     List<MediaDTO> getClassCourseMedia(Long storeId, Long classId, Long courseId);
 
     boolean update(Long id, ClassUpdateDTO dto);
+
+    void expireClassCourse();
 }
