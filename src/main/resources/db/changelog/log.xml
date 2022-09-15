@@ -36,4 +36,9 @@
             <column name="operate_time"/>
         </createIndex>
     </changeSet>
+    <changeSet id="add source field to operate_log" author="Ivan Su">
+        <addColumn tableName="operate_log">
+            <column name="source" type="VARCHAR(64)" />
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
