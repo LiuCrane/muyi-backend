@@ -35,7 +35,7 @@ public class StoreController {
     StoreService storeService;
 
     @ApiOperation("查询门店信息")
-    @EasyLog(module = "App-查询门店信息", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "App-查询门店信息", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @Secured({"ROLE_APP_USER", "ROLE_STORE_MANAGER"})
     @GetMapping
     public ResponseData<StoreDTO> get() {
@@ -48,7 +48,7 @@ public class StoreController {
     }
 
     @ApiOperation("查询门店加盟商列表")
-    @EasyLog(module = "App-查询加盟商列表", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "App-查询加盟商列表", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @Secured({"ROLE_STORE_MANAGER"})
     @GetMapping("/franchisees")
     public ResponseData<PageInfo<StoreSimpleDTO>> getFranchisees(@ApiParam(value = "页数，默认 1")

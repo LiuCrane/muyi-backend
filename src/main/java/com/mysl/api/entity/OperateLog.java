@@ -28,4 +28,5 @@ public class OperateLog extends Model<OperateLog> {
     private String info;
     private Date createdAt;
     private String bizNo;
+    private String source;
 }

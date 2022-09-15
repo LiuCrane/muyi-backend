@@ -37,7 +37,7 @@ public class StoreController {
     StoreService storeService;
 
     @ApiOperation("查询门店列表")
-    @EasyLog(module = "Admin-查询门店列表", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-查询门店列表", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping
     public ResponseData<PageInfo<StoreFullDTO>> list(@ApiParam(value = "页数，默认 1")
                                                      @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
@@ -53,7 +53,7 @@ public class StoreController {
     }
 
     @ApiOperation("查询门店详情")
-    @EasyLog(module = "Admin-查询门店详情", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-查询门店详情", tenant = "{getClientIP{0}}", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @GetMapping("/{id}")
     public ResponseData<StoreFullDTO> get(@PathVariable Long id) {
         List<StoreFullDTO> list = storeService.getStores(1, 1, id, null, null, null, null, null);
@@ -72,7 +72,7 @@ public class StoreController {
 //    }
 
     @ApiOperation("修改门店信息")
-    @EasyLog(module = "Admin-修改门店信息", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
+    @EasyLog(module = "Admin-修改门店信息", tenant = "{getClientIP{0}}", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
     @PutMapping("/{id}")
     public ResponseData update(@PathVariable Long id, @Validated @RequestBody StoreUpdateDTO dto) {
         log.info("update store dto: {}", dto);
@@ -81,7 +81,7 @@ public class StoreController {
     }
 
     @ApiOperation("注销门店")
-    @EasyLog(module = "Admin-注销门店", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-注销门店", tenant = "{getClientIP{0}}", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @PostMapping("/{id}/cancel")
     public ResponseData cancel(@PathVariable Long id) {
         storeService.cancel(id);

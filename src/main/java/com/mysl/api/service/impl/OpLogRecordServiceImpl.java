@@ -1,6 +1,5 @@
 package com.mysl.api.service.impl;
 
-import cn.hutool.extra.cglib.CglibUtil;
 import com.mysl.api.entity.OperateLog;
 import com.mysl.api.mapper.OperateLogMapper;
 import io.github.flyhero.easylog.model.EasyLogInfo;
@@ -25,10 +24,10 @@ public class OpLogRecordServiceImpl implements ILogRecordService {
     @Override
     @Async
     public void record(EasyLogInfo easyLogInfo) {
-//        log.info("opt log info: {}", easyLogInfo);
         OperateLog log = new OperateLog();
         BeanUtils.copyProperties(easyLogInfo, log);
         log.setInfo(easyLogInfo.toString());
+        log.setSource(easyLogInfo.getTenant());
         operateLogMapper.insert(log);
     }
 }

@@ -28,7 +28,7 @@ public class AuthController extends AbstractAuthController {
      * @return
      */
     @ApiOperation(value = "登录")
-    @EasyLog(module = "Admin-登录", success = "", fail = "{{#_errMsg}}", detail = "req content: {{#req.toString()}}")
+    @EasyLog(module = "Admin-登录", tenant = "{getClientIP{0}}", success = "", fail = "{{#_errMsg}}", detail = "req content: {{#req.toString()}}")
     @PostMapping("/login")
     public ResponseData<LoginResDTO> login(@Validated @RequestBody LoginReqDTO req) {
         final String token = super.authenticate(GlobalConstant.CLIENT_ADMIN, req.getUsername(), req.getPassword());
@@ -36,7 +36,7 @@ public class AuthController extends AbstractAuthController {
     }
 
     @ApiOperation("退出登录")
-    @EasyLog(module = "Admin-退出登录", success = "", fail = "{{#_errMsg}}", detail = "{{#token}}")
+    @EasyLog(module = "Admin-退出登录", tenant = "{getClientIP{0}}", success = "", fail = "{{#_errMsg}}", detail = "{{#token}}")
     @Secured("ROLE_ADMIN")
     @PostMapping("/logout")
     public ResponseData logout(@RequestHeader("Authorization") final String token) {

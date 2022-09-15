@@ -50,7 +50,7 @@ public class AuthController extends AbstractAuthController {
      * @return
      */
     @ApiOperation(value = "登录")
-    @EasyLog(module = "App-登录", success = "", fail = "{{#_errMsg}}", detail = "{{#req.toString()}}")
+    @EasyLog(module = "App-登录", tenant = "{getClientIP{0}}", success = "", fail = "{{#_errMsg}}", detail = "{{#req.toString()}}")
     @PostMapping("/login")
     public ResponseData<LoginResDTO> login(@Validated @RequestBody AppLoginReqDTO req) {
         final String token = super.authenticate(GlobalConstant.CLIENT_APP, req.getUsername(), req.getPassword());
@@ -81,7 +81,7 @@ public class AuthController extends AbstractAuthController {
     }
 
     @ApiOperation("退出登录")
-    @EasyLog(module = "App-退出登录", success = "", fail = "{{#_errMsg}}", detail = "{{#token}}")
+    @EasyLog(module = "App-退出登录", tenant = "{getClientIP{0}}", success = "", fail = "{{#_errMsg}}", detail = "{{#token}}")
     @Secured("ROLE_APP_USER")
     @PostMapping("/logout")
     public ResponseData logout(@RequestHeader("Authorization") final String token) {

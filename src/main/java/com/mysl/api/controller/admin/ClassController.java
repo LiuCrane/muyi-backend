@@ -29,7 +29,7 @@ public class ClassController {
     ClassService classService;
 
     @ApiOperation("查询班级列表")
-    @EasyLog(module = "Admin-查询班级列表", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-查询班级列表", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping
     public ResponseData<PageInfo<ClassFullDTO>> list(@ApiParam(value = "页数，默认 1")
                                                      @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
@@ -41,14 +41,14 @@ public class ClassController {
     }
 
     @ApiOperation("查询班级详情")
-    @EasyLog(module = "Admin-查询班级详情", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-查询班级详情", tenant = "{getClientIP{0}}", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @GetMapping("/{id}")
     public ResponseData<ClassFullDTO> get(@PathVariable Long id) {
         return ResponseData.ok(classService.getClassById(id, null));
     }
 
     @ApiOperation("修改班级信息")
-    @EasyLog(module = "Admin-修改班级信息", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "{{#dto}}")
+    @EasyLog(module = "Admin-修改班级信息", tenant = "{getClientIP{0}}", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "{{#dto}}")
     @PutMapping("/{id}")
     public ResponseData update(@PathVariable Long id, @Validated @RequestBody ClassUpdateDTO dto) {
         return ResponseData.ok(classService.update(id, dto));

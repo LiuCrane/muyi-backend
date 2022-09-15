@@ -31,7 +31,7 @@ public class CourseApplicationController {
     ClassCourseApplicationService classCourseApplicationService;
 
     @ApiOperation("查询门店课程申请列表")
-    @EasyLog(module = "Admin-查询门店课程申请列表", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-查询门店课程申请列表", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping
     public ResponseData<PageInfo<ClassCourseApplicationDTO>> list(@ApiParam("页数，默认 1")
                                                                   @RequestParam(name = "page_num", required = false, defaultValue = "1")
@@ -43,7 +43,7 @@ public class CourseApplicationController {
     }
 
     @ApiOperation("审核课程申请")
-    @EasyLog(module = "Admin-审核课程申请", type = OperateType.UPDATE, success = "", fail = "{{#_errMsg}}", bizNo = "{{#id}}", detail = "{{#dto.toString()}}")
+    @EasyLog(module = "Admin-审核课程申请", tenant = "{getClientIP{0}}", type = OperateType.UPDATE, success = "", fail = "{{#_errMsg}}", bizNo = "{{#id}}", detail = "{{#dto.toString()}}")
     @PostMapping("/{id}/audit")
     public ResponseData audit(@PathVariable Long id, @Validated @RequestBody CourseAuditDTO dto) {
 //        classCourseApplicationService.audit(id, dto.getResult());
