@@ -150,7 +150,6 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         if (!ClassCourseStatus.COMPLETED.equals(classCourse.getStatus())) {
             throw new ServiceException("该课程未学习完成");
         }
-        Course course = courseMapper.selectById(dto.getCourseId());
         StudentEyesight last = studentEyesightMapper.selectList(
                 new QueryWrapper<StudentEyesight>().eq("student_id", id).orderByDesc("created_at")).get(0);
         Boolean improved = Boolean.FALSE;
@@ -160,10 +159,18 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         }
         student.setImproved(improved);
         if (super.updateById(student)) {
-            StudentEyesight eyesight = StudentEyesight.builder().studentId(id).courseId(dto.getCourseId())
-                    .leftVision(dto.getLeftVision()).rightVision(dto.getRightVision())
-                    .binocularVision(dto.getBinocularVision()).improved(improved).build();
-            return studentEyesightMapper.insert(eyesight) > 0;
+            StudentEyesight eyesight = studentEyesightMapper.selectOne(new QueryWrapper<StudentEyesight>()
+                    .eq("student_id", id).eq("course_id", dto.getCourseId()));
+            if (eyesight != null) {
+                eyesight.setLeftVision(dto.getLeftVision()).setRightVision(dto.getRightVision())
+                        .setBinocularVision(dto.getBinocularVision()).setImproved(improved);
+                return studentEyesightMapper.updateById(eyesight) > 0;
+            } else {
+                eyesight = StudentEyesight.builder().studentId(id).courseId(dto.getCourseId())
+                        .leftVision(dto.getLeftVision()).rightVision(dto.getRightVision())
+                        .binocularVision(dto.getBinocularVision()).improved(improved).build();
+                return studentEyesightMapper.insert(eyesight) > 0;
+            }
         }
         return false;
     }

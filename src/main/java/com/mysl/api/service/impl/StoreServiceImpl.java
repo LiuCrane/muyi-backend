@@ -106,6 +106,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
                 throw new ServiceException("操作失败");
             }
             store.setAddressInfoId(info.getId());
+            store.setAddress(info.getAddressArea() + info.getAddressDetail());
         }
 
         if (super.save(store)) {
@@ -189,6 +190,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
                 throw new ServiceException("操作失败");
             }
             store.setAddressInfoId(info.getId());
+            store.setAddress(info.getAddressArea() + info.getAddressDetail());
         }
         return super.updateById(store);
     }

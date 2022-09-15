@@ -23,13 +23,15 @@
         u.name AS manager_name, u.phone AS manager_phone, s.manager_id_card_num, s.created_at,
         s.created_by, s.updated_at, s.updated_by, IFNULL(stn.student_num, 0) AS student_num,
         ai.last_area_id AS address_area_id, ai.address_cascade AS address_area_cascade_json,
-        ai.address_area, ai.address_detail
+        ai.address_area, ai.address_detail, mbr.created_at AS last_browse_date
         FROM store s
         LEFT JOIN user u ON s.manager_user_id = u.id
         LEFT JOIN
         (SELECT st.store_id AS store_id, count(st.id) AS student_num FROM student st GROUP BY st.store_id) stn
         ON stn.store_id = s.id
         LEFT JOIN address_info ai ON ai.id = s.address_info_id
+        LEFT JOIN (SELECT store_id, created_at FROM media_browse_record WHERE id IN (SELECT MAX(id) FROM
+        media_browse_record GROUP BY store_id)) mbr ON mbr.store_id = s.id
         <where>
             1 = 1 AND s.active
             <if test="id != null">
