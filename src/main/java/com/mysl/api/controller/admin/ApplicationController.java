@@ -40,7 +40,7 @@ public class ApplicationController {
     ApplicationService applicationService;
 
     @ApiOperation("查询申请列表")
-    @EasyLog(module = "Admin-查询列表", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-查询列表", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping("/applications")
     public ResponseData<PageInfo<ApplicationDTO>> list(@ApiParam(value = "页数，默认 1")
                              @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,

@@ -42,7 +42,7 @@ public class MediaController {
     MediaBrowseRecordService browseRecordService;
 
     @ApiOperation("查询媒体列表")
-    @EasyLog(module = "Admin-查询媒体列表", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-查询媒体列表", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping
     public ResponseData<PageInfo<MediaFullDTO>> list(@ApiParam(value = "页数，默认 1")
                                                      @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
@@ -55,28 +55,28 @@ public class MediaController {
     }
 
     @ApiOperation("查询媒体详情")
-    @EasyLog(module = "Admin-查询媒体详情", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-查询媒体详情", tenant = "{getClientIP{0}}", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @GetMapping("/{id}")
     public ResponseData<MediaFullDTO> get(@PathVariable Long id) {
         return ResponseData.ok(mediaService.getMediaById(id));
     }
 
     @ApiOperation("添加媒体")
-    @EasyLog(module = "Admin-添加媒体", type = OperateType.ADD, success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
+    @EasyLog(module = "Admin-添加媒体", tenant = "{getClientIP{0}}", type = OperateType.ADD, success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
     @PostMapping
     public ResponseData create(@Validated @RequestBody MediaEditDTO dto) {
         return ResponseData.ok(mediaService.save(dto));
     }
 
     @ApiOperation("修改媒体")
-    @EasyLog(module = "Admin-修改媒体", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
+    @EasyLog(module = "Admin-修改媒体", tenant = "{getClientIP{0}}", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
     @PutMapping("/{id}")
     public ResponseData update(@PathVariable Long id, @Validated @RequestBody MediaEditDTO dto) {
         return ResponseData.ok(mediaService.update(id, dto));
     }
 
     @ApiOperation("删除媒体")
-    @EasyLog(module = "Admin-删除媒体", type = OperateType.DELETE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-删除媒体", tenant = "{getClientIP{0}}", type = OperateType.DELETE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @DeleteMapping("/{id}")
     public ResponseData delete(@PathVariable Long id) {
         mediaService.remove(id);
@@ -84,7 +84,7 @@ public class MediaController {
     }
 
     @ApiOperation("查询浏览记录")
-    @EasyLog(module = "Admin-查询浏览记录", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-查询浏览记录", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping("/browse_records")
     public ResponseData<PageInfo<MediaBrowseRecordDTO>> getBrowseRecords(@ApiParam(value = "页数，默认 1")
                                                                          @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
@@ -109,14 +109,14 @@ public class MediaController {
     }
 
     @ApiOperation("查询媒体分类")
-    @EasyLog(module = "Admin-查询媒体分类", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-查询媒体分类", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping("/categories")
     public ResponseData<List<MediaCategoryDTO>> getCategories() {
         return ResponseData.ok(mediaService.getCategories());
     }
 
     @ApiOperation(value = "记录媒体播放操作")
-    @EasyLog(module = "Admin-记录媒体播放操作", type = OperateType.ADD, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-记录媒体播放操作", tenant = "{getClientIP{0}}", type = OperateType.ADD, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @PostMapping("/{id}/player/{event}")
     public ResponseData savePlayerEvent(@ApiParam("媒体id") @PathVariable Long id, @ApiParam("播放事件(START/PAUSE/END)") @PathVariable PlayerEvent event) {
         log.info("admin media {} player event: {}", id, event);

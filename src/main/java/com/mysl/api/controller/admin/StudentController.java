@@ -29,7 +29,7 @@ public class StudentController {
     StudentService studentService;
 
     @ApiOperation("查询学员列表")
-    @EasyLog(module = "Admin-查询学员列表", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-查询学员列表", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping
     public ResponseData<PageInfo<StudentFullDTO>> list(@ApiParam(value = "页数，默认 1")
                                                        @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
@@ -41,7 +41,7 @@ public class StudentController {
     }
 
     @ApiOperation("查询学员详情")
-    @EasyLog(module = "Admin-查询学员详情", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-查询学员详情", tenant = "{getClientIP{0}}", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @GetMapping("/students/{id}")
     public ResponseData<StudentFullDTO> get(@PathVariable Long id) {
         return ResponseData.ok(studentService.getStudentById(id));

@@ -30,7 +30,7 @@ public class UserController {
     UserService userService;
 
     @ApiOperation("用户注册")
-    @EasyLog(module = "App-用户注册", type = OperateType.ADD, detail = "{{#dto.toString()}}",
+    @EasyLog(module = "App-用户注册", tenant = "{getClientIP{0}}", type = OperateType.ADD, detail = "{{#dto.toString()}}",
             success = "", fail = "{{#_errMsg}}")
     @PostMapping("/register")
     public ResponseData register(@Validated @RequestBody RegisterDTO dto) {
@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @ApiOperation("查询用户信息")
-    @EasyLog(module = "App-查询用户信息", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "App-查询用户信息", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @Secured("ROLE_APP_USER")
     @GetMapping
         public ResponseData<UserDTO> getUserDetail() {
@@ -57,7 +57,7 @@ public class UserController {
 //    }
 
     @ApiOperation("修改密码")
-    @EasyLog(module = "App-修改密码", type = OperateType.UPDATE, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "App-修改密码", tenant = "{getClientIP{0}}", type = OperateType.UPDATE, success = "", fail = "{{#_errMsg}}")
     @Secured("ROLE_APP_USER")
     @PostMapping("/reset_password")
     public ResponseData updateUserPwd(@RequestBody UserPwdUpdateDTO dto) {

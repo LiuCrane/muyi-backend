@@ -32,7 +32,7 @@ public class MediaController {
     MediaService mediaService;
 
     @ApiOperation("查询媒体列表（App首页导学媒体）")
-    @EasyLog(module = "App-查询首页导学媒体", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "App-查询首页导学媒体", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping
     public ResponseData<PageInfo<MediaDTO>> list(@ApiParam(value = "页数，默认 1")
                                                  @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
@@ -58,7 +58,7 @@ public class MediaController {
 //    }
 
     @ApiOperation(value = "记录媒体播放操作", notes = "后台记录播放事件，用于判断课程是否结束")
-    @EasyLog(module = "App-记录媒体播放操作", type = OperateType.ADD, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "mediaId: {{#id}}, eventDTO: {{#dto.toString}}")
+    @EasyLog(module = "App-记录媒体播放操作", tenant = "{getClientIP{0}}", type = OperateType.ADD, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "mediaId: {{#id}}, eventDTO: {{#dto.toString}}")
     @PostMapping("/{id}/player")
     public ResponseData savePlayerEvent(@ApiParam("媒体id") @PathVariable Long id,
                                         @Validated @RequestBody PlayerEventDTO dto) {

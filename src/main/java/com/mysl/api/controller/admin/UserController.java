@@ -35,7 +35,7 @@ public class UserController {
     UserService userService;
 
     @ApiOperation("查询用户列表")
-    @EasyLog(module = "Admin-查询用户列表", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-查询用户列表", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping("/users")
     public ResponseData<PageInfo<UserFullDTO>> list(@ApiParam("页数，默认 1")
                                                     @RequestParam(name = "page_num", required = false, defaultValue = "1")
@@ -49,14 +49,14 @@ public class UserController {
     }
 
     @ApiOperation("查询全部用户(前端下拉列表可用)")
-    @EasyLog(module = "Admin-查询用户列表", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-查询用户列表", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping("/simple_users")
     public ResponseData<List<UserSimpleDTO>> getSimpleList() {
         return ResponseData.ok(userService.getSimpleUsers());
     }
 
     @ApiOperation("查询个人信息")
-    @EasyLog(module = "Admin-查询个人信息", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-查询个人信息", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping("/me")
     public ResponseData<UserDTO> getUserDetail() {
         UserDTO dto = JwtTokenUtil.getCurrentUser();
@@ -64,7 +64,7 @@ public class UserController {
     }
 
     @ApiOperation("修改个人密码")
-    @EasyLog(module = "Admin-修改个人密码", type = OperateType.UPDATE, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "Admin-修改个人密码", tenant = "{getClientIP{0}}", type = OperateType.UPDATE, success = "", fail = "{{#_errMsg}}")
     @PostMapping("/me/reset_password")
     public ResponseData updateUserPwd(@RequestBody UserPwdUpdateDTO dto) {
         userService.updatePassword(JwtTokenUtil.getCurrentUserId(), dto);

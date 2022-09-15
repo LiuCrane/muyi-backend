@@ -39,7 +39,7 @@ public class StudentController {
     CourseService courseService;
 
     @ApiOperation("查询学员列表")
-    @EasyLog(module = "App-查询学员列表", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "App-查询学员列表", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping("/students")
     public ResponseData<PageInfo<StudentDTO>> list(@ApiParam(value = "页数，默认 1")
                                                    @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
@@ -57,7 +57,7 @@ public class StudentController {
     }
 
     @ApiOperation("查询学员信息详情")
-    @EasyLog(module = "App-查询学员信息详情", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "App-查询学员信息详情", tenant = "{getClientIP{0}}", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @GetMapping("/students/{id}")
     public ResponseData<StudentDTO> get(@PathVariable Long id) {
         StudentFullDTO fullDTO = studentService.getStudentByStoreIdAndId(JwtTokenUtil.getCurrentStoreId(), id);
@@ -67,7 +67,7 @@ public class StudentController {
     }
 
     @ApiOperation("提交学员信息")
-    @EasyLog(module = "App-提交学员信息", type = OperateType.ADD, success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
+    @EasyLog(module = "App-提交学员信息", tenant = "{getClientIP{0}}", type = OperateType.ADD, success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
     @PostMapping("/students")
     public ResponseData create(@Validated @RequestBody StudentCreateDTO dto) {
         log.info("create student dto: {}", dto);
@@ -79,7 +79,7 @@ public class StudentController {
     }
 
     @ApiOperation("更新学员视力信息")
-    @EasyLog(module = "App-更新学员视力信息", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "dto: {{#dto.toString()}}")
+    @EasyLog(module = "App-更新学员视力信息", tenant = "{getClientIP{0}}", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}", detail = "dto: {{#dto.toString()}}")
     @PutMapping("/students/{id}/vision")
     public ResponseData update(@PathVariable Long id, @RequestBody StudentVisionDTO dto) {
         log.info("update student vision dto: {}", dto);
@@ -88,7 +88,7 @@ public class StudentController {
     }
 
     @ApiOperation("查询学员已完成的课程")
-    @EasyLog(module = "App-查询学员已完成的课程", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "App-查询学员已完成的课程", tenant = "{getClientIP{0}}", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @GetMapping("/students/{id}/courses")
     public ResponseData<ListData<CourseSimpleDTO>> getCompletedCourse(@PathVariable Long id) {
         return ResponseData.ok(new ListData<CourseSimpleDTO>().setList(courseService.getCompletedCourse(id)));
@@ -96,7 +96,7 @@ public class StudentController {
 
     @ApiIgnore
     @ApiOperation(value = "学员签到", notes = "后台仅做记录")
-    @EasyLog(module = "App-学员签到", type = OperateType.ADD, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "App-学员签到", tenant = "{getClientIP{0}}", type = OperateType.ADD, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @PostMapping("/students/{id}/sign_in")
     public ResponseData signIn(@PathVariable Long id) {
         return ResponseData.ok();

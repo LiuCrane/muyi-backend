@@ -38,7 +38,7 @@ public class ClassController {
     StudentService studentService;
 
     @ApiOperation("查询班级列表")
-    @EasyLog(module = "App-查询班级列表", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "App-查询班级列表", tenant = "{getClientIP{0}}", type = OperateType.SELECT, success = "", fail = "{{#_errMsg}}")
     @GetMapping
     public ResponseData<PageInfo<ClassDTO>> list(@ApiParam(value = "页数，默认 1")
                                                  @RequestParam(name = "page_num", defaultValue = "1", required = false) Integer pageNum,
@@ -50,7 +50,7 @@ public class ClassController {
     }
 
     @ApiOperation("创建班级")
-    @EasyLog(module = "App-创建班级", type = OperateType.ADD, success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
+    @EasyLog(module = "App-创建班级", tenant = "{getClientIP{0}}", type = OperateType.ADD, success = "", fail = "{{#_errMsg}}", detail = "{{#dto.toString()}}")
     @PostMapping
     public ResponseData create(@Validated @RequestBody ClassCreateDTO dto) {
         Class entity = Class.builder().name(dto.getName()).teacher(dto.getTeacher())
@@ -60,7 +60,7 @@ public class ClassController {
     }
 
     @ApiOperation("查询班级详情")
-    @EasyLog(module = "App-查询班级详情", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "App-查询班级详情", tenant = "{getClientIP{0}}", type = OperateType.SELECT, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
     @GetMapping("/{id}")
     public ResponseData<ClassDTO> get(@PathVariable Long id) {
         Long storeId = JwtTokenUtil.getCurrentStoreId();
@@ -74,7 +74,7 @@ public class ClassController {
     }
 
     @ApiOperation("查询班级学员列表")
-    @EasyLog(module = "App-查询班级学员列表", type = OperateType.SELECT, bizNo = "{{#classId}}", success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "App-查询班级学员列表", tenant = "{getClientIP{0}}", type = OperateType.SELECT, bizNo = "{{#classId}}", success = "", fail = "{{#_errMsg}}")
     @GetMapping("/{class_id}/students")
     public ResponseData<ListData<StudentSimpleDTO>> getStudents(@PathVariable("class_id") Long classId) {
         List<StudentSimpleDTO> list = studentService.getSimpleStudents(JwtTokenUtil.getCurrentStoreId(), classId);
@@ -82,7 +82,7 @@ public class ClassController {
     }
 
     @ApiOperation("查询班级课程列表")
-    @EasyLog(module = "App-查询班级课程列表", type = OperateType.SELECT, bizNo = "{{#classId}}", success = "", fail = "{{#_errMsg}}")
+    @EasyLog(module = "App-查询班级课程列表", tenant = "{getClientIP{0}}", type = OperateType.SELECT, bizNo = "{{#classId}}", success = "", fail = "{{#_errMsg}}")
     @GetMapping("/{class_id}/courses")
     public ResponseData<ListData<CourseDTO>> getCourses(@PathVariable("class_id") Long classId) {
         List<CourseDTO> list = classService.getClassCourse(JwtTokenUtil.getCurrentStoreId(), classId);
@@ -90,7 +90,7 @@ public class ClassController {
     }
 
     @ApiOperation("申请课程")
-    @EasyLog(module = "App-申请课程", type = OperateType.ADD, bizNo = "{{#classId}}", success = "", fail = "{{#_errMsg}}", detail = "classId: {{#classId}}, courseId: {{#courseId}}")
+    @EasyLog(module = "App-申请课程", tenant = "{getClientIP{0}}", type = OperateType.ADD, bizNo = "{{#classId}}", success = "", fail = "{{#_errMsg}}", detail = "classId: {{#classId}}, courseId: {{#courseId}}")
     @PostMapping("/{class_id}/courses/{course_id}/apply")
     public ResponseData apply(@PathVariable("class_id") Long classId, @PathVariable("course_id") Long courseId) {
         classService.applyCourse(JwtTokenUtil.getCurrentStoreId(), classId, courseId);
@@ -98,7 +98,7 @@ public class ClassController {
     }
 
     @ApiOperation("查询课程内媒体列表")
-    @EasyLog(module = "App-查询课程内媒体列表", type = OperateType.SELECT, bizNo = "{{#classId}}", success = "", fail = "{{#_errMsg}}", detail = "classId: {{#classId}}, courseId: {{#courseId}}")
+    @EasyLog(module = "App-查询课程内媒体列表", tenant = "{getClientIP{0}}", type = OperateType.SELECT, bizNo = "{{#classId}}", success = "", fail = "{{#_errMsg}}", detail = "classId: {{#classId}}, courseId: {{#courseId}}")
     @GetMapping("/{class_id}/courses/{course_id}/media")
     public ResponseData<ListData<MediaDTO>> getMedia(@PathVariable("class_id") Long classId, @PathVariable("course_id") Long courseId) {
         List<MediaDTO> list = classService.getClassCourseMedia(JwtTokenUtil.getCurrentStoreId(), classId, courseId);
