@@ -1,7 +1,7 @@
 package com.mysl.api.service.impl;
 
 import cn.hutool.cache.CacheUtil;
-import cn.hutool.cache.impl.WeakCache;
+import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.extra.cglib.CglibUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Ivan Su
@@ -51,13 +53,23 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
         return null;
     }
 
-    WeakCache<String, List<AddressDTO>> addressCache = CacheUtil.newWeakCache(DateUnit.WEEK.getMillis() * 50);
+    TimedCache<String, List<AddressDTO>> addressCache = CacheUtil.newTimedCache(DateUnit.DAY.getMillis() * 7);
     private static final String ADDRESS_CACHE_KEY = "addresses";
     @Override
     public List<AddressDTO> getAll() {
         List<AddressDTO> list = addressCache.get(ADDRESS_CACHE_KEY);
         if (CollectionUtils.isEmpty(list)) {
-            list = buildTree(0L);
+            List<Address> addresses = super.list();
+            Map<Long, List<Address>> map = new HashMap<>();
+            for (Address a : addresses) {
+                List<Address> as = map.get(a.getParentId());
+                if (CollectionUtils.isEmpty(as)) {
+                    as = new ArrayList<>();
+                }
+                as.add(a);
+                map.put(a.getParentId(), as);
+            }
+            list = buildTree(0L, map);
             addressCache.put(ADDRESS_CACHE_KEY, list);
             log.info("cache address data");
         }
@@ -103,14 +115,14 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
         return dto;
     }
 
-    private List<AddressDTO> buildTree(Long pid) {
+    private List<AddressDTO> buildTree(Long pid, Map<Long, List<Address>> map) {
         List<AddressDTO> list = new ArrayList<>();
-        List<Address> addresses = super.baseMapper.selectList(new QueryWrapper<Address>().eq("parent_id", pid).orderByAsc("id"));
-        if (addresses != null) {
+        List<Address> addresses = map.get(pid);
+        if (!CollectionUtils.isEmpty(addresses)) {
             for (Address address : addresses) {
                 AddressDTO dto = new AddressDTO();
                 CglibUtil.copy(address, dto);
-                dto.setChildren(buildTree(address.getId()));
+                dto.setChildren(buildTree(address.getId(), map));
                 list.add(dto);
             }
         }
