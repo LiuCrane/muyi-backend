@@ -1,5 +1,6 @@
 package com.mysl.api.config.security;
 
+import com.mysl.api.common.GlobalConstant;
 import com.mysl.api.service.JwtBlacklistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,13 +58,13 @@ public class SpringSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChainForAdmin(HttpSecurity httpSecurity) throws Exception {
-        httpSecurityConfig(httpSecurity, "/admin","/admin/auth/login", "/cos/queue/callback");
+        httpSecurityConfig(httpSecurity, "/admin", GlobalConstant.PERMIT_URI);
         return httpSecurity.build();
     }
 
     @Bean
     public SecurityFilterChain filterChainForApp(HttpSecurity httpSecurity) throws Exception {
-        httpSecurityConfig(httpSecurity, "/app", "/app/auth/login", "/app/user/register", "/app/address/**");
+        httpSecurityConfig(httpSecurity, "/app", GlobalConstant.PERMIT_URI);
         return httpSecurity.build();
     }
 

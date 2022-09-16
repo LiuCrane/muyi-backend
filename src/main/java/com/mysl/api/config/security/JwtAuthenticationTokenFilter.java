@@ -1,6 +1,7 @@
 package com.mysl.api.config.security;
 
 import com.alibaba.fastjson.JSON;
+import com.mysl.api.common.GlobalConstant;
 import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.service.JwtBlacklistService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -38,6 +40,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
+        final String uri = request.getRequestURI();
+        if (Arrays.asList(GlobalConstant.PERMIT_URI).contains(uri)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         final String authToken = this.extractAuthTokenFromRequest(request, this.tokenHeader);
         String username = null;
         if (StringUtils.isNotBlank(authToken)) {
@@ -48,9 +56,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 return;
             }
         }
-
-        log.debug("request uri: {}", request.getRequestURI());
-        log.debug("authToken : {},username : {}", authToken, username);
 
         if (username != null) {
             if (blacklistService.isExist(authToken)) {
@@ -65,10 +70,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                    log.debug("authToken : {},username : {}", authToken, username);
-
-                    log.debug("该 " + username + "用户已认证, 设置安全上下文");
 
                     ThreadContext.put(USER_ID, String.valueOf(((JwtUserDetails) userDetails).getUser().getId()));
                     ThreadContext.put(USERNAME, username);
