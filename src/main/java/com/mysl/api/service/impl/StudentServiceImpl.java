@@ -150,12 +150,19 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         if (!ClassCourseStatus.COMPLETED.equals(classCourse.getStatus())) {
             throw new ServiceException("该课程未学习完成");
         }
-        StudentEyesight last = studentEyesightMapper.selectList(
-                new QueryWrapper<StudentEyesight>().eq("student_id", id).orderByDesc("created_at")).get(0);
-        Boolean improved = Boolean.FALSE;
+
+        String lastBinocularVision = student.getBinocularVision();
+        StudentEyesight last = studentEyesightMapper.selectOne(
+                new QueryWrapper<StudentEyesight>().eq("student_id", id).orderByDesc("created_at").last("limit 1"));
+        if (last != null) {
+            lastBinocularVision = last.getBinocularVision();
+        }
+        Boolean improved = null;
         if (NumberUtil.toBigDecimal(dto.getBinocularVision())
-                .compareTo(NumberUtil.toBigDecimal(last.getBinocularVision())) > 0) {
+                .compareTo(NumberUtil.toBigDecimal(lastBinocularVision)) > 0) {
             improved = Boolean.TRUE;
+        } else {
+            improved = Boolean.FALSE;
         }
         student.setImproved(improved);
         if (super.updateById(student)) {

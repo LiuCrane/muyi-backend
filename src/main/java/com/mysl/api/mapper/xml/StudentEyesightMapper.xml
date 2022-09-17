@@ -4,7 +4,7 @@
 
     <select id="findByStudentId" resultType="com.mysl.api.entity.dto.StudentEyesightDTO">
         SELECT
-        c.title, e.left_vision, e.right_vision, e.binocular_vision, e.improved
+        c.title, e.left_vision, e.right_vision, e.binocular_vision, e.improved, e.created_at
         FROM student_eyesight e
         LEFT JOIN course c ON c.id = e.course_id
         WHERE e.student_id = #{student_id}
