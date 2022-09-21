@@ -10,7 +10,7 @@
         IFNULL(fse.left_vision, s.left_vision) AS left_vision, IFNULL(fse.right_vision, s.right_vision) AS right_vision,
         IFNULL(fse.binocular_vision, s.binocular_vision) AS binocular_vision,
         ai.last_area_id AS address_area_id, ai.address_cascade AS address_area_cascade_json, ai.address_area, ai.address_detail,
-        s.gender, s.age, s.binocular_vision AS first_binocular_vision
+        s.gender, s.age, s.binocular_vision AS first_binocular_vision, CONCAT(ai.address_area, ai.address_detail) AS address
         FROM student s
         LEFT JOIN class c ON s.class_id = c.id
         LEFT JOIN
