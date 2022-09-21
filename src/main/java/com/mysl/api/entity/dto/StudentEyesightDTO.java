@@ -34,4 +34,5 @@ public class StudentEyesightDTO implements Serializable {
     @ApiModelProperty("是否有提升")
     private Boolean improved;
     private Date createdAt;
+    private Date updatedAt;
 }

@@ -1,5 +1,7 @@
 package com.mysl.api.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 /**
@@ -21,6 +23,7 @@ public class Student extends BaseModel<Student> {
     private String rightVision;
     private String leftDiopter;
     private String rightDiopter;
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Boolean improved;
     private String gender;
     private Integer age;

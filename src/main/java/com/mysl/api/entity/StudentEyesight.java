@@ -1,5 +1,7 @@
 package com.mysl.api.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +25,7 @@ public class StudentEyesight extends BaseModel<StudentEyesight> {
     private String rightDiopter;
     private String leftVision;
     private String rightVision;
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Boolean improved;
     private String binocularVision;
     private Long courseId;

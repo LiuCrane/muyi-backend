@@ -75,7 +75,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         List<StudentEyesightDTO> eyesightDTOS = getStudentEyesight(id);
         eyesightDTOS.add(0, StudentEyesightDTO.builder().title("疗愈前")
                 .leftVision(dto.getFirstLeftVision()).rightVision(dto.getFirstRightVision())
-                .binocularVision(dto.getBinocularVision()).createdAt(dto.getCreatedAt()).build());
+                .binocularVision(dto.getFirstBinocularVision()).createdAt(dto.getCreatedAt()).build());
         dto.setEyesightList(eyesightDTOS);
         return dto;
     }
@@ -90,7 +90,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         List<StudentEyesightDTO> eyesightDTOS = getStudentEyesight(id);
         eyesightDTOS.add(0, StudentEyesightDTO.builder().title("疗愈前")
                 .leftVision(dto.getFirstLeftVision()).rightVision(dto.getFirstRightVision())
-                .binocularVision(dto.getBinocularVision()).createdAt(dto.getCreatedAt()).build());
+                .binocularVision(dto.getFirstBinocularVision()).createdAt(dto.getCreatedAt()).build());
         dto.setEyesightList(eyesightDTOS);
         return dto;
     }
@@ -153,7 +153,8 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
         String lastBinocularVision = student.getBinocularVision();
         StudentEyesight last = studentEyesightMapper.selectOne(
-                new QueryWrapper<StudentEyesight>().eq("student_id", id).orderByDesc("created_at").last("limit 1"));
+                new QueryWrapper<StudentEyesight>().eq("student_id", id).ne("course_id", dto.getCourseId())
+                        .orderByDesc("created_at").last("limit 1"));
         if (last != null) {
             lastBinocularVision = last.getBinocularVision();
         }
