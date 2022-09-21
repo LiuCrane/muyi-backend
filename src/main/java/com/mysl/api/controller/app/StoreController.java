@@ -40,7 +40,7 @@ public class StoreController {
     @GetMapping
     public ResponseData<StoreDTO> get() {
         StoreDTO dto = new StoreDTO();
-        List<StoreFullDTO> list = storeService.getStores(1, 1, null, null, null, null, null, JwtTokenUtil.getCurrentUserId());
+        List<StoreFullDTO> list = storeService.getStores(1, 1, null, null, null, null, null, JwtTokenUtil.getCurrentUserId(), null);
         if (!CollectionUtils.isEmpty(list)) {
             BeanUtils.copyProperties(list.get(0), dto);
         }

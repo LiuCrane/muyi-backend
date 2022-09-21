@@ -51,7 +51,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
     AddressService addressService;
 
     @Override
-    public List<StoreFullDTO> getStores(Integer pageNum, Integer pageSize, Long id, StoreStatus status, String name, String managerName, String keyWord, Long managerUserId) {
+    public List<StoreFullDTO> getStores(Integer pageNum, Integer pageSize, Long id, StoreStatus status, String name, String managerName, String keyWord, Long managerUserId, String address) {
         List<Long> managerUserIds = new ArrayList<>();
         if (StringUtils.isNotEmpty(managerName)) {
             managerUserIds = userMapper.findByNameAndType(managerName, UserType.APP_USER);
@@ -60,13 +60,13 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
             managerUserIds.add(managerUserId);
         }
         PageHelper.startPage(pageNum, pageSize);
-        return super.baseMapper.findAll(id, status, null, name, managerUserIds, keyWord);
+        return super.baseMapper.findAll(id, status, null, name, managerUserIds, keyWord, address);
     }
 
     @Override
     public PageInfo<StoreSimpleDTO> getFranchisees(Integer pageNum, Integer pageSize, Long excludeId) {
         PageHelper.startPage(pageNum, pageSize);
-        List<StoreFullDTO> stores = super.baseMapper.findAll(null, StoreStatus.APPROVED, excludeId, null, null, null);
+        List<StoreFullDTO> stores = super.baseMapper.findAll(null, StoreStatus.APPROVED, excludeId, null, null, null, null);
         PageInfo<StoreSimpleDTO> pageInfo = new PageInfo<>();
         CglibUtil.copy(new PageInfo<>(stores), pageInfo);
         pageInfo.setList(CglibUtil.copyList(stores, StoreSimpleDTO::new));
@@ -76,7 +76,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
     @Override
     public PageInfo<ApplicationDTO> getStores(Integer pageNum, Integer pageSize, String keyWord) {
         PageHelper.startPage(pageNum, pageSize);
-        List<StoreFullDTO> stores = super.baseMapper.findAll(null, StoreStatus.SUBMITTED, null, null, null, keyWord);
+        List<StoreFullDTO> stores = super.baseMapper.findAll(null, StoreStatus.SUBMITTED, null, null, null, keyWord, null);
         PageInfo<ApplicationDTO> pageInfo = new PageInfo<>();
         CglibUtil.copy(new PageInfo<>(stores), pageInfo);
         List<ApplicationDTO> list = new ArrayList<>();

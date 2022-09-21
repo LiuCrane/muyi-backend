@@ -53,9 +53,13 @@
                     #{item}
                 </foreach>
             </if>
+            <if test="address != null">
+                <bind name="address" value="'%' + address + '%'"/>
+                AND CONCAT(ai.address_area, ai.address_detail) LIKE #{address}
+            </if>
             <if test="key_word != null">
                 <bind name="kw" value="'%' + key_word + '%'"/>
-                AND (s.name LIKE #{kw} OR u.name LIKE #{kw} OR u.phone = #{key_word} OR s.address LIKE #{kw})
+                AND (s.name LIKE #{kw} OR u.name LIKE #{kw} OR u.phone = #{key_word} OR s.address LIKE #{kw} OR CONCAT(ai.address_area, ai.address_detail) LIKE #{kw})
             </if>
         </where>
         ORDER BY s.created_at DESC
