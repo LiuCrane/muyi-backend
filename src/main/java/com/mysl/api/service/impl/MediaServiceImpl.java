@@ -268,13 +268,13 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
                 if (super.baseMapper.countUnfinishedMedia(classId, courseId) == 0) {
                     // 媒体都播放完
                     // 课程状态改为已完成
-                    classCourseMapper.updateClassCourseStatus(classId, courseId, ClassCourseStatus.COMPLETED, JwtTokenUtil.getCurrentUsername());
+                    classCourseMapper.updateCompleted(classId, courseId, Boolean.TRUE, JwtTokenUtil.getCurrentUsername());
                     Course course = courseMapper.selectById(courseId);
                     Course nextCourse = courseMapper.selectOne(new QueryWrapper<Course>()
-                            .eq("active", 1).gt("created_at", course.getCreatedAt())
+                            .eq("active", 1).eq("type", CourseType.STAGE).gt("created_at", course.getCreatedAt())
                             .orderByAsc("created_at").last("limit 1"));
                     if (nextCourse != null) {
-                        // 找到下一个课程，标为可申请
+                        // 找到下一个课程(阶段)，标为可申请
                         ClassCourse classCourse = classCourseMapper.selectOne(
                                 new QueryWrapper<ClassCourse>().eq("class_id", classId).eq("course_id", nextCourse.getId())
                         );
@@ -287,7 +287,7 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
                             classCourseMapper.updateById(classCourse);
                         }
                     } else {
-                        // 找不到下个课程，则该班级学员学习进度进入复健
+                        // 找不到下个课程(阶段)，则该班级学员学习进度进入复健
                         Class cls2 = classMapper.selectById(classId);
                         if (StudyProgress.IN_PROGRESS.equals(cls2.getStudyProgress())) {
                             cls2.setStudyProgress(StudyProgress.REHAB_TRAINING);

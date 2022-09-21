@@ -87,6 +87,11 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="add completed field to class_course" author="Ivan Su">
+        <addColumn tableName="class_course">
+            <column name="completed" type="TINYINT(3) UNSIGNED" defaultValue="0"/>
+        </addColumn>
+    </changeSet>
 
     <changeSet id="class_course_application" author="Ivan Su">
         <createTable tableName="class_course_application" remarks="课程申请">

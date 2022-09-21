@@ -24,6 +24,31 @@
     <update id="updateClassCourseStatus">
         UPDATE class_course SET
         status = #{status},
+        updated_by = #{updated_by},
+        updated_at = now()
+        <where>
+            1 = 1
+            <if test="class_id != null">
+                AND class_id = #{class_id}
+            </if>
+            <if test="course_id != null">
+                AND course_id = #{course_id}
+            </if>
+            <if test="ori_status != null">
+                AND status = #{ori_status}
+            </if>
+            <if test="before_today != null and before_today">
+                AND created_at &lt; DATE_FORMAT(now(), "%Y-%m-%d 00:00:00")
+            </if>
+            <if test="completed != null">
+                AND completed = #{completed}
+            </if>
+        </where>
+    </update>
+
+    <update id="updateCompleted">
+        UPDATE class_course SET
+        completed = #{completed},
         updated_by = #{updated_by}
         WHERE class_id = #{class_id} AND course_id = #{course_id}
     </update>
@@ -34,13 +59,13 @@
 
     <select id="findCompletedCourse" resultType="com.mysl.api.entity.dto.CourseSimpleDTO">
         SELECT c.id, c.title FROM class_course cc LEFT JOIN course c ON cc.course_id = c.id
-        WHERE cc.class_id = #{class_id} AND cc.status = 'COMPLETED'
+        WHERE cc.class_id = #{class_id} AND cc.status in ('COMPLETED', 'ACCESSIBLE') ORDER BY cc.created_at DESC
     </select>
 
-    <update id="expireClassCourse">
-        UPDATE class_course SET
-        status = 'EXPIRED',
-        updated_at = now()
-        WHERE status = 'ACCESSIBLE' AND created_at &lt; DATE_FORMAT(now(), "%Y-%m-%d 00:00:00")
-    </update>
+<!--    <update id="expireClassCourse">-->
+<!--        UPDATE class_course SET-->
+<!--        status = 'EXPIRED',-->
+<!--        updated_at = now()-->
+<!--        WHERE status = 'ACCESSIBLE' AND created_at &lt; DATE_FORMAT(now(), "%Y-%m-%d 00:00:00")-->
+<!--    </update>-->
 </mapper>

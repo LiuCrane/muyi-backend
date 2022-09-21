@@ -21,11 +21,16 @@ public interface ClassCourseMapper extends BaseMapper<ClassCourse> {
     List<MediaDTO> findMediaByClassIdAndCourseId(@Param("class_id") Long classId, @Param("course_id") Long courseId);
 
     int updateClassCourseStatus(@Param("class_id") Long classId, @Param("course_id") Long courseId,
-                                @Param("status")ClassCourseStatus status, @Param("updated_by") String updatedBy);
+                                @Param("status") ClassCourseStatus status, @Param("updated_by") String updatedBy,
+                                @Param("ori_status") ClassCourseStatus oriStatus, @Param("before_today") Boolean beforeToday,
+                                @Param("completed") Boolean completed);
+
+    int updateCompleted(@Param("class_id") Long classId, @Param("course_id") Long courseId,
+                        @Param("completed") Boolean completed, @Param("updated_by") String updatedBy);
 
     int countByCourseIdAndStatus(@Param("course_id") Long courseId, @Param("status") ClassCourseStatus status);
 
     List<CourseSimpleDTO> findCompletedCourse(@Param("class_id") Long classId);
 
-    int expireClassCourse();
+//    int expireClassCourse();
 }
