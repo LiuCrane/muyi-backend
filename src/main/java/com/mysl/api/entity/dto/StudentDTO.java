@@ -46,7 +46,7 @@ public class StudentDTO implements Serializable {
     @JsonProperty("parent_phone")
     private String parentPhone;
 
-    @ApiModelProperty("视力是否提升")
+    @ApiModelProperty("视力是否有提升(true:有提升，false:无提升，null:持平)")
     private Boolean improved;
 
     @ApiModelProperty("当前课程")

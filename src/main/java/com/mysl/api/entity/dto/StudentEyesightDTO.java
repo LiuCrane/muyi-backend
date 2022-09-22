@@ -31,7 +31,7 @@ public class StudentEyesightDTO implements Serializable {
     private String rightVision;
     @ApiModelProperty("双眼视力")
     private String binocularVision;
-    @ApiModelProperty("是否有提升")
+    @ApiModelProperty("与上次比是否有提升(true:有提升，false:无提升，null:持平)")
     private Boolean improved;
     private Date createdAt;
     private Date updatedAt;

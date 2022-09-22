@@ -73,7 +73,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         }
         StudentFullDTO dto = list.get(0);
         List<StudentEyesightDTO> eyesightDTOS = getStudentEyesight(id);
-        eyesightDTOS.add(0, StudentEyesightDTO.builder().title("疗愈前")
+        eyesightDTOS.add(StudentEyesightDTO.builder().title("疗愈前")
                 .leftVision(dto.getFirstLeftVision()).rightVision(dto.getFirstRightVision())
                 .binocularVision(dto.getFirstBinocularVision()).createdAt(dto.getCreatedAt()).build());
         dto.setEyesightList(eyesightDTOS);
@@ -88,7 +88,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         }
         StudentFullDTO dto = list.get(0);
         List<StudentEyesightDTO> eyesightDTOS = getStudentEyesight(id);
-        eyesightDTOS.add(0, StudentEyesightDTO.builder().title("疗愈前")
+        eyesightDTOS.add(StudentEyesightDTO.builder().title("疗愈前")
                 .leftVision(dto.getFirstLeftVision()).rightVision(dto.getFirstRightVision())
                 .binocularVision(dto.getFirstBinocularVision()).createdAt(dto.getCreatedAt()).build());
         dto.setEyesightList(eyesightDTOS);
@@ -147,9 +147,9 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         if (classCourse == null) {
             throw new ResourceNotFoundException("找不到课程");
         }
-        if (!ClassCourseStatus.COMPLETED.equals(classCourse.getStatus())) {
-            throw new ServiceException("该课程未学习完成");
-        }
+//        if (!ClassCourseStatus.COMPLETED.equals(classCourse.getStatus())) {
+//            throw new ServiceException("该课程未学习完成");
+//        }
 
         String lastBinocularVision = student.getBinocularVision();
         StudentEyesight last = studentEyesightMapper.selectOne(
@@ -159,10 +159,10 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
             lastBinocularVision = last.getBinocularVision();
         }
         Boolean improved = null;
-        if (NumberUtil.toBigDecimal(dto.getBinocularVision())
-                .compareTo(NumberUtil.toBigDecimal(lastBinocularVision)) > 0) {
+        int compare = NumberUtil.toBigDecimal(dto.getBinocularVision()).compareTo(NumberUtil.toBigDecimal(lastBinocularVision));
+        if (compare > 0) {
             improved = Boolean.TRUE;
-        } else {
+        } else if (compare < 0) {
             improved = Boolean.FALSE;
         }
         student.setImproved(improved);
