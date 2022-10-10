@@ -1,0 +1,36 @@
+package com.mysl.api.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.mysl.api.entity.ClassCourse;
+import com.mysl.api.entity.dto.CourseDTO;
+import com.mysl.api.entity.dto.CourseSimpleDTO;
+import com.mysl.api.entity.dto.MediaDTO;
+import com.mysl.api.entity.enums.ClassCourseStatus;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+/**
+ * @author Ivan Su
+ * @date 2022/8/15
+ */
+public interface ClassCourseMapper extends BaseMapper<ClassCourse> {
+
+    List<CourseDTO> findAll(@Param("class_id") Long classId);
+
+    List<MediaDTO> findMediaByClassIdAndCourseId(@Param("class_id") Long classId, @Param("course_id") Long courseId);
+
+    int updateClassCourseStatus(@Param("class_id") Long classId, @Param("course_id") Long courseId,
+                                @Param("status") ClassCourseStatus status, @Param("updated_by") String updatedBy,
+                                @Param("ori_status") ClassCourseStatus oriStatus, @Param("before_today") Boolean beforeToday,
+                                @Param("completed") Boolean completed);
+
+    int updateCompleted(@Param("class_id") Long classId, @Param("course_id") Long courseId,
+                        @Param("completed") Boolean completed, @Param("updated_by") String updatedBy);
+
+    int countByCourseIdAndStatus(@Param("course_id") Long courseId, @Param("status") ClassCourseStatus status);
+
+    List<CourseSimpleDTO> findCompletedCourse(@Param("class_id") Long classId);
+
+//    int expireClassCourse();
+}

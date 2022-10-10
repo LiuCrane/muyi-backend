@@ -26,7 +26,7 @@ import com.mysl.api.entity.MediaRead;
 import com.mysl.api.entity.Users;
 import com.mysl.api.entity.Users2;
 import com.mysl.api.mapper.HaveMediaMapper;
-import com.mysl.api.mapper.MediaMapper;
+import com.mysl.api.mapper.MediaV1Mapper;
 import com.mysl.api.mapper.Users2Mapper;
 import com.mysl.api.mapper.Users3Mapper;
 import com.mysl.api.mapper.UsersMapper;
@@ -49,7 +49,7 @@ public class IndexController {
   private HaveMediaMapper haveMediaMapper;
 
   @Resource
-  private MediaMapper mediaMapper;
+  private MediaV1Mapper mediaV1Mapper;
 
   @Resource
   private UsersMapper usersMapper;

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+    <changeSet id="operate_log" author="Ivan Su">
+        <createTable tableName="operate_log">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="module" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(8)"/>
+            <column name="operator" type="VARCHAR(128)"/>
+            <column name="operate_time" type="BIGINT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="biz_no" type="VARCHAR(128)"/>
+            <column name="execute_time" type="BIGINT UNSIGNED"/>
+            <column name="success" type="TINYINT(3) UNSIGNED"/>
+            <column name="error_msg" type="TEXT"/>
+            <column name="result" type="TEXT"/>
+            <column name="content" type="TEXT"/>
+            <column name="info" type="TEXT"/>
+            <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
+        </createTable>
+        <createIndex tableName="operate_log" indexName="idx_module">
+            <column name="module"/>
+        </createIndex>
+        <createIndex tableName="operate_log" indexName="idx_type">
+            <column name="type"/>
+        </createIndex>
+        <createIndex tableName="operate_log" indexName="idx_operate_time">
+            <column name="operate_time"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="add source field to operate_log" author="Ivan Su">
+        <addColumn tableName="operate_log">
+            <column name="source" type="VARCHAR(64)" />
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

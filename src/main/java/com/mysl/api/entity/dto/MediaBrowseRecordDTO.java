@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @author Ivan Su
  * @date 2022/7/28
  */
-@ApiModel("浏览记录")
+@ApiModel("媒体浏览记录")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,14 +23,20 @@ public class MediaBrowseRecordDTO implements Serializable {
 
     private Long id;
 
-    @ApiModelProperty("标题")
-    private String title;
+    @ApiModelProperty("人员")
+    private String userName;
 
-    @ApiModelProperty("类型")
-    private String type;
+    @ApiModelProperty("电话")
+    private String userPhone;
 
-    @ApiModelProperty("简介")
-    private String description;
+    @ApiModelProperty("媒体名称")
+    private String mediaTitle;
+
+    @ApiModelProperty("媒体类型")
+    private String mediaType;
+
+    @ApiModelProperty("媒体简介")
+    private String mediaDescription;
 
     @ApiModelProperty("开始时间")
     @JsonProperty("start_time")
@@ -41,9 +47,9 @@ public class MediaBrowseRecordDTO implements Serializable {
     private String endTime;
 
     @ApiModelProperty("浏览时长")
-    private String time;
+    private String totalTime;
 
-    @ApiModelProperty("位置")
+    @ApiModelProperty("读取地点")
     private String location;
 
 }

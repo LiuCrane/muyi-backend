@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author Ivan Su
  * @date 2022/8/9
  */
-@ApiModel("课程信息")
+@ApiModel("课程基础信息")
 @Data
 public class CourseDTO implements Serializable {
     private static final long serialVersionUID = -4514856456885652533L;
@@ -33,6 +33,9 @@ public class CourseDTO implements Serializable {
     @JsonProperty("media_num")
     private Integer mediaNum;
 
-    @ApiModelProperty("状态(APPLICABLE:可申请, UN_APPLICABLE:不可申请, UNDER_APPLICATION:申请中, ACCESSIBLE:可进入课程, COMPLETED:已完成)")
+    @ApiModelProperty("状态(APPLICABLE:可申请, UN_APPLICABLE:不可申请, UNDER_APPLICATION:申请中, ACCESSIBLE:可进入课程, COMPLETED:已完成, EXPIRED:已失效)")
     private ClassCourseStatus status;
+
+    @ApiModelProperty("封面url")
+    private String coverUrl;
 }

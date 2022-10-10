@@ -2,8 +2,8 @@ package com.mysl.api.entity.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.ToString;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -13,8 +13,7 @@ import java.io.Serializable;
  * @date 2022/7/27
  */
 @ApiModel("登录请求")
-@Getter
-@Setter
+@Data
 public class LoginReqDTO implements Serializable {
 
     private static final long serialVersionUID = 8910212096398320725L;
@@ -25,6 +24,7 @@ public class LoginReqDTO implements Serializable {
 
     @ApiModelProperty(value = "密码", required = true)
     @NotEmpty(message = "password不能为空")
+    @ToString.Exclude
     private String password;
 
 }

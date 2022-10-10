@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mysl.api.mapper.StudentMapper">
+
+    <select id="findAll" resultType="com.mysl.api.entity.dto.StudentFullDTO">
+        SELECT
+        s.id, c.name AS class_name, s.name, s.parent_name, s.parent_phone, s.improved, c.study_progress,
+        cr.title AS currentCourse, s.avatar_url, s.created_at, s.created_by, s.updated_at, s.updated_by,
+        s.left_vision AS first_left_vision, s.right_vision AS first_right_vision,
+        IFNULL(fse.left_vision, s.left_vision) AS left_vision, IFNULL(fse.right_vision, s.right_vision) AS right_vision,
+        IFNULL(fse.binocular_vision, s.binocular_vision) AS binocular_vision,
+        ai.last_area_id AS address_area_id, ai.address_cascade AS address_area_cascade_json, ai.address_area, ai.address_detail,
+        s.gender, s.age, s.binocular_vision AS first_binocular_vision, CONCAT(ai.address_area, ai.address_detail) AS address
+        FROM student s
+        LEFT JOIN class c ON s.class_id = c.id
+        LEFT JOIN
+        (SELECT * FROM class_course where id IN (SELECT max(id) FROM class_course GROUP BY class_id)) cc
+        ON s.class_id = cc.class_id
+        LEFT JOIN course cr ON cc.course_id = cr.id
+        LEFT JOIN (SELECT student_id, left_vision, right_vision, binocular_vision, course_id FROM student_eyesight WHERE id IN( SELECT MAX(id) FROM student_eyesight GROUP BY student_id )) fse ON fse.student_id = s.id
+        LEFT JOIN address_info ai ON ai.id = s.address_info_id
+        <where>
+            1 = 1
+            <if test="id != null">
+                AND s.id = #{id}
+            </if>
+            <if test="name != null">
+                <bind name="name" value="'%' + name + '%'"/>
+                AND s.name LIKE #{name}
+            </if>
+            <if test="store_id != null">
+                AND s.store_id = #{store_id}
+            </if>
+            <if test="class_id != null">
+                AND s.class_id = #{class_id}
+            </if>
+            <if test="rehab != null and rehab">
+                AND s.rehab_training
+            </if>
+            <if test="rehab != null and !rehab">
+                AND !s.rehab_training
+            </if>
+            <if test="key_word != null">
+                <bind name="key_word" value="'%' + key_word + '%'"/>
+                AND (s.name LIKE #{key_word} OR s.parent_name LIKE #{key_word} OR s.parent_phone LIKE #{key_word})
+            </if>
+        </where>
+        ORDER BY s.created_at desc
+    </select>
+
+    <select id="findSimpleList" resultType="com.mysl.api.entity.dto.StudentSimpleDTO">
+        SELECT s.id, s.name FROM student s WHERE s.class_id = #{class_id} AND s.store_id = #{store_id}
+    </select>
+
+    <update id="updateRehabByClassId">
+        UPDATE student SET
+        rehab_training = 1,
+        updated_by = #{updated_by},
+        updated_at = NOW()
+        WHERE class_id = #{class_id}
+    </update>
+
+</mapper>

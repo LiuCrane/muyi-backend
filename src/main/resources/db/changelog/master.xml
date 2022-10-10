@@ -10,4 +10,6 @@
     <include file="db/changelog/course.xml"/>
     <include file="db/changelog/class.xml"/>
     <include file="db/changelog/student.xml"/>
+    <include file="db/changelog/log.xml"/>
+    <include file="db/changelog/address.xml"/>
 </databaseChangeLog>

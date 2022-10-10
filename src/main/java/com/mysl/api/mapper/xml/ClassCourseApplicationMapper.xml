@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mysl.api.mapper.ClassCourseApplicationMapper">
+
+    <select id="findAll" resultType="com.mysl.api.entity.dto.ClassCourseApplicationDTO">
+        SELECT
+        cca.id, s.name AS store_name, u.name AS store_manager_name,
+        c.name AS class_name, cr.title AS course, cca.result,
+        cca.created_at, cca.created_by, cca.updated_at, cca.updated_by,
+        u.phone AS store_manager_phone, s.address AS store_address
+        FROM class_course_application cca
+        LEFT JOIN class_course cc ON cc.id = cca.class_course_id
+        LEFT JOIN class c ON c.id = cc.class_id
+        LEFT JOIN course cr ON cr.id = cc.course_id
+        LEFT JOIN store s ON s.id = c.store_id
+        LEFT JOIN user u ON s.manager_user_id = u.id
+        <where>
+            1 = 1
+            <if test="key_word != null">
+                <bind name="kw" value="'%' + key_word + '%'"/>
+                AND (s.name LIKE #{kw} OR u.name LIKE #{kw} OR u.PHONE = #{key_word} OR s.address LIKE #{kw} OR cr.title = #{key_word})
+            </if>
+            <if test="result == null">
+                AND cca.result IS NULL
+            </if>
+        </where>
+        ORDER BY cca.created_by DESC
+    </select>
+
+    <select id="countApplications" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM class_course_application WHERE result IS NULL
+    </select>
+</mapper>

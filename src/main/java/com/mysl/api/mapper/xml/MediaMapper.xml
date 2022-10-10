@@ -1,5 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mysl.api.mapper.MediaMapper">
+    <select id="findAll" resultType="com.mysl.api.entity.dto.MediaFullDTO">
+        SELECT
+        m.id, m.title, m.type, m.description, m.course_id AS category_id, c.title AS category, m.img, m.url,
+        m.created_at, m.created_by, m.updated_at, m.updated_by,
+        date_format(sec_to_time(m.duration), '%H:%i:%s') AS duration,
+        m.duration AS duration_actual
+        FROM media m
+        LEFT JOIN course c ON m.course_id = c.id
+        <where>
+            m.active
+            <if test="id != null">
+                AND m.id = #{id}
+            </if>
+            <if test="type != null">
+                AND m.type = #{type}
+            </if>
+            <if test="title != null">
+                <bind name="title" value="'%' + title + '%'"/>
+                AND m.title LIKE #{title}
+            </if>
+            <if test="description != null">
+                <bind name="description" value="'%' + description + '%'"/>
+                AND m.description LIKE #{description}
+            </if>
+            <if test="category != null">
+                AND m.category = #{category}
+            </if>
+            <if test="key_word != null">
+                <bind name="kw" value="'%' + key_word + '%'"/>
+                AND (m.type = #{key_word} OR m.title LIKE #{kw} OR m.description LIKE #{kw} OR c.title = #{key_word})
+            </if>
+            <if test="course_type != null">
+                AND c.type = #{course_type}
+            </if>
+        </where>
+        ORDER BY m.created_at desc
+    </select>
 
+    <select id="sumMediaDuration" resultType="java.lang.Integer">
+        SELECT SUM(duration) FROM media
+        <where>
+            1 = 1
+            <if test="media_ids != null">
+                AND id IN
+                <foreach item="id" index="index" collection="media_ids"
+                         open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="countUnfinishedMedia" resultType="java.lang.Integer">
+        SELECT count(id) FROM (
+        SELECT cc.id, cm.media_id, e.player_event FROM class_course cc
+        LEFT JOIN course_media cm ON cc.course_id = cm.course_id
+        LEFT JOIN media_play_event e ON e.class_course_id = cc.id
+        AND e.player_event = 'END' AND e.media_id = cm.media_id
+        WHERE cc.class_id = #{class_id} AND cc.course_id = #{course_id}
+        ) a WHERE a.player_event IS NULL
+    </select>
 </mapper>

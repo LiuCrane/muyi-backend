@@ -6,7 +6,7 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
     <changeSet id="class" author="Ivan Su">
         <createTable tableName="class" remarks="班级">
-            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="name" type="VARCHAR(128)" remarks="班级名称">
@@ -15,7 +15,7 @@
             <column name="teacher" type="VARCHAR(128)" remarks="老师">
                 <constraints nullable="false"/>
             </column>
-            <column name="store_id" type="INT UNSIGNED" remarks="门店id">
+            <column name="store_id" type="BIGINT UNSIGNED" remarks="门店id">
                 <constraints nullable="false"/>
             </column>
             <column name="study_progress" type="VARCHAR(16)" defaultValue="NOT_STARTED"
@@ -39,16 +39,23 @@
                                  onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="store" validate="true"/>
     </changeSet>
+    <changeSet id="update study_progress column's remark" author="Ivan Su">
+        <setColumnRemarks tableName="class" columnName="study_progress" columnDataType="VARCHAR(16)"
+                          remarks="学习进度(NOT_STARTED:未开始,IN_PROGRESS:进行中,REHAB_TRAINING:复训中,ENDED:已结束)"/>
+    </changeSet>
+    <changeSet id="set default value for study_progress" author="Ivan Su">
+        <addDefaultValue tableName="class" columnName="study_progress" defaultValue="NOT_STARTED"/>
+    </changeSet>
 
     <changeSet id="class_course" author="Ivan Su">
         <createTable tableName="class_course" remarks="班级课程">
-            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="class_id" type="INT UNSIGNED" remarks="班级id">
+            <column name="class_id" type="BIGINT UNSIGNED" remarks="班级id">
                 <constraints nullable="false"/>
             </column>
-            <column name="course_id" type="INT UNSIGNED" remarks="课程id">
+            <column name="course_id" type="BIGINT UNSIGNED" remarks="课程id">
                 <constraints nullable="false"/>
             </column>
             <column name="status" type="VARCHAR(16)"
@@ -71,16 +78,56 @@
                                  onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="course" validate="true"/>
     </changeSet>
+    <changeSet id="change status field's length of class_course table" author="Ivan Su">
+        <dropColumn tableName="class_course" columnName="status"/>
+        <addColumn tableName="class_course">
+            <column name="status" type="VARCHAR(20)"
+                    remarks="状态(APPLICABLE:可申请,UN_APPLICABLE:不可申请,UNDER_APPLICATION:申请中,ACCESSIBLE:可进入课程,COMPLETED:已完成)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="add completed field to class_course" author="Ivan Su">
+        <addColumn tableName="class_course">
+            <column name="completed" type="TINYINT(3) UNSIGNED" defaultValue="0"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="class_course_application" author="Ivan Su">
+        <createTable tableName="class_course_application" remarks="课程申请">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="class_course_id" type="BIGINT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="result" type="TINYINT(3) UNSIGNED" remarks="审核结果(1:同意, 0:拒绝)"/>
+            <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="updated_at" type="datetime"/>
+            <column name="updated_by" type="VARCHAR(255)"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="class_course_id" baseTableName="class_course_application"
+                                 constraintName="fk_cca_class_course_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="class_course" validate="true"/>
+    </changeSet>
+    <changeSet id="add active field to class_course_application" author="Ivan Su">
+        <addColumn tableName="class_course_application">
+            <column name="active" type="TINYINT(3) UNSIGNED" defaultValue="1"/>
+        </addColumn>
+    </changeSet>
 
     <changeSet id="class_course_media" author="Ivan Su">
         <createTable tableName="class_course_media">
-            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="class_course_id" type="INT UNSIGNED">
+            <column name="class_course_id" type="BIGINT UNSIGNED">
                 <constraints nullable="false"/>
             </column>
-            <column name="media_id" type="INT UNSIGNED">
+            <column name="media_id" type="BIGINT UNSIGNED">
                 <constraints nullable="false"/>
             </column>
             <column name="player_event" type="VARCHAR(8)">
@@ -97,5 +144,53 @@
                                  deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="media" validate="true"/>
+    </changeSet>
+
+    <changeSet id="change fk for class_course_media" author="Ivan Su">
+        <dropForeignKeyConstraint baseTableName="class_course_media" constraintName="fk_ccm_media_id"/>
+        <addForeignKeyConstraint baseColumnNames="media_id" baseTableName="class_course_media"
+                                 constraintName="fk_ccm_media_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="RESTRICT" onUpdate="CASCADE"
+                                 referencedColumnNames="id" referencedTableName="media" validate="true"/>
+    </changeSet>
+
+    <changeSet id="rename table class_course_media to class_course_media_event" author="Ivan Su">
+        <renameTable oldTableName="class_course_media" newTableName="class_course_media_event" />
+    </changeSet>
+    
+    <changeSet id="add some fields to class_course_media_event" author="Ivan Su">
+        <addColumn tableName="class_course_media_event">
+            <column name="store_id" type="BIGINT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="current_timestamp()" name="created_at" type="datetime"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="class_course_media_event" baseColumnNames="store_id"
+                                 constraintName="fk_cce_store_id" referencedTableName="store"
+                                 referencedColumnNames="id" validate="true"/>
+    </changeSet>
+    
+    <changeSet id="add recorded field to class_course_media_event" author="Ivan Su">
+        <addColumn tableName="class_course_media_event">
+            <column defaultValue="0" name="recorded" type="TINYINT(3) UNSIGNED"/>
+        </addColumn>
+        <createIndex tableName="class_course_media_event" indexName="idx_recorded">
+            <column name="recorded"/>
+        </createIndex>
+    </changeSet>
+    
+    <changeSet id="rename table class_course_media_event to media_play_event" author="Ivan Su">
+        <renameTable oldTableName="class_course_media_event" newTableName="media_play_event"/>
+        <dropForeignKeyConstraint baseTableName="media_play_event" constraintName="fk_cce_store_id"/>
+        <dropForeignKeyConstraint baseTableName="media_play_event" constraintName="fk_ccm_class_course_id"/>
+        <addColumn tableName="media_play_event">
+            <column name="user_id" type="BIGINT UNSIGNED"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="drop not null constraints for media_play_event" author="Ivan Su">
+        <dropNotNullConstraint tableName="media_play_event" columnName="class_course_id" columnDataType="BIGINT UNSIGNED"/>
+        <dropNotNullConstraint tableName="media_play_event" columnName="store_id" columnDataType="BIGINT UNSIGNED"/>
     </changeSet>
 </databaseChangeLog>

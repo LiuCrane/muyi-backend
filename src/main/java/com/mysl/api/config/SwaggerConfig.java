@@ -24,28 +24,35 @@ public class SwaggerConfig {
     private boolean enabled;
 
     @Bean
-    public Docket createRestApi() {
-        //返回文档摘要信息
+    public Docket createAppRestApi() {
+        return build("App", "com.mysl.api.controller.app");
+    }
+
+    @Bean
+    public Docket createAdminRestApi() {
+        return build("Admin", "com.mysl.api.controller.admin");
+    }
+
+    private Docket build(String groupApp, String basePackage) {
         return new Docket(DocumentationType.OAS_30)
                 // 是否开启 Swagger
                 .enable(enabled)
                 // 配置项目基本信息
                 .apiInfo(apiInfo())
                 // 设置项目组名
-                .groupName("App")
+                .groupName(groupApp)
                 // 选择那些路径和api会生成document
                 .select()
                 // 对所有api进行监控
                 // .apis(RequestHandlerSelectors.any())
                 // 如果需要指定对某个包的接口进行监控，则可以配置如下
-                .apis(RequestHandlerSelectors.basePackage("com.mysl.api.controller.app"))
+                .apis(RequestHandlerSelectors.basePackage(basePackage))
                 // 对所有路径进行监控
                 .paths(PathSelectors.any())
                 // 忽略以"/error"开头的路径,可以防止显示如404错误接口
                 .paths(PathSelectors.regex("/error.*").negate())
                 // 忽略以"/actuator"开头的路径
-                .paths(PathSelectors.regex("/actuator.*").negate())
-                .build();
+                .paths(PathSelectors.regex("/actuator.*").negate()).build();
     }
 
     /**
@@ -55,7 +62,9 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("SHILI-API 接口文档")
                 .version("1.0.0")
+                .description("WebSocket 文档可<a href='/wsapi-ui/index.html' target='_blank'>点击访问这里</a>。")
                 .build();
     }
+
 
 }

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mysl.api.mapper.ClassMapper">
+    <resultMap id="class" type="com.mysl.api.entity.Class">
+        <id column="id" property="id"/>
+        <id column="name" property="name"/>
+        <id column="teacher" property="teacher"/>
+        <id column="store_id" property="storeId"/>
+        <id column="study_progress" property="studyProgress"/>
+        <id column="active" property="active"/>
+        <id column="created_at" property="createdAt"/>
+        <id column="created_by" property="createdBy"/>
+        <id column="updated_at" property="updatedAt"/>
+        <id column="updated_by" property="updatedBy"/>
+    </resultMap>
+    <select id="findAll" resultType="com.mysl.api.entity.dto.ClassFullDTO">
+        SELECT
+        c.id, c.name, c.teacher, c.store_id, c.study_progress AS study_progress,
+        s.name AS store_name, s.number AS store_number, cr.title AS current_course,
+        (SELECT COUNT(id) FROM student where class_id = c.id) AS student_num,
+        c.created_at, c.created_by, c.updated_at, c.updated_by, u.name AS store_manager,
+        cr.id AS current_course_id, cc.status AS current_course_status
+        FROM class c
+        LEFT JOIN store s ON c.store_id = s.id
+        LEFT JOIN (SELECT * FROM class_course WHERE id IN (SELECT MAX(id) id FROM class_course GROUP BY class_id)) cc
+        ON cc.class_id = c.id
+        LEFT JOIN course cr ON cr.id = cc.course_id
+        LEFT JOIN user u ON u.id = s.manager_user_id
+        <where>
+            1 = 1
+            <if test="id != null">
+                AND c.id = #{id}
+            </if>
+            <if test="store_id != null">
+                AND c.store_id = #{store_id}
+            </if>
+            <if test="key_word != null">
+                <bind name="key_word" value="'%' + key_word + '%'"/>
+                AND (c.name LIKE #{key_word} OR s.name LIKE #{key_word} OR cr.title LIKE #{key_word})
+            </if>
+        </where>
+        ORDER BY c.created_at DESC
+    </select>
+</mapper>

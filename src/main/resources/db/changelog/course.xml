@@ -6,7 +6,7 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
     <changeSet id="course" author="Ivan Su">
         <createTable tableName="course" remarks="课程">
-            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="title" type="VARCHAR(128)" remarks="标题">
@@ -30,13 +30,29 @@
             <column name="created_at"/>
         </createIndex>
     </changeSet>
+    <changeSet id="change duration type of course" author="Ivan Su">
+        <dropColumn tableName="course" columnName="duration" />
+        <addColumn tableName="course">
+            <column name="duration" type="DECIMAL(8,3)" defaultValue="0" remarks="时长"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="add cover_path field to course" author="Ivan Su">
+        <addColumn tableName="course">
+            <column name="cover_path" type="VARCHAR(255)" remarks="封面路径" />
+        </addColumn>
+    </changeSet>
+    <changeSet id="add type to course" author="Ivan Su">
+        <addColumn tableName="course">
+            <column name="type" type="VARCHAR(16)" remarks="类型(GUIDE:导学, STAGE:学习阶段, REHAB: 复训)" />
+        </addColumn>
+    </changeSet>
 
     <changeSet id="course_media" author="Ivan Su">
         <createTable tableName="course_media" remarks="课程媒体">
-            <column name="course_id" type="INT UNSIGNED">
+            <column name="course_id" type="BIGINT UNSIGNED">
                 <constraints nullable="false"/>
             </column>
-            <column name="media_id" type="INT UNSIGNED">
+            <column name="media_id" type="BIGINT UNSIGNED">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -51,5 +67,14 @@
                                  onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
                                  referencedTableName="media" validate="true"/>
         <addUniqueConstraint columnNames="course_id, media_id" constraintName="uni_ci_mi" tableName="course_media"/>
+    </changeSet>
+
+    <changeSet id="change fk for course_media" author="Ivan Su">
+        <dropForeignKeyConstraint baseTableName="course_media" constraintName="fk_cm_media_id"/>
+        <addForeignKeyConstraint baseColumnNames="media_id" baseTableName="course_media"
+                                 constraintName="fk_cm_media_id"
+                                 deferrable="false" initiallyDeferred="false"
+                                 onDelete="RESTRICT" onUpdate="CASCADE" referencedColumnNames="id"
+                                 referencedTableName="media" validate="true"/>
     </changeSet>
 </databaseChangeLog>

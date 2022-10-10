@@ -6,7 +6,7 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
     <changeSet id="user" author="Ivan Su">
         <createTable tableName="user" remarks="用户">
-            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="username" type="VARCHAR(128)" remarks="用户名">
@@ -46,10 +46,14 @@
             'BACKEND_USER')
         </sql>
     </changeSet>
+    <changeSet id="change type field's remark" author="Ivan Su">
+        <setColumnRemarks tableName="user" columnName="type" columnDataType="VARCHAR(16)"
+                          remarks="用户类型(BACKEND_USER:后台用户,APP_USER:App用户)"/>
+    </changeSet>
 
     <changeSet id="role" author="Ivan Su">
         <createTable tableName="role">
-            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="name" type="VARCHAR(16)" remarks="角色名称">
@@ -71,13 +75,18 @@
             VALUES (1, '后台管理员', 'ROLE_ADMIN'), (2, '店长', 'ROLE_STORE_MANAGER')
         </sql>
     </changeSet>
+    <changeSet id="add app user role" author="Ivan Su">
+        <sql>
+            INSERT INTO role(id, name, code) VALUES (3, 'App用户', 'ROLE_APP_USER')
+        </sql>
+    </changeSet>
 
     <changeSet id="user_role" author="Ivan Su">
         <createTable tableName="user_role">
-            <column name="user_id" type="INT UNSIGNED">
+            <column name="user_id" type="BIGINT UNSIGNED">
                 <constraints nullable="false"/>
             </column>
-            <column name="role_id" type="INT UNSIGNED">
+            <column name="role_id" type="BIGINT UNSIGNED">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -95,5 +104,25 @@
         <sql>
             INSERT INTO user_role(user_id, role_id) VALUE (1, 1)
         </sql>
+    </changeSet>
+    
+    <changeSet id="jwt_blacklist" author="Ivan Su">
+        <createTable tableName="jwt_blacklist">
+            <column autoIncrement="true" name="id" type="BIGINT UNSIGNED">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="token" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiration_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="jwt_blacklist" indexName="idx_token">
+            <column name="token"/>
+        </createIndex>
+        <createIndex tableName="jwt_blacklist" indexName="idx_et">
+            <column name="expiration_time"/>
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

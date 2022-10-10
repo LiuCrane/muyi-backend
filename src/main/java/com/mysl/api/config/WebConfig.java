@@ -14,12 +14,14 @@ import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.mysl.api.interceptor.MyInterceptor;
 import com.mysl.api.lib.AesFile;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -29,9 +31,8 @@ import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import lombok.extern.log4j.Log4j2;
@@ -42,6 +43,9 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Autowired
     private MyInterceptor myInterceptor;
+
+    @Value("${springfox.documentation.swagger-ui.enabled}")
+    private boolean wsDocEnabled;
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -131,23 +135,44 @@ public class WebConfig extends WebMvcConfigurationSupport {
         return v;
     };
 
-    @Override
-    protected void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(myInterceptor).addPathPatterns("/app/**")
-                .excludePathPatterns("/app/auth/login", "/app/user/register");
-    }
+//    @Override
+//    protected void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(myInterceptor).addPathPatterns("/app/**")
+//                .excludePathPatterns("/app/auth/login", "/app/user/register");
+//    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         log.info("addResourceHandlers for swagger-ui");
         registry.addResourceHandler("/swagger-ui/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
+        if (wsDocEnabled) {
+            registry.addResourceHandler("/wsapi-ui/**")
+                    .addResourceLocations("classpath:/wsdoc/");
+        }
         super.addResourceHandlers(registry);
     }
-//
+
+    /**
+     * 实现json参数解析/返回时，传入的下划线转驼峰；输出的驼峰转下划线
+     * @param converters
+     */
+    @Override
+    protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        ObjectMapper objectMapper = converter.getObjectMapper();
+
+        // 设置驼峰标志转下划线
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+
+        // 设置格式化内容
+        converter.setObjectMapper(objectMapper);
+        converters.add(0, converter);
+        super.extendMessageConverters(converters);
+    }
+
 //    @Override
-//    protected void addViewControllers(ViewControllerRegistry registry) {
-//        log.info("addViewControllers for swagger-ui");
-//        registry.addViewController("/swagger-ui").setViewName("forward:/swagger-ui/index.html");
+//    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+//        argumentResolvers.add(new UnderlineToCamelArgumentResolver());
 //    }
 }

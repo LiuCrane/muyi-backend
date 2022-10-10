@@ -11,9 +11,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mysl.api.common.lang.Result;
 import com.mysl.api.lib.AesFile;
 import com.mysl.api.lib.Permission;
-import com.mysl.api.entity.Address;
-import com.mysl.api.mapper.AddressMapper;
-import com.mysl.api.service.AddressService;
+import com.mysl.api.entity.AddressV1;
+import com.mysl.api.mapper.AddressV1Mapper;
+import com.mysl.api.service.AddressV1Service;
 import com.mysl.api.service.UsersService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/sql/address")
-public class AddressController {
+public class AddressV1Controller {
   @Autowired
   UsersService usersService;
 
   @Autowired
-  AddressService addressService;
+  AddressV1Service addressService;
 
   @Resource
-  AddressMapper addressMapper;
+  AddressV1Mapper addressV1Mapper;
   // #region CU
   // @PostMapping("create")
   // public Object create(HttpServletRequest request) throws IOException {
@@ -119,7 +119,7 @@ public class AddressController {
       if (page < 0) {
         page = 0;
       }
-      QueryWrapper<Address> q = new QueryWrapper<>();
+      QueryWrapper<AddressV1> q = new QueryWrapper<>();
       if (id != 0) {
         q.eq("id", id);
       }
@@ -134,7 +134,7 @@ public class AddressController {
       }
       q.apply("`group`&" + place + "=" + per.group);
       return Result
-          .ret(page == 0 ? addressMapper.selectList(q) : addressMapper.selectPage(new Page<Address>(page, size), q));
+          .ret(page == 0 ? addressV1Mapper.selectList(q) : addressV1Mapper.selectPage(new Page<AddressV1>(page, size), q));
     }
     return Result.ret(101, "没有权限");
   }

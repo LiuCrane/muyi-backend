@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mysl.api.mapper.MediaBrowseRecordMapper">
+    <select id="findAll" resultType="com.mysl.api.entity.dto.MediaBrowseRecordDTO">
+        SELECT r.id, u.name AS user_name, u.phone AS user_phone, r.media_title, r.media_type,
+        r.media_description, r.start_time, r.end_time, r.total_time, r.store_address AS location
+        FROM media_browse_record r
+        LEFT JOIN user u ON u.id = r.user_id
+        <where>
+            1 = 1
+            <if test="user_id != null">
+                AND r.user_id = #{user_id}
+            </if>
+            <if test="start_time != null">
+                AND r.start_time &gt;= #{start_time}
+            </if>
+            <if test="end_time != null">
+                AND r.end_time &lt;= #{end_time}
+            </if>
+        </where>
+        ORDER BY r.created_at DESC
+    </select>
+</mapper>
