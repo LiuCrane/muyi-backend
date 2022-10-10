@@ -1,5 +1,10 @@
 package com.mysl.api.common;
 
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.WeakCache;
+import cn.hutool.core.date.DateUnit;
+import com.mysl.api.entity.enums.ClassCourseStatus;
+
 /**
  * 全局常量
  *
@@ -23,4 +28,8 @@ public abstract class GlobalConstant {
     public static final String[] PERMIT_URI =
             new String[]{"/admin/auth/login", "/app/auth/login", "/app/user/register",
                     "/app/address/all", "/app/address/children", "/app/address/parent", "/cos/queue/callback"};
+
+    public static WeakCache<String, ClassCourseStatus> courseStatusCache = CacheUtil.newWeakCache(DateUnit.HOUR.getMillis());
+
+    public static String courseStatusCacheKeyFormat = "class_%s_course_%s_status";
 }

@@ -1,10 +1,12 @@
 package com.mysl.api.controller.admin;
 
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import com.mysl.api.common.OperateType;
 import com.mysl.api.common.lang.ResponseData;
 import com.mysl.api.entity.dto.ClassFullDTO;
 import com.mysl.api.entity.dto.ClassUpdateDTO;
+import com.mysl.api.entity.enums.ClassCourseStatus;
 import com.mysl.api.service.ClassService;
 import io.github.flyhero.easylog.annotation.EasyLog;
 import io.swagger.annotations.Api;
@@ -52,5 +54,15 @@ public class ClassController {
     @PutMapping("/{id}")
     public ResponseData update(@PathVariable Long id, @Validated @RequestBody ClassUpdateDTO dto) {
         return ResponseData.ok(classService.update(id, dto));
+    }
+
+    @ApiOperation("恢复当前课程状态")
+    @EasyLog(module = "Admin-恢复当前课程状态", tenant = "{getClientIP{0}}", type = OperateType.UPDATE, bizNo = "{{#id}}", success = "", fail = "{{#_errMsg}}")
+    @PostMapping("/{id}/restore_course_status")
+    public ResponseData restoreCourseStatus(@PathVariable Long id) {
+        ClassFullDTO cls = classService.getClassById(id, null);
+        classService.changeClassCourseStatus(id, cls.getCurrentCourseId(),
+                Lists.newArrayList(ClassCourseStatus.ACCESSIBLE), ClassCourseStatus.APPLICABLE);
+        return ResponseData.ok();
     }
 }

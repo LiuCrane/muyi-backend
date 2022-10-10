@@ -52,17 +52,17 @@ public class RegisterDTO implements Serializable {
     @JsonIgnore
     private String storeAddress;
 
+    // 纬度： -90.0～+90.0（整数部分为0～90，必须输入1到8位小数）
     @ApiModelProperty(value = "门店位置纬度", required = true)
     @NotEmpty(message = "纬度不能为空")
-    @Length(max = 16, message = "纬度长度不能超过16位")
-    @Digits(integer = 3, fraction = 12, message = "纬度格式错误")
+    @Pattern(regexp = "^[\\-\\+]?([0-8]?\\d{1}\\.\\d{1,5}|90\\.0{1,8})$" , message = "纬度格式错误")
     @JsonProperty("store_lat")
     private String storeLat;
 
+    // 经度： -180.0～+180.0（整数部分为0～180，必须输入1到8位小数）
     @ApiModelProperty(value = "门店位置经度", required = true)
     @NotEmpty(message = "经度不能为空")
-    @Length(max = 16, message = "经度长度不能超过16位")
-    @Digits(integer = 3, fraction = 12, message = "经度格式错误")
+    @Pattern(regexp = "^[\\-\\+]?(0?\\d{1,2}\\.\\d{1,5}|1[0-7]?\\d{1}\\.\\d{1,5}|180\\.0{1,8})$", message = "经度格式错误")
     @JsonProperty("store_lng")
     private String storeLng;
 

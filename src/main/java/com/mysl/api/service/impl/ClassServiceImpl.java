@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mysl.api.common.GlobalConstant;
 import com.mysl.api.common.exception.ResourceNotFoundException;
 import com.mysl.api.common.exception.ServiceException;
 import com.mysl.api.common.lang.ResponseData;
@@ -26,6 +27,7 @@ import com.mysl.api.mapper.ClassMapper;
 import com.mysl.api.mapper.CourseMapper;
 import com.mysl.api.service.ApplicationService;
 import com.mysl.api.service.ClassService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,7 @@ import java.util.List;
  * @date 2022/8/13
  */
 @Service
+@Slf4j
 public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements ClassService {
 
     @Autowired
@@ -111,6 +114,26 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     }
 
     @Override
+    public ClassCourseStatus getClassCourseStatus(Long storeId, Long classId, Long courseId) {
+        String cacheKey = String.format(GlobalConstant.courseStatusCacheKeyFormat, classId, courseId);
+        ClassCourseStatus status = GlobalConstant.courseStatusCache.get(cacheKey);
+        if (status != null) {
+            return status;
+        }
+        Class cls = super.baseMapper.selectOne(new QueryWrapper<Class>().eq("store_id", storeId).eq("id", classId));
+        if (cls == null) {
+            throw new ResourceNotFoundException("找不到班级信息");
+        }
+        ClassCourse classCourse = classCourseMapper.selectOne(new QueryWrapper<ClassCourse>()
+                .eq("class_id", classId).eq("course_id", courseId).last("limit 1"));
+        if (classCourse != null) {
+            GlobalConstant.courseStatusCache.put(cacheKey, classCourse.getStatus());
+            return classCourse.getStatus();
+        }
+        return null;
+    }
+
+    @Override
     @Transactional
     public boolean applyCourse(Long storeId, Long classId, Long courseId) {
         Class cls = super.baseMapper.selectOne(new QueryWrapper<Class>().eq("store_id", storeId).eq("id", classId));
@@ -129,6 +152,9 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
             if (classCourseApplicationMapper.insert(application) > 0) {
                 int count = applicationService.countApplications();
                 WebSocketServer.send(JSON.toJSONString(ResponseData.ok(count)));
+
+                String courseCacheKey = String.format(GlobalConstant.courseStatusCacheKeyFormat, classId, courseId);
+                GlobalConstant.courseStatusCache.remove(courseCacheKey);
             } else {
                 throw new ServiceException("操作失败");
             }
@@ -180,7 +206,23 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
                 updatedBy, ClassCourseStatus.ACCESSIBLE, Boolean.TRUE, Boolean.TRUE);
         classCourseMapper.updateClassCourseStatus(null, null, ClassCourseStatus.EXPIRED,
                 updatedBy, ClassCourseStatus.ACCESSIBLE, Boolean.TRUE, Boolean.FALSE);
+        GlobalConstant.courseStatusCache.clear();
     }
 
+    @Override
+    public void changeClassCourseStatus(Long classId, Long courseId, List<ClassCourseStatus> canChangeStatusList, ClassCourseStatus newStatus) {
+        ClassCourse classCourse = classCourseMapper.selectOne(new QueryWrapper<ClassCourse>()
+                .eq("class_id", classId).eq("course_id", courseId).last("limit 1"));
+        if (classCourse == null) {
+            throw new ResourceNotFoundException("找不到班级课程");
+        }
+        if (!canChangeStatusList.contains(classCourse.getStatus())) {
+            throw new ServiceException("当前课程状态不可修改");
+        }
+        classCourse.setStatus(newStatus);
+        classCourseMapper.updateById(classCourse);
+        String courseCacheKey = String.format(GlobalConstant.courseStatusCacheKeyFormat, classId, courseId);
+        GlobalConstant.courseStatusCache.remove(courseCacheKey);
+    }
 
 }

@@ -19,11 +19,11 @@
         <where>
             u.active
             <if test="phone != null">
-                u.phone = #{phone}
+                AND u.phone = #{phone}
             </if>
             <if test="name != null">
                 <bind name="name" value="'%' + name + '%'"/>
-                u.name LIKE #{name}
+                AND u.name LIKE #{name}
             </if>
         </where>
         ORDER BY u.created_at DESC

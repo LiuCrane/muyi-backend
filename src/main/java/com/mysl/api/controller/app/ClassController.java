@@ -89,6 +89,12 @@ public class ClassController {
         return ResponseData.ok(new ListData<CourseDTO>().setList(list));
     }
 
+    @ApiOperation("查询班级课程状态")
+    @GetMapping("/{class_id}/courses/{course_id}/status")
+    public ResponseData getCourseStatus(@PathVariable("class_id") Long classId, @PathVariable("course_id") Long courseId) {
+        return ResponseData.ok(new ClassCourseStatusDTO().setStatus(classService.getClassCourseStatus(JwtTokenUtil.getCurrentStoreId(), classId, courseId)));
+    }
+
     @ApiOperation("申请课程")
     @EasyLog(module = "App-申请课程", tenant = "{getClientIP{0}}", type = OperateType.ADD, bizNo = "{{#classId}}", success = "", fail = "{{#_errMsg}}", detail = "classId: {{#classId}}, courseId: {{#courseId}}")
     @PostMapping("/{class_id}/courses/{course_id}/apply")
