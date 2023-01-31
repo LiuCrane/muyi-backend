@@ -89,7 +89,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
 
         if (StudyProgress.NOT_STARTED.equals(cls.getStudyProgress()) || StudyProgress.IN_PROGRESS.equals(cls.getStudyProgress())) {
             List<Course> courses = courseMapper.selectList(new QueryWrapper<Course>()
-                    .eq("active", 1).eq("type", CourseType.STAGE).orderByAsc("created_at"));
+                    .eq("active", 1).eq("type", CourseType.STAGE).orderByAsc("id"));
             if (CollectionUtils.isEmpty(courses)) {
                 return new ArrayList<>();
             }
@@ -100,6 +100,16 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
                 ClassCourse classCourse = ClassCourse.builder()
                         .courseId(courses.get(0).getId()).classId(classId).status(ClassCourseStatus.APPLICABLE).build();
                 classCourseMapper.insert(classCourse);
+            } else {
+                ClassCourse lastClassCourse = classCourses.get(0);
+                if (ClassCourseStatus.EXPIRED.equals(lastClassCourse.getStatus())) {
+                    Course nextCourse = courseMapper.selectOne(new QueryWrapper<Course>()
+                            .eq("active", 1).eq("type", CourseType.STAGE).gt("id", lastClassCourse.getCourseId())
+                            .orderByAsc("id").last("limit 1"));
+                    ClassCourse classCourse = ClassCourse.builder()
+                            .courseId(nextCourse.getId()).classId(classId).status(ClassCourseStatus.APPLICABLE).build();
+                    classCourseMapper.insert(classCourse);
+                }
             }
         }
         List<CourseDTO> list = classCourseMapper.findAll(classId);

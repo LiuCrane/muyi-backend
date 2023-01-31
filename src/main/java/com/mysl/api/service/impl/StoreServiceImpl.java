@@ -1,5 +1,6 @@
 package com.mysl.api.service.impl;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.extra.cglib.CglibUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -206,6 +207,7 @@ public class StoreServiceImpl extends ServiceImpl<StoreMapper, Store> implements
             throw new ServiceException("门店已注销");
         }
         store.setActive(Boolean.FALSE);
+        store.setManagerIdCardNum(IdUtil.simpleUUID());
         super.updateById(store);
 
         User user = userMapper.selectById(store.getManagerUserId());

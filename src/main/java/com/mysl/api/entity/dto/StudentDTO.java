@@ -67,6 +67,12 @@ public class StudentDTO implements Serializable {
     @ApiModelProperty(value = "疗愈前双眼视力")
     private String firstBinocularVision;
 
+    @ApiModelProperty(value = "最新左眼视力")
+    private String leftVision;
+
+    @ApiModelProperty(value = "最新右眼视力")
+    private String rightVision;
+
     @ApiModelProperty("最新双眼视力")
     private String binocularVision;
 

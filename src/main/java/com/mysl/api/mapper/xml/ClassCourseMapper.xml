@@ -18,6 +18,7 @@
         LEFT JOIN media m ON cm.media_id = m.id AND m.active
         WHERE
         cc.course_id = #{course_id} AND cc.class_id = #{class_id}
+        AND m.id IS NOT NULL
         ORDER BY m.created_at ASC
     </select>
 

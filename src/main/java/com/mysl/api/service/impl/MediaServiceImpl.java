@@ -167,7 +167,7 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
             list = new ArrayList<>();
             List<Course> courses = courseMapper.selectList(new QueryWrapper<Course>()
                     .select("id", "title").eq("active", 1)
-                    .orderByAsc("created_at"));
+                    .orderByAsc("id"));
             for (Course c : courses) {
                 list.add(new MediaCategoryDTO().setId(c.getId()).setName(c.getTitle()));
             }
@@ -244,10 +244,12 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
 
     private void updateCourseDuration(Course course) {
         List<Long> mediaIds = courseMediaMapper.findMediaIds(course.getId());
-        int duration = super.baseMapper.sumMediaDuration(mediaIds);
-        course.setDuration(BigDecimal.valueOf(duration));
-        if (courseMapper.updateById(course) < 1) {
-            throw new ServiceException("操作失败");
+        if (!CollectionUtils.isEmpty(mediaIds)) {
+            int duration = super.baseMapper.sumMediaDuration(mediaIds);
+            course.setDuration(BigDecimal.valueOf(duration));
+            if (courseMapper.updateById(course) < 1) {
+                throw new ServiceException("操作失败");
+            }
         }
     }
 
@@ -271,8 +273,8 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
                     classCourseMapper.updateCompleted(classId, courseId, Boolean.TRUE, JwtTokenUtil.getCurrentUsername());
                     Course course = courseMapper.selectById(courseId);
                     Course nextCourse = courseMapper.selectOne(new QueryWrapper<Course>()
-                            .eq("active", 1).eq("type", CourseType.STAGE).gt("created_at", course.getCreatedAt())
-                            .orderByAsc("created_at").last("limit 1"));
+                            .eq("active", 1).eq("type", CourseType.STAGE).gt("id", course.getId())
+                            .orderByAsc("id").last("limit 1"));
                     if (nextCourse != null) {
                         // 找到下一个课程(阶段)，标为可申请
                         ClassCourse classCourse = classCourseMapper.selectOne(
