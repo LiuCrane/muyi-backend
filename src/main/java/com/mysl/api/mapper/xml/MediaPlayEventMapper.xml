@@ -31,4 +31,10 @@
             AND user_id = #{user_id}
         </where>
     </update>
+
+    <select id="countEndedMedia" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM media_play_event
+        WHERE store_id = #{store_id} AND media_id = #{media_id} AND player_event = 'END'
+        AND class_course_id = #{class_course_id} AND TO_DAYS(created_at) = TO_DAYS(NOW())
+    </select>
 </mapper>

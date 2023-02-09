@@ -21,10 +21,7 @@ import com.mysl.api.entity.dto.*;
 import com.mysl.api.entity.enums.ClassCourseStatus;
 import com.mysl.api.entity.enums.CourseType;
 import com.mysl.api.entity.enums.StudyProgress;
-import com.mysl.api.mapper.ClassCourseApplicationMapper;
-import com.mysl.api.mapper.ClassCourseMapper;
-import com.mysl.api.mapper.ClassMapper;
-import com.mysl.api.mapper.CourseMapper;
+import com.mysl.api.mapper.*;
 import com.mysl.api.service.ApplicationService;
 import com.mysl.api.service.ClassService;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +51,8 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     ClassCourseApplicationMapper classCourseApplicationMapper;
     @Autowired
     ApplicationService applicationService;
+    @Autowired
+    MediaPlayEventMapper mediaPlayEventMapper;
 
     @Override
     public PageInfo<ClassFullDTO> getClasses(Integer pageNum, Integer pageSize, Long id, Long storeId, String keyWord) {
@@ -189,7 +188,10 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
                         m.setImg(CosUtil.getImgShowUrl(m.getImg()));
                     }
                     if (StringUtils.isNotEmpty(m.getUrl())) {
-                        m.setUrl(CosUtil.generatePresignedDownloadUrl(m.getUrl(), expirationDate));
+                        int count = mediaPlayEventMapper.countEndedMedia(storeId, m.getId(), classCourse.getId());
+                        if (count == 0) {
+                            m.setUrl(CosUtil.generatePresignedDownloadUrl(m.getUrl(), expirationDate));
+                        }
                     }
                 });
                 return list;

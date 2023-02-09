@@ -20,4 +20,8 @@ public interface MediaPlayEventMapper extends BaseMapper<MediaPlayEvent> {
     int updateRecorded(@Param("class_course_id")Long classCourseId,
                        @Param("media_id") Long mediaId,
                        @Param("user_id") Long userId);
+
+    int countEndedMedia(@Param("store_id") Long storeId,
+                        @Param("media_id") Long mediaId,
+                        @Param("class_course_id") Long classCourseId);
 }
