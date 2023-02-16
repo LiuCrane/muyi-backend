@@ -36,5 +36,7 @@
         SELECT COUNT(id) FROM media_play_event
         WHERE store_id = #{store_id} AND media_id = #{media_id} AND player_event = 'END'
         AND class_course_id = #{class_course_id} AND TO_DAYS(created_at) = TO_DAYS(NOW())
+        AND created_at > (SELECT created_at FROM class_course_application
+        WHERE class_course_id = #{class_course_id} AND result = 1 ORDER BY created_at DESC LIMIT 1)
     </select>
 </mapper>

@@ -213,10 +213,12 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     @Override
     @Transactional
     public void expireClassCourse() {
+        log.info("expireClassCourse: " + DateUtil.now());
         String updatedBy = "Schedule";
-        classCourseMapper.updateClassCourseStatus(null, null, ClassCourseStatus.COMPLETED,
+        // 2023-02-14 修改：课程都可重新申请
+        classCourseMapper.updateClassCourseStatus(null, null, ClassCourseStatus.APPLICABLE,
                 updatedBy, ClassCourseStatus.ACCESSIBLE, Boolean.TRUE, Boolean.TRUE);
-        classCourseMapper.updateClassCourseStatus(null, null, ClassCourseStatus.EXPIRED,
+        classCourseMapper.updateClassCourseStatus(null, null, ClassCourseStatus.APPLICABLE,
                 updatedBy, ClassCourseStatus.ACCESSIBLE, Boolean.TRUE, Boolean.FALSE);
         GlobalConstant.courseStatusCache.clear();
     }

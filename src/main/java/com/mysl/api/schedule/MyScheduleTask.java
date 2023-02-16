@@ -19,6 +19,7 @@ public class MyScheduleTask {
     // 每天0点1分执行，让已申请但未完成学习的课程失效
     @Async
     @Scheduled(cron = "0 1 0 * * ?")
+//    @Scheduled(cron = "0 0/5 * * * ?")
     public void expireClassCourse() {
         classService.expireClassCourse();
     }

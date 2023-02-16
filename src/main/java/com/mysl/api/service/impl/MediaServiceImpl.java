@@ -268,9 +268,10 @@ public class MediaServiceImpl extends ServiceImpl<MediaMapper, Media> implements
             case END:
                 // 判断课程内媒体是否播放完
                 if (super.baseMapper.countUnfinishedMedia(classId, courseId) == 0) {
-                    // 媒体都播放完
-                    // 课程状态改为已完成
-                    classCourseMapper.updateCompleted(classId, courseId, Boolean.TRUE, JwtTokenUtil.getCurrentUsername());
+                    // 2023-02-14 修改：媒体都播放完，课程状态改为可申请
+//                    classCourseMapper.updateCompleted(classId, courseId, Boolean.TRUE, JwtTokenUtil.getCurrentUsername());
+                    classCourseMapper.updateClassCourseStatus(classId, courseId, ClassCourseStatus.APPLICABLE, JwtTokenUtil.getCurrentUsername(),
+                            null, null, null);
                     Course course = courseMapper.selectById(courseId);
                     Course nextCourse = courseMapper.selectOne(new QueryWrapper<Course>()
                             .eq("active", 1).eq("type", CourseType.STAGE).gt("id", course.getId())
